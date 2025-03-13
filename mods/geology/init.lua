@@ -65,6 +65,21 @@ core.register_node("geology:grass_block", {
     is_ground_content = true,
     groups = {crumbly=3}
 })
+
+-- Turning covered grass blocks into dirt blocks
+core.register_abm({
+    nodenames = {"geology:grass_block"},
+    interval = 5,
+    chance = 50,
+    action = function(pos, node)
+        local pos_neighbor = {x = pos.x, y = pos.y + 1, z = pos.z}
+        local neighbor_node_name = core.get_node(pos_neighbor).name
+        if neighbor_node_name ~= "air" then
+            core.set_node(pos, {name = "geology:dirt"})
+        end
+    end
+})
+
 core.register_node("geology:coal_ore", {
     description = "Coal ore",
     tiles = {"geology_coal_ore.png"},

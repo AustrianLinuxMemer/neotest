@@ -1,6 +1,6 @@
 -- Courtesy of the `liquids` mod of Minetest Game (Line 2204-2483 in nodes.lua)
 
-minetest.register_node("liquids:water_source", {
+core.register_node("liquids:water_source", {
 	description = "Water Source",
 	drawtype = "liquid",
 	waving = 3,
@@ -43,7 +43,7 @@ minetest.register_node("liquids:water_source", {
 	groups = {water = 3, liquid = 3, cools_lava = 1}
 })
 
-minetest.register_node("liquids:water_flowing", {
+core.register_node("liquids:water_flowing", {
 	description = "Flowing Water",
 	drawtype = "flowingliquid",
 	waving = 3,
@@ -90,7 +90,7 @@ minetest.register_node("liquids:water_flowing", {
 })
 
 
-minetest.register_node("liquids:river_water_source", {
+core.register_node("liquids:river_water_source", {
 	description = "River Water Source",
 	drawtype = "liquid",
 	tiles = {
@@ -138,7 +138,7 @@ minetest.register_node("liquids:river_water_source", {
 	groups = {water = 3, liquid = 3, cools_lava = 1},
 })
 
-minetest.register_node("liquids:river_water_flowing", {
+core.register_node("liquids:river_water_flowing", {
 	description = "Flowing River Water",
 	drawtype = "flowingliquid",
 	tiles = {"liquids_river_water.png"},
@@ -186,7 +186,7 @@ minetest.register_node("liquids:river_water_flowing", {
 })
 
 
-minetest.register_node("liquids:lava_source", {
+core.register_node("liquids:lava_source", {
 	description = "Lava Source",
 	drawtype = "liquid",
 	tiles = {
@@ -229,7 +229,7 @@ minetest.register_node("liquids:lava_source", {
 	groups = {lava = 3, liquid = 2, igniter = 1},
 })
 
-minetest.register_node("liquids:lava_flowing", {
+core.register_node("liquids:lava_flowing", {
 	description = "Flowing Lava",
 	drawtype = "flowingliquid",
 	tiles = {"liquids_lava.png"},

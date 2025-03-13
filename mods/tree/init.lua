@@ -1,4 +1,6 @@
-local types = {oak = {name = "Oak", tname = "oak"}}
+local types = {
+    {name = "Oak", tname = "oak"}
+}
 local leaf_abm = {
     nodenames = {"group:leaf"},
     interval = 0.1,
@@ -7,8 +9,8 @@ local leaf_abm = {
         local to_remove = true
         local radius = 5 -- later configurable
         for dz = -radius, radius do
-            for dx = -radius, radius do
-                for dy = -radius, radius do
+            for dy = -radius, radius do
+                for dx = -radius, radius do
                     local check_pos = {x = pos.x + dx, y = pos.y + dy, z = pos.z + dz}
                     local check_node = core.get_node(check_pos)
                     local group_name = core.get_item_group(check_node.name, "log")
@@ -53,7 +55,7 @@ local sapling_abm = {
         end
     end
 }
-for _, t in pairs(types) do
+for _, t in ipairs(types) do
     core.register_node("tree:"..t.tname.."_planks", {
         description = t.name.." planks",
         tiles = {t.tname.."_planks.png"},
@@ -64,7 +66,7 @@ for _, t in pairs(types) do
         description = t.name.." log",
         tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
         is_ground_content = false,
-        groups = {choppy=3, wood=1, log=1}
+        groups = {choppy=3, log=1}
     })
 
 
@@ -85,16 +87,97 @@ for _, t in pairs(types) do
     })
     core.register_craft({
     type = "shapeless",
-    output = "tree:"..t.tname.."planks 4",
-    recipe = {"tree:"..t.tname.."log"}
+    output = "tree:"..t.tname.."_planks 4",
+    recipe = {"tree:"..t.tname.."_log"}
     })
 
     core.register_craft({
         type = "shapeless",
-        output = "tree:"..t.tname.."sapling",
-        recipe = {"tree:"..t.tname.."leaves"}
+        output = "tree:"..t.tname.."_sapling",
+        recipe = {"tree:"..t.tname.."_leaves"}
+    })
+    local tree_path = core.get_modpath("tree").."/schematics/"
+    local short = tree_path..t.tname.."_tree_small.mts"
+    local medium = tree_path..t.tname.."_tree_medium.mts"
+    local large = tree_path..t.tname.."_tree_large.mts"
+    -- Forest trees
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.1,
+        biomes = {"temperate_forest"},
+        y_max = 4000,
+        schematic = short,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
+    })
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.1,
+        biomes = {"temperate_forest"},
+        y_max = 3500,
+        schematic = medium,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
+    })
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.1,
+        biomes = {"temperate_forest"},
+        y_max = 3000,
+        schematic = large,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
+    })
+    -- Trees in non-forests
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.001,
+        biomes = {"temperate"},
+        y_max = 4000,
+        schematic = short,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
+    })
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.001,
+        biomes = {"temperate"},
+        y_max = 3500,
+        schematic = medium,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
+    })
+    core.register_decoration({
+        deco_type = "schematic",
+        place_on = {"geology:grass_block"},
+        sidelen = 16,
+        fill_ratio = 0.001,
+        biomes = {"temperate"},
+        y_max = 3000,
+        schematic = large,
+        flags = "place_center_x, place_center_z",
+        rotation = "random",
     })
 end
-
+core.register_craftitem("tree:stick", {
+    name = "Stick",
+    inventory_image = "tree_stick.png",
+    groups = {stick=1}
+})
+core.register_craft({
+    type = "shaped",
+    output = "tree:stick 4",
+    recipe = {{"group:wood"}, {"group:wood"}}
+})
 core.register_abm(leaf_abm)
 core.register_abm(sapling_abm)
