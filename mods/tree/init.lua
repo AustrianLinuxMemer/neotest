@@ -56,13 +56,14 @@ local sapling_abm = {
     end
 }
 for _, t in ipairs(types) do
-    core.register_node("tree:"..t.tname.."_planks", {
+    local base_name = "tree:"..t.tname
+    core.register_node(base_name.."_planks", {
         description = t.name.." planks",
         tiles = {t.tname.."_planks.png"},
         is_ground_content = false,
         groups = {choppy=3, wood=1}
     })
-    core.register_node("tree:"..t.tname.."_log", {
+    core.register_node(base_name.."_log", {
         description = t.name.." log",
         tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
         is_ground_content = false,
@@ -70,7 +71,7 @@ for _, t in ipairs(types) do
     })
 
 
-    core.register_node("tree:"..t.tname.."_leaves", {
+    core.register_node(base_name.."_leaves", {
         description = t.name.." leaves",
         drawtype = "allfaces_optional",
         tiles = {t.tname.."_leaves.png"},
@@ -78,7 +79,7 @@ for _, t in ipairs(types) do
         groups = {snappy=3, leaf=1}
     })
 
-    core.register_node("tree:"..t.tname.."_sapling", {
+    core.register_node(base_name.."_sapling", {
         description = t.name.." sapling",
         drawtype = "plantlike",
         inventory_image = t.tname.."_sapling.png",
@@ -86,15 +87,35 @@ for _, t in ipairs(types) do
         groups = {oddly_breakable_by_hand=1}
     })
     core.register_craft({
+        type = "fuel",
+        recipe = base_name.."_planks",
+        burntime = 30
+    })
+    core.register_craft({
+        type = "fuel",
+        recipe = base_name.."_log",
+        burntime = 30
+    })
+    core.register_craft({
+        type = "fuel",
+        recipe = base_name.."_leaves",
+        burntime = 30
+    })
+    core.register_craft({
+        type = "fuel",
+        recipe = base_name.."_sapling",
+        burntime = 30
+    })
+    core.register_craft({
     type = "shapeless",
-    output = "tree:"..t.tname.."_planks 4",
-    recipe = {"tree:"..t.tname.."_log"}
+    output = base_name.."_planks 4",
+    recipe = {base_name.."_log"}
     })
 
     core.register_craft({
         type = "shapeless",
-        output = "tree:"..t.tname.."_sapling",
-        recipe = {"tree:"..t.tname.."_leaves"}
+        output = base_name.."_sapling",
+        recipe = {base_name.."_leaves"}
     })
     local tree_path = core.get_modpath("tree").."/schematics/"
     local short = tree_path..t.tname.."_tree_small.mts"
