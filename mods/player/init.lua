@@ -42,6 +42,28 @@ core.register_on_joinplayer(function(player, last_login)
         physical = true
     })
 end)
+
+local player_animation_state = {}
+
+core.register_globalstep(function(dtime)
+    for _, player in pairs(core.get_connected_players()) do
+        local velocity = player:get_velocity()
+        local speed = math.sqrt(velocity.x^2 + velocity.z^2)
+        local name = player:get_player_name()
+        local animation = player_animation_state[name]
+        if speed > 0 then
+            if animation ~= "walking" then
+                player:set_animation({x = 0, y = 80}, 2, 0.5, true)
+                player_animation_state[name] = "walking"
+            end
+        else
+            if animation ~= "standing" then
+                player:set_animation({x = 81, y = 82}, 20, 0, false)
+                player_animation_state[name] = "standing"
+            end
+        end
+    end
+end)
 if creative then
     core.register_item(":", hand_creative)
 else
