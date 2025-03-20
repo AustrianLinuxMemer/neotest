@@ -44,6 +44,10 @@ core.register_on_joinplayer(function(player, last_login)
 end)
 
 local player_animation_state = {}
+local player_animation_range = {
+    walking = {x = 0, y = 80},
+    standing = {x = 81, y = 82}
+}
 
 core.register_globalstep(function(dtime)
     for _, player in pairs(core.get_connected_players()) do
