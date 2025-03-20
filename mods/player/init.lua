@@ -31,6 +31,17 @@ local hand_creative = {
         damage_groups = {fleshy = 1000},
     }
 }
+-- Setting up the Player's appearence to remove the alien look default in the Minetest engine
+core.register_on_joinplayer(function(player, last_login)
+    player:set_properties({
+        visual = "mesh",
+        textures = {"player.png"},
+        visual_size = {x=10, y=10, z=10},
+        rotation = {x = 0, y = 0, z = 90},
+        mesh = "player.gltf",
+        physical = true
+    })
+end)
 if creative then
     core.register_item(":", hand_creative)
 else
