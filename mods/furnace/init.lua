@@ -32,7 +32,7 @@ local function furnace_loop(pos, node, active_object_count, active_object_count_
         core.swap_node(pos, {name = "furnace:active_furnace"})
         -- Consuming the fuel
         meta:set_int("remaining_fuel", remaining_fuel - 1)
-        if remaining_input > 0 and not output.item:is_empty() then
+        if remaining_input > 0 then
             -- Cooking the item
             meta:set_int("remaining_input", remaining_input - 1)        
         else 
@@ -40,9 +40,9 @@ local function furnace_loop(pos, node, active_object_count, active_object_count_
             if output_stack:get_free_space() > 0  then
                 output_stack:add_item(output.item)
             end
-            if not input_stack:is_empty() then
+            if not input_stack:is_empty() and not output.item:is_empty() then
                 input_stack:take_item(1)
-                meta:set_int("remaining_item", output.time)            
+                meta:set_int("remaining_input", output.time)            
             end
         end
     else
