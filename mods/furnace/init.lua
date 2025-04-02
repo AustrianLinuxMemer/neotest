@@ -7,6 +7,10 @@ local function init_furnace(pos)
     inv:set_size("result", 1)
     meta:set_string("formspec", furnace_ui)
 end
+local function open_furnace(pos, node, player, itemstack, pointed_thing)
+    local meta = minetest.get_meta(pos)
+    core.show_formspec(player:get_player_name(), "furnace:furnace", meta:get_string("formspec"))
+end
 local function furnace_loop(pos, node, active_object_count, active_object_count_wider)
     local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
@@ -35,17 +39,16 @@ local function furnace_loop(pos, node, active_object_count, active_object_count_
         if remaining_input > 0 then
             -- Cooking the item
             meta:set_int("remaining_input", remaining_input - 1)        
-        else 
-            -- Item is done, the output stack is not full
-            if output_stack:get_free_space() > 0  then
-                output_stack:add_item(output.item)
-            end
+        else
             if not input_stack:is_empty() and not output.item:is_empty() then
                 input_stack:take_item(1)
                 meta:set_int("remaining_input", output.time)            
             end
+            output_stack:add_item(output.item)
+
         end
     else
+        
         
         -- Replenishing the Fuel
         if not fuel_stack:is_empty() then
@@ -55,13 +58,15 @@ local function furnace_loop(pos, node, active_object_count, active_object_count_
             -- Extinguishing the furnace
             core.swap_node(pos, {name = "furnace:furnace"})
         end
+        
     end
     -- Updating item stacks
     inv:set_stack("fuel", 1, fuel_stack)
     inv:set_stack("input", 1, input_stack)
-    inv:set_stack("output", 1, output_stack)
+    inv:set_stack("result", 1, output_stack)
     core.chat_send_all("Fuel: "..tostring(remaining_fuel))
     core.chat_send_all("Input: "..tostring(remaining_input))
+    core.chat_send_all("Recipe to cook: "..input_stack:get_name().." -> "..output.item:get_name().." ("..output.item:get_count()..")")
 end
 
 core.register_node("furnace:furnace", {
@@ -69,10 +74,7 @@ core.register_node("furnace:furnace", {
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
     groups = {cracky = 3},
     on_construct = init_furnace,
-    on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-        local meta = minetest.get_meta(pos)
-        core.show_formspec(player:get_player_name(), "furnace:furnace", meta:get_string("formspec"))    
-    end
+    on_rightclick = open_furnace
 })
 
 core.register_node("furnace:active_furnace", {
@@ -81,10 +83,7 @@ core.register_node("furnace:active_furnace", {
     groups = {cracky = 3},
     light_source = core.LIGHT_MAX,
     on_construct = init_furnace,
-    on_rightclick = function(pos, node, player, itemstack, pointed_thing)
-        local meta = minetest.get_meta(pos)
-        core.show_formspec(player:get_player_name(), "furnace:furnace", meta:get_string("formspec"))    
-    end,
+    on_rightclick = open_furnace,
     drop = "furnace:furnace"
 })
 
