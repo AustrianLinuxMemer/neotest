@@ -46,7 +46,15 @@ end)
 local player_animation_state = {}
 local player_animation_range = {
     walking = {x = 0, y = 80},
-    standing = {x = 81, y = 82}
+    walking_punching = {x = 0, y = 0},
+    walking_holding = {x = 0, y = 0},
+    sneaking = {x = 0, y = 0},
+    sneaking_punching = {x = 0, y = 0},
+    sneaking_holding = {x = 0, y = 0},
+    standing = {x = 0, y = 0},
+    standing_punching = {x = 0, y = 0},
+    standing_holding = {x = 0, y = 0}
+    
 }
 
 core.register_globalstep(function(dtime)
