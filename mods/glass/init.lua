@@ -5,7 +5,7 @@ core.register_node("glass:glass", {
     is_ground_content = false,
     sunlight_propagates = true,
     paramtype = "light",
-    groups = {crumbly = 2}
+    groups = {choppy = 2, glass = 1}
 })
 
 core.register_craft({
