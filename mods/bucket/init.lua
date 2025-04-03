@@ -1,15 +1,13 @@
+local bucket_index = {}
+local liquid_index = {}
 local function on_bucket_place(itemstack, placer, pointed_thing)
     local pos = pointed_thing.above
     local empty_bucket = ItemStack("bucket:empty_bucket")
-    if itemstack:get_name() == "bucket:water_bucket" then
-        core.set_node(pos, {name = "liquids:water_source"})
-        return empty_bucket
-    elseif itemstack:get_name() == "bucket:river_water_bucket" then
-        core.set_node(pos, {name = "liquids:river_water_source"})
-        return empty_bucket
-    elseif itemstack:get_name() == "bucket:lava_bucket" then
-        core.set_node(pos, {name = "liquids:lava_source"})
-        return empty_bucket    
+    local bucket_name = itemstack:get_name()
+    local liquid_name = bucket_index[bucket_name]
+    if liquid_name ~= nil then
+        core.set_node(pos, {name = liquid_name})
+        return ItemStack("bucket:empty_bucket")
     else
         return nil
     end
@@ -20,22 +18,23 @@ local function on_bucket_use(itemstack, user, pointed_thing)
     end
     local pos = pointed_thing.above
     local node = core.get_node(pos)
-    if itemstack:get_name() == "bucket:empty_bucket" then
-        if node.name == "liquids:water_source" then
-            core.set_node(pos, {name = "air"})
-            return ItemStack("bucket:water_bucket")
-        elseif node.name == "liquids:river_water_source" then
-            core.set_node(pos, {name = "air"})
-            return ItemStack("bucket:river_water_bucket")
-        elseif node.name == "liquids:lava_source" then
-            core.set_node(pos, {name = "air"})
-            return ItemStack("bucket:lava_bucket")
-        else
-            return nil
-        end
+    local bucket_name = liquid_index[node.name]
+    if bucket_name ~= nil and itemstack:get_name() == "bucket:empty_bucket" then
+        core.set_node(pos, {name = "air"})
+        return ItemStack(bucket_name)
     else
         return nil
     end
+end
+function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name)
+    bucket_index["bucket:"..bucket_name] = liquid_name
+    liquid_index[liquid_name] = "bucket:"..bucket_name
+    core.register_craftitem("bucket:"..bucket_name, {
+        description = bucket_description,
+        inventory_image = bucket_image,
+        on_place = on_bucket_place,
+        on_use = on_bucket_use
+    })
 end
 core.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
@@ -43,25 +42,6 @@ core.register_craftitem("bucket:empty_bucket", {
     on_place = on_bucket_place,
     on_use = on_bucket_use
 })
-core.register_craftitem("bucket:water_bucket", {
-    description = "Water Bucket",
-    inventory_image = "water_bucket.png",
-    on_place = on_bucket_place,
-    on_use = on_bucket_use
-})
-core.register_craftitem("bucket:river_water_bucket", {
-    description = "River Water Bucket",
-    inventory_image = "river_water_bucket.png",
-    on_place = on_bucket_place,
-    on_use = on_bucket_use
-})
-core.register_craftitem("bucket:lava_bucket", {
-    description = "Lava Bucket",
-    inventory_image = "lava_bucket.png",
-    on_place = on_bucket_place,
-    on_use = on_bucket_use
-})
-
 core.register_craft({
     type = "shaped",
     output = "bucket:empty_bucket",
@@ -70,3 +50,9 @@ core.register_craft({
         {"","geology:iron_ingot",""}
     }
 })
+
+register_bucket("water_bucket", "Water Bucket", "water_bucket.png", "liquids:water_source")
+register_bucket("river_water_bucket", "River Water Bucket", "river_water_bucket.png", "liquids:river_water_source")
+register_bucket("lava_bucket", "Lava Bucket", "lava_bucket.png", "liquids:lava_source")
+
+
