@@ -33,7 +33,7 @@ local function lamp_loop(pos, node, active_object_count, active_object_count_wid
     else
         if not fuel_stack:is_empty() and fuel.time ~= 0 then
             fuel_stack:take_item(1)
-            meta:set_int("remaining_fuel", fuel.time)
+            meta:set_int("remaining_fuel", fuel.time*64)
             set_lamp_active(pos, true)
         else
             set_lamp_active(pos, false)
