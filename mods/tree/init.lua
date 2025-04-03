@@ -191,7 +191,7 @@ for _, t in ipairs(types) do
     })
 end
 core.register_craftitem("tree:stick", {
-    name = "Stick",
+    description = "Stick",
     inventory_image = "tree_stick.png",
     groups = {stick=1}
 })

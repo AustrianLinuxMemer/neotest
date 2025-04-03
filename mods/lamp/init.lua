@@ -59,6 +59,12 @@ core.register_node("lamp:lamp_on", {
     on_construct = on_construct_lamp,
     on_rightclick = open_lamp
 })
+core.register_node("lamp:lamp_of_eternity", {
+    description = "Lamp of eternity",
+    tiles = {"lamp_lamp_of_eternity.png"},
+    light_source = core.LIGHT_MAX,
+    groups = {choppy = 2}
+})
 
 core.register_craft({
     type = "shaped",
@@ -66,6 +72,16 @@ core.register_craft({
     recipe = {
         {"group:glass", "group:glass", "group:glass"},
         {"group:glass", "", "group:glass"},
+        {"group:glass", "group:glass", "group:glass"},
+    }
+})
+
+core.register_craft({
+    type = "shaped",
+    output = "lamp:lamp_of_eternity",
+    recipe = {
+        {"group:glass", "group:glass", "group:glass"},
+        {"group:glass", "buckets:lava_bucket", "group:glass"},
         {"group:glass", "group:glass", "group:glass"},
     }
 })
