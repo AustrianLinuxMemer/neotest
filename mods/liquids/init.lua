@@ -1,4 +1,4 @@
--- Courtesy of the `liquids` mod of Minetest Game (Line 2204-2483 in nodes.lua)
+-- Courtesy of of Minetest Game (Line 2204-2483 in nodes.lua)
 
 core.register_node("liquids:water_source", {
 	description = "Water Source",
