@@ -10,6 +10,7 @@ local hand_survival = {
             crumbly = {times = {[1] = 3.0, [2] = 1.4, [3] = 0.6}, uses = 0}, -- Faster digging for crumbly nodes
             snappy = {times = {[1] = 2.0, [2] = 1.0, [3] = 0.4}, uses = 0}, -- Adjust snappy nodes
             choppy = {times = {[1] = 3.0, [2] = 2.0, [3] = 1.0, }, uses = 0}, -- Still slow for stone-like blocks
+            oddly_breakable_by_hand = {times = {[1] = 0, [2] = 0, [3] = 0}, uses = 0}
         },
         damage_groups = {fleshy = 1},
     }
