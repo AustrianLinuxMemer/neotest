@@ -18,7 +18,7 @@ core.register_biome({
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,
     depth_filler = 3,
-    y_min = 1,
+    y_min = 7,
     heat_point = 50,
     humidity_point = 50
 })
@@ -32,7 +32,7 @@ core.register_biome({
     depth_filler = 3,
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,
-    y_min = 1,    
+    y_min = 7,    
     heat_point = 50,
     humidity_point = 50
 })
@@ -45,7 +45,7 @@ core.register_biome({
     depth_filler = 128,
     node_riverbed = "geology:sand",
     depth_riverbed = 2,
-    y_min = 1,
+    y_min = 7,
     heat_point = 75,
     humidity_point = 25
 })
@@ -55,12 +55,25 @@ core.register_biome({
     node_top = "geology:sand",
     depth_top = 3,
     node_filler = "geology:sandstone",
-    depth_filler = 128,
+    depth_filler = 1,
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,
     y_max = 6,    
     heat_point = 50,
     humidity_point = 50
+})
+-- Desert Beach
+core.register_biome({
+    name = "temperate_beach",
+    node_top = "geology:sand",
+    depth_top = 3,
+    node_filler = "geology:sandstone",
+    depth_filler = 1,
+    node_riverbed = "geology:gravel",
+    depth_riverbed = 2,
+    y_max = 6,    
+    heat_point = 75,
+    humidity_point = 75
 })
 -- Temperate Gravel Beach
 core.register_biome({

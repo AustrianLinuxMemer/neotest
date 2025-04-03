@@ -118,32 +118,6 @@ core.register_craft({
     }
 })
 
--- Shovels
-
-core.register_tool("tools:wooden_shovel", {
-	description = "Wooden Shovel",
-	inventory_image = "shovel_wood.png",
-	wield_image = "shovel_wood.png^[transformR90",
-	tool_capabilities = {
-		full_punch_interval = 1.2,
-		max_drop_level=0,
-		groupcaps={
-			crumbly = {times={[1]=3.00, [2]=1.60, [3]=0.60}, uses=10, maxlevel=1},
-		},
-		damage_groups = {fleshy=2},
-	},
-})
-
-core.register_craft({
-    type = "shaped",
-    output = "tools:wooden_shovel",
-    recipe = {
-        {"group:wood"},
-        {"group:stick"},
-        {"group:stick"}
-    }
-})
-
 core.register_tool("tools:stone_shovel", {
 	description = "Stone Shovel",
 	inventory_image = "shovel_stone.png",
