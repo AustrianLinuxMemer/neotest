@@ -61,3 +61,12 @@ function base.correct_orientation_after_place_node(pos, placer, itemstack, point
     end
     return false
 end
+
+function base.to_facedir(dir, rot)
+    if dir >= 0 and dir <= 5 and rot >= 0 and rot <= 3 then
+        return dir * 4 + rot
+    end
+end
+function base.from_facedir(facedir)
+    return {dir = math.floor(facedir / 4), rot = facedir % 4}
+end
