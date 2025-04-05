@@ -51,6 +51,7 @@ function base.rad_to_facedir(rad_player)
         return 3
     end
 end
+
 function base.correct_orientation_after_place_node(pos, placer, itemstack, pointed_thing)
     if placer ~= nil and placer:is_player() then
         local rot = placer:get_look_horizontal()
@@ -58,5 +59,5 @@ function base.correct_orientation_after_place_node(pos, placer, itemstack, point
         node.param2 = base.rad_to_facedir(rot+math.pi)
         core.swap_node(pos, node)
     end
-    return true
+    return false
 end

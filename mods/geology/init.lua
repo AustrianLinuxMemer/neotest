@@ -91,9 +91,16 @@ local geology_def_table = {
             groups = {cracky=3, ore=1},
             drop = "geology:diamond",
             stack_max = 64
-        },
-        
-        
+        },  
+    },
+    yes_slab_stair = {
+        "geology:cobble",
+        "geology:stone",
+        "geology:sandstone",
+        "geology:dirt",
+        "geology:sand",
+        "geology:gravel",
+        "geology:grass_block"
     },
     crafts = {
         {
@@ -131,12 +138,17 @@ end
 for k, v in pairs(geology_def_table.crafts) do
     core.register_craft(v)
 end
+for _,v in pairs(geology_def_table.yes_slab_stair) do
+    local node_def = geology_def_table.nodes[v]
+    stairs.register_stair(v, node_def.description.." Stairs", node_def, true)
+    stairs.register_slab(v, node_def.description.." Slab", node_def, true)
+end
 
 -- Turning covered grass blocks into dirt blocks
 core.register_abm({
     nodenames = {"geology:grass_block"},
-    interval = 0.1,
-    chance = 100,
+    interval = 5,
+    chance = 50,
     action = function(pos, node)
         local pos_neighbor = {x = pos.x, y = pos.y + 1, z = pos.z}
         local is_transparent = base.is_transparent(pos_neighbor)
@@ -149,8 +161,8 @@ core.register_abm({
 -- Turning free dirt blocks into grass blocks
 core.register_abm({
     nodenames = {"geology:dirt"},
-    interval = 0.1,
-    chance = 100,
+    interval = 5,
+    chance = 50,
     action = function(pos, node)
         local pos_neighbor = {x = pos.x, y = pos.y + 1, z = pos.z}
         local is_transparent = base.is_transparent(pos_neighbor)

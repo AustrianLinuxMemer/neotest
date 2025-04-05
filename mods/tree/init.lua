@@ -57,20 +57,27 @@ local sapling_abm = {
 }
 for _, t in ipairs(types) do
     local base_name = "tree:"..t.tname
-    core.register_node(base_name.."_planks", {
-        description = t.name.." planks",
+    
+    local planks_def = {
+        description = t.name.." Planks",
         tiles = {t.tname.."_planks.png"},
         is_ground_content = false,
         groups = {choppy=3, wood=1}
-    })
-    core.register_node(base_name.."_log", {
-        description = t.name.." log",
+    }
+    core.register_node(base_name.."_planks", planks_def)
+    stairs.register_stair(base_name.."_planks", planks_def.description.." Stairs", planks_def, true)
+    stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
+    
+    local log_def = {
+        description = t.name.." Log",
+        paramtype2 = "facedir",
         tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
         is_ground_content = false,
-        groups = {choppy=3, log=1}
-    })
-
-
+        groups = {choppy=3, log=1},
+    }
+    core.register_node(base_name.."_log", log_def)
+    stairs.register_stair(base_name.."_log", log_def.description.." Stairs", log_def, true)
+    stairs.register_slab(base_name.."_log", log_def.description.." Slab", log_def, true)
     core.register_node(base_name.."_leaves", {
         description = t.name.." leaves",
         drawtype = "allfaces_optional",
