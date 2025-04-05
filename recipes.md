@@ -9,10 +9,11 @@ Format
 
 ###Shaped recipes:
 
-|`input`|`input`|`input`|...|
-|`input`|`input`|`input`|...|  = `output` \[amount\] \[leftovers\]
-|`input`|`input`|`input`|...|
-|  ...  |  ...  |  ...  |...|
+|`input`|`input`|`input`|...|   |                                  |
+|-------|-------|-------|---|---|----------------------------------|
+|`input`|`input`|`input`|...| = |`output` \[amount\] \[leftovers\] |
+|`input`|`input`|`input`|...|   |                                  |
+|  ...  |  ...  |  ...  |...|   |                                  |
 
 
 The shaped recipe can have any form
@@ -42,16 +43,18 @@ Recipes will always use technical names, for a translation from technical names 
 bucket
 ------
 
-|`group:iron`|            |`group:iron`|
-|            |`group:iron`|            | = `bucket:bucket`
+|`group:iron`|            |`group:iron`|   |                 | 
+|------------|------------|------------|---|-----------------|
+|            |`group:iron`|            | = | `bucket:bucket` |
 
 
 furnace
 -------
 
-|`group:stone`|`group:stone`|`group:stone`|
-|`group:stone`|             |`group:stone`| = `furnace:furnace`
-|`group:stone`|`group:stone`|`group:stone`|
+|`group:stone`|`group:stone`|`group:stone`|   |                   |
+|-------------|-------------|-------------|---|-------------------|
+|`group:stone`|             |`group:stone`| = | `furnace:furnace` |
+|`group:stone`|`group:stone`|`group:stone`|   |                   |
 
 
 geology
@@ -74,91 +77,91 @@ glass
 lamp
 ----
 
-|`glass:glass`|`glass:glass`|`glass:glass`|
-|`glass:glass`|             |`glass:glass`| = `lamp:lamp_off`
-|`glass:glass`|`glass:glass`|`glass:glass`|
+|`glass:glass`|`glass:glass`|`glass:glass`|   |                 |
+|-------------|-------------|-------------|---|-----------------|
+|`glass:glass`|             |`glass:glass`| = | `lamp:lamp_off` |
+|`glass:glass`|`glass:glass`|`glass:glass`|   |                 |
 
-|`glass:glass`|    `glass:glass`    |`glass:glass`|
-|`glass:glass`|`buckets:lava_bucket`|`glass:glass`| = `lamp:lamp_of_eternity`
-|`glass:glass`|    `glass:glass`    |`glass:glass`|
+|`glass:glass`|    `glass:glass`    |`glass:glass`|   |                         |
+|-------------|---------------------|-------------|---|-------------------------|
+|`glass:glass`|`buckets:lava_bucket`|`glass:glass`| = | `lamp:lamp_of_eternity` |
+|`glass:glass`|    `glass:glass`    |`glass:glass`|   |                         |
 
 
 tools
 -----
 
+Because tools can be made of different materials, i introduce the following pseudoaliases:
+
+* `tools:material`
+* `tools:material_pickaxe`
+* `tools:material_shovel`
+* `tools:material_axe`
+
+For material, you can plug in for each tool these materials:
+
+|Tool             |Materials                                                                 |
+|-----------------|--------------------------------------------------------------------------|
+| `tools:pickaxe` | `group:wood`, `group:stone`, `group:iron`, `group:gold`, `group:diamond` |
+| `tools:shovel`  | `group:stone`, `group:iron`, `group:gold`, `group:diamond`               |
+| `tools:axe`     | `group:stone`, `group:iron`, `group:gold`, `group:diamond`               |
+
 Pickaxes:
 
-|`group:wood`|`group:wood` |`group:wood`|
-|            |`group:stick`|            | = `tools:wooden_pickaxe`
-|            |`group:stick`|            |
 
-|`group:stone`|`group:stone`|`group:stone`|
-|             |`group:stick`|             | = `tools:stone_pickaxe`
-|             |`group:stick`|             |
-
-|`group:iron`|`group:iron` |`group:iron`|
-|            |`group:stick`|            | = `tools:iron_pickaxe`
-|            |`group:stick`|            |
-
-|`group:gold`|`group:gold` |`group:gold`|
-|            |`group:stick`|            | = `tools:gold_pickaxe`
-|            |`group:stick`|            |
-
-|`group:diamond`|`group:diamond`|`group:diamond`|
-|               | `group:stick` |               | = `tools:diamond_pickaxe`
-|               | `group:stick` |               |
+|`tools:material`|`tools:material` |`tools:material`|
+|----------------|-----------------|----------------|
+|                |  `group:stick`  |                | = `tools:material_pickaxe`
+|                |  `group:stick`  |                |
 
 
 Shovel:
 
-|`group:stone`|
-|`group:stick`| = `tools:stone_shovel`
-|`group:stick`|
-
-|`group:iron` |
-|`group:stick`| = `tools:iron_shovel`
-|`group:stick`|
-
-|`group:gold` |
-|`group:stick`| = `tools:gold_shovel`
-|`group:stick`|
-
-|`group:diamond`|
-| `group:stick` | = `tools:diamond_shovel`
-| `group:stick` |
+|`tools:material`|
+|----------------|
+| `group:stick`  | = `tools:material_shovel`
+| `group:stick`  |
 
 
 Axes:
 
 |`group:stone`|`group:stone`|
+|-------------|-------------|
 |`group:stone`|`group:stick`| = `tools:stone_axe`
 |             |`group:stick`|
 
 |`group:stone`|`group:stone`|
+|-------------|-------------|
 |`group:stick`|`group:stone`| = `tools:stone_axe`
 |`group:stick`|             |
 
 |`group:iron`|`group:iron` |
+|-------------|-------------|
 |`group:iron`|`group:stick`| = `tools:iron_axe`
 |            |`group:stick`|
 
 |`group:iron` |`group:iron`|
+|-------------|------------|
 |`group:stick`|`group:iron`| = `tools:iron_axe`
 |`group:stick`|            |
 
 |`group:gold`|`group:gold` |
+|-------------|------------|
 |`group:gold`|`group:stick`| = `tools:gold_axe`
 |            |`group:stick`|
 
 |`group:gold` |`group:gold`|
+|-------------|------------|
 |`group:stick`|`group:gold`| = `tools:gold_axe`
 |`group:stick`|            |
 
 |`group:diamond`|`group:diamond`|
+|---------------|---------------|
 |`group:diamond`| `group:stick` | = `tools:diamond_axe`
 |               | `group:stick` |
 
 |`group:diamond`|`group:diamond`|
+|---------------|---------------|
 | `group:stick` |`group:diamond`| = `tools:diamond_axe`
 | `group:stick` |               |
 
@@ -181,4 +184,5 @@ instead of the full name of each type of tree
 Fuel: `tree:wood` -> 30, `tree:log` -> 30, `tree:sapling` -> 5, `tree:leaves` -> 5
 
 |`group:wood`|
+|------------|
 |`group:wood`| = `tree:stick` \[4\]
