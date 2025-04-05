@@ -1,11 +1,13 @@
 core.register_craftitem("geology:iron_ingot", {
     description = "Iron ingot",
-    inventory_image = "geology_iron_ingot.png"
+    inventory_image = "geology_iron_ingot.png",
+    groups = {iron = 1}
 })
 
 core.register_craftitem("geology:gold_ingot", {
     description = "Gold ingot",
-    inventory_image = "geology_gold_ingot.png"
+    inventory_image = "geology_gold_ingot.png",
+    groups = {gold = 1}
 })
 
 core.register_craftitem("geology:coal", {
@@ -16,7 +18,8 @@ core.register_craftitem("geology:coal", {
 
 core.register_craftitem("geology:diamond", {
     description = "Diamond",
-    inventory_image = "geology_diamond.png"
+    inventory_image = "geology_diamond.png",
+    groups = {diamond = 1, gemstone = 1}
 })
 core.register_node("geology:cobble", {
     description = "Cobblestone",
@@ -54,7 +57,7 @@ core.register_node("geology:gravel", {
     description = "Gravel",
     tiles = {"geology_gravel.png"},
     is_ground_content = true,
-    groups = {crumbly=3, falling_node=1}
+    groups = {crumbly=3, falling_node=1, gravel=1}
 })
 
 core.register_node("geology:grass_block", {
@@ -63,7 +66,7 @@ core.register_node("geology:grass_block", {
         "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png"
     },
     is_ground_content = true,
-    groups = {crumbly=3}
+    groups = {crumbly=3, soil=1}
 })
 
 -- Turning covered grass blocks into dirt blocks
@@ -129,5 +132,5 @@ core.register_craft({
 core.register_craft({
     type = "fuel",
     recipe = "geology:coal",
-    burntime = 300
+    burntime = 30
 })

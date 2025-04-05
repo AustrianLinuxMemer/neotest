@@ -99,12 +99,12 @@ for _, t in ipairs(types) do
     core.register_craft({
         type = "fuel",
         recipe = base_name.."_leaves",
-        burntime = 30
+        burntime = 5
     })
     core.register_craft({
         type = "fuel",
         recipe = base_name.."_sapling",
-        burntime = 30
+        burntime = 5
     })
     core.register_craft({
     type = "shapeless",
