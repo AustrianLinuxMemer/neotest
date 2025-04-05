@@ -5,12 +5,14 @@ function stairs.register_slab(t_name, n_name, block_def, add_recipe)
     slab_def["description"] = n_name
     slab_def["drawtype"] = "nodebox"
     slab_def["paramtype"] = "light"
+    slab_def["paramtype2"] = "facedir"
     slab_def["node_box"] = {
         type = "fixed",
         fixed = {
             {-0.5, -0.5, -0.5, 0.5, 0, 0.5}
         }
     }
+    slab_def["after_place_node"] = base.correct_orientation_after_place_node
     core.register_node(slab_name, slab_def)
     if register_recipe then    
         core.register_craft({
@@ -28,6 +30,7 @@ function stairs.register_stair(t_name, n_name, block_def, add_recipe)
     stair_def["description"] = n_name
     stair_def["drawtype"] = "nodebox"
     stair_def["paramtype"] = "light"
+    stair_def["paramtype2"] = "facedir"
     stair_def["node_box"] = {
         type = "fixed",
         fixed = {
@@ -35,6 +38,7 @@ function stairs.register_stair(t_name, n_name, block_def, add_recipe)
             {-0.5, 0, 0, 0.5, 0.5, 0.5}
         }
     }
+    stair_def["after_place_node"] = base.correct_orientation_after_place_node
     core.register_node(stair_name, stair_def)
     if add_recipe then
         core.register_craft({

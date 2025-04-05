@@ -30,3 +30,33 @@ function base.is_transparent(pos)
         return false
     end
 end
+function base.rad_to_deg(rad)
+    return ((rad)/(2*math.pi))*360
+end
+function base.rad_to_facedir(rad_player)
+    local dir = {
+        math.pi/4,
+        (3*math.pi)/4,
+        (5*math.pi)/4,
+        (7*math.pi)/4
+    }
+    local rad = rad_player % (2*math.pi)
+    if rad >= dir[4] or rad < dir[1] then
+        return 2
+    elseif rad >= dir[1] and rad < dir[2] then
+        return 1
+    elseif rad >= dir[2] and rad < dir[3] then
+        return 0
+    elseif rad >= dir[3] and rad < dir[4] then
+        return 3
+    end
+end
+function base.correct_orientation_after_place_node(pos, placer, itemstack, pointed_thing)
+    if placer ~= nil and placer:is_player() then
+        local rot = placer:get_look_horizontal()
+        local node = core.get_node(pos)
+        node.param2 = base.rad_to_facedir(rot+math.pi)
+        core.swap_node(pos, node)
+    end
+    return true
+end
