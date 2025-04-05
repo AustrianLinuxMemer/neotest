@@ -74,6 +74,7 @@ for _, t in ipairs(types) do
     core.register_node(base_name.."_leaves", {
         description = t.name.." leaves",
         drawtype = "allfaces_optional",
+        sunlight_propagates = true,
         tiles = {t.tname.."_leaves.png"},
         is_ground_content = false,
         groups = {snappy=3, leaf=1}

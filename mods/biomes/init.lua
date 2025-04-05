@@ -102,7 +102,7 @@ core.register_on_generated(function(minp, maxp, seed)
                 local index = area:index(x, y, z)
                 local index_beneath = area:index(x, y-1, z)
                 if data[index_beneath] == core.get_content_id("geology:grass_block") and data[index] ~= core.get_content_id("air") then
-                    data[index_beneath] = core.get_content_id("geology:dirt")                    
+                    data[index_beneath] = core.get_content_id("geology:dirt")
                 end
             end
         end
