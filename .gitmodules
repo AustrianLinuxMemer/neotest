@@ -1,0 +1,3 @@
+[submodule "mods/sfinv"]
+	path = mods/sfinv
+	url = https://github.com/rubenwardy/sfinv.git
