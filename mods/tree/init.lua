@@ -65,6 +65,15 @@ for _, t in ipairs(types) do
         groups = {choppy=3, wood=1, pane_connect = 1}
     }
     core.register_node(base_name.."_planks", planks_def)
+    fences.register_fence(base_name.."_fence", t.name.." Fence", planks_def)
+    core.register_craft({
+        type = "shaped",
+        output = base_name.."_fence",
+        recipe = {
+            {base_name.."_planks", "group:stick", base_name.."_planks"},
+            {base_name.."_planks", "group:stick", base_name.."_planks"}
+        }
+    })
     stairs.register_stair(base_name.."_planks", planks_def.description.." Stairs", planks_def, true)
     stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
     

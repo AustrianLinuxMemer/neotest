@@ -1,4 +1,9 @@
-local furnace_ui = "formspec_version[8]".."size[11,10]".."real_coordinates[true]".."list[context;fuel;3.5,3;1,1;]".."list[context;input;3.5,1;1,1;]".."list[context;result;6,2;2,2;]".."list[current_player;main;0.5,5;8,4;]"
+local furnace_ui = 
+
+local function generate_furnace_ui(remaining_fuel, remaining_item)
+    "formspec_version[8]".."size[11,10]".."real_coordinates[true]".."list[context;fuel;3.5,3;1,1;]".."list[context;input;3.5,1;1,1;]".."list[context;result;6,2;2,2;]".."list[current_player;main;0.5,5;8,4;]"
+end
+
 local function init_furnace(pos)
     local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
@@ -6,12 +11,27 @@ local function init_furnace(pos)
     inv:set_size("input", 1)
     inv:set_size("temp", 1)
     inv:set_size("result", 1)
-    meta:set_string("formspec", furnace_ui)
 end
 local function open_furnace(pos, node, player, itemstack, pointed_thing)
     local meta = minetest.get_meta(pos)
-    core.show_formspec(player:get_player_name(), "furnace:furnace", meta:get_string("formspec"))
+    --Adding the player to the subscriber list
+    local furnace_name = "furnace:furnace_"..vector.to_string(pos)
+    local player_meta = player:get_meta()
+    player_meta:set_string("furnace_name", furnace_name)
+    formspec_helper:subscribe(player:get_player_name(), furnace_name)
+    formspec_helper:multicast("furnace:furnace_"..vector.to_string(pos), meta:get_string("formspec"))
 end
+
+core.register_on_player_receive_fields(function(player, formname, fields) 
+    local player_meta = player:get_meta()
+    local furnace_name = meta:get_string("furnace_name")
+    if formname == furnace_name then
+        if fields["quit"] == "true" then
+            formspec_helper:unsubscribe(player:get_player_name(), furnace_name)
+        end
+    end
+end)
+
 local function set_furnace_active(pos, on)
     local furnace_data = core.get_node(pos)
     local furnace_type = furnace_data.name
@@ -39,7 +59,8 @@ local function furnace_loop(pos, node, active_object_count, active_object_count_
         width = 1,
         items = {fuel_stack}        
     })
-    
+
+    formspec_helper:multicast("furnace:furnace_"..vector.to_string(pos), meta:get_string("formspec"))
     local remaining_fuel = meta:get_int("remaining_fuel")
     local remaining_item = meta:get_int("remaining_item")
     if remaining_fuel > 0 then

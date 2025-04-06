@@ -42,6 +42,7 @@ core.register_on_joinplayer(function(player, last_login)
         mesh = "player.gltf",
         physical = true
     })
+    sfinv.set_player_inventory_formspec(player)
 end)
 
 local player_animation_state = {}
@@ -82,3 +83,12 @@ if creative then
 else
     core.register_item(":", hand_survival)
 end
+
+
+sfinv.register_page("player:inventory", {
+    title = "Rezepte",
+    get = function(self, player, context)
+        return sfinv.make_formspec(player, context,
+                "label[0.1,0.1;Noch keine Rezepte :-(!]", true)
+    end
+})
