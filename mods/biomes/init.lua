@@ -132,7 +132,7 @@ core.register_ore({
 -- Gravel
 core.register_ore({
     ore_type = "blob",
-    ore = "geology:sand",
+    ore = "geology:gravel",
     wherein = {"geology:sand", "geology:dirt", "geology:stone", "geology:sandstone"},
     clust_scarcity = 10*10*10,
     clust_size = 4,
@@ -181,7 +181,7 @@ core.register_ore({
 core.register_ore({
 	ore_type       = "scatter",
 	ore            = "geology:iron_ore",
-	wherein        = "default:stone",
+	wherein        = "geology:stone",
 	clust_scarcity = 12 * 12 * 12,
 	clust_num_ores = 30,
 	clust_size     = 5,
@@ -193,7 +193,7 @@ core.register_ore({
 core.register_ore({
 	ore_type       = "scatter",
 	ore            = "geology:gold_ore",
-	wherein        = "default:stone",
+	wherein        = "geology:stone",
 	clust_scarcity = 13 * 13 * 13,
 	clust_num_ores = 30,
 	clust_size     = 5,
@@ -204,7 +204,7 @@ core.register_ore({
 core.register_ore({
 	ore_type       = "scatter",
 	ore            = "geology:diamond_ore",
-	wherein        = "default:stone",
+	wherein        = "geology:stone",
 	clust_scarcity = 14 * 14 * 14,
 	clust_num_ores = 30,
 	clust_size     = 5,

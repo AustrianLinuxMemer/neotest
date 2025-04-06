@@ -13,11 +13,13 @@ local function open_furnace(pos, node, player, itemstack, pointed_thing)
     core.show_formspec(player:get_player_name(), "furnace:furnace", meta:get_string("formspec"))
 end
 local function set_furnace_active(pos, on)
-    local furnace_type = core.get_node(pos).name
+    local furnace_data = core.get_node(pos)
+    local furnace_type = furnace_data.name
+    local param2 = furnace_data.param2
     if on and furnace_type == "furnace:furnace" then
-        core.swap_node(pos, {name = "furnace:active_furnace"})    
+        core.swap_node(pos, {name = "furnace:active_furnace", param2 = furnace_data.param2})    
     elseif not on and furnace_type == "furnace:active_furnace" then
-        core.swap_node(pos, {name = "furnace:furnace"})
+        core.swap_node(pos, {name = "furnace:furnace", param2 = furnace_data.param2})
     end
 end
 local function furnace_loop(pos, node, active_object_count, active_object_count_wider)
