@@ -46,7 +46,7 @@ end
 core.register_node("lamp:lamp_off", {
     description = "Lamp",
     tiles = {"lamp_lamp_off.png"},
-    groups = {choppy = 2},
+    groups = {choppy = 2, pane_connect = 1},
     on_construct = on_construct_lamp,
     on_rightclick = open_lamp
 })
@@ -55,7 +55,7 @@ core.register_node("lamp:lamp_on", {
     tiles = {"lamp_lamp_on.png"},
     light_source = core.LIGHT_MAX,
     drop = "lamp:lamp_off",
-    groups = {choppy = 2},
+    groups = {choppy = 2, pane_connect = 1},
     on_construct = on_construct_lamp,
     on_rightclick = open_lamp
 })
@@ -63,7 +63,7 @@ core.register_node("lamp:lamp_of_eternity", {
     description = "Lamp of eternity",
     tiles = {"lamp_lamp_of_eternity.png"},
     light_source = core.LIGHT_MAX,
-    groups = {choppy = 2}
+    groups = {choppy = 2, pane_connect = 1}
 })
 
 core.register_craft({

@@ -62,7 +62,7 @@ for _, t in ipairs(types) do
         description = t.name.." Planks",
         tiles = {t.tname.."_planks.png"},
         is_ground_content = false,
-        groups = {choppy=3, wood=1}
+        groups = {choppy=3, wood=1, pane_connect = 1}
     }
     core.register_node(base_name.."_planks", planks_def)
     stairs.register_stair(base_name.."_planks", planks_def.description.." Stairs", planks_def, true)
@@ -73,7 +73,7 @@ for _, t in ipairs(types) do
         paramtype2 = "facedir",
         tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
         is_ground_content = false,
-        groups = {choppy=3, log=1},
+        groups = {choppy=3, log=1, pane_connect = 1},
     }
     core.register_node(base_name.."_log", log_def)
     stairs.register_stair(base_name.."_log", log_def.description.." Stairs", log_def, true)

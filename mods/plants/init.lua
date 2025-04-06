@@ -1,7 +1,7 @@
 local cactus_def = {
         description = "Cactus",
         tiles = {"cactus_top.png", "cactus_bottom.png", "cactus_side.png", "cactus_side.png", "cactus_side.png", "cactus_side.png"},
-        groups = {choppy = 2}
+        groups = {choppy = 2, pane_connect = 1}
 }
 
 core.register_node("plants:cactus", cactus_def)

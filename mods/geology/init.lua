@@ -25,37 +25,37 @@ local geology_def_table = {
         ["geology:cobble"] = {
             description = "Cobblestone",
             tiles = {"geology_cobble.png"},
-            groups = {cracky=3, stone=1}
+            groups = {cracky=3, stone=1, pane_connect = 1}
         },
         ["geology:sandstone"] = {
             description = "Sandstone",
             tiles = {"geology_sandstone.png"},
-            groups = {cracky=3, stone=1}
+            groups = {cracky=3, stone=1, pane_connect = 1}
         },
         ["geology:stone"] = {
             description = "Stone",
             tiles = {"geology_stone.png"},
             is_ground_content = true,
-            groups = {cracky=3, stone=1},
+            groups = {cracky=3, stone=1, pane_connect = 1},
             drop = "geology:cobble"
         },
         ["geology:dirt"] = {
             description = "Dirt",
             tiles = {"geology_dirt.png"},
             is_ground_content = true,
-            groups = {crumbly=3, soil=1}
+            groups = {crumbly=3, soil=1, pane_connect = 1}
         },
         ["geology:sand"] = {
             description = "Sand",
             tiles = {"geology_sand.png"},
             is_ground_content = true,
-            groups = {crumbly=3, falling_node=1, sand=1}
+            groups = {crumbly=3, falling_node=1, sand=1, pane_connect = 1}
         },
         ["geology:gravel"] = {
             description = "Gravel",
             tiles = {"geology_gravel.png"},
             is_ground_content = true,
-            groups = {crumbly=3, falling_node=1, gravel=1}
+            groups = {crumbly=3, falling_node=1, gravel=1, pane_connect = 1}
         },
         ["geology:grass_block"] = {
             description = "Grass block",
@@ -63,32 +63,32 @@ local geology_def_table = {
                 "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png"
             },
             is_ground_content = true,
-            groups = {crumbly=3, soil=1}
+            groups = {crumbly=3, soil=1, pane_connect = 1}
         },
         ["geology:coal_ore"] = {
             description = "Coal ore",
             tiles = {"geology_coal_ore.png"},
             is_ground_content = true,
-            groups = {cracky=3, ore=1},
+            groups = {cracky=3, ore=1, pane_connect = 1},
             drop = "geology:coal"
         },
         ["geology:iron_ore"] = {
             description = "Iron ore",
             tiles = {"geology_iron_ore.png"},
             is_ground_content = true,
-            groups = {cracky=3, ore=1}
+            groups = {cracky=3, ore=1, pane_connect = 1}
         },
         ["geology:gold_ore"] = {
             description = "Gold ore",
             tiles = {"geology_gold_ore.png"},
             is_ground_content = true,
-            groups = {cracky=3, ore=1}
+            groups = {cracky=3, ore=1, pane_connect = 1}
         },
         ["geology:diamond_ore"] = {
             description = "Diamond ore",
             tiles = {"geology_diamond_ore.png"},
             is_ground_content = true,
-            groups = {cracky=3, ore=1},
+            groups = {cracky=3, ore=1, pane_connect = 1},
             drop = "geology:diamond",
             stack_max = 64
         },  
