@@ -1,8 +1,72 @@
+furnace = {}
+furnace_subscriptions = {}
+function furnace:new_id()
+    if self.id == nil then
+        self.id = 0
+    else
+        self.id = self.id + 1
+    end
+    return self.id
+end
+
+local function create_furnace_id(id_number)
+    return "furnace:furnace_"..tostring(id_number)
+end
 local function init_furnace(pos)
+    local meta = core.get_meta(pos)
+    local inv = meta:get_inventory()
+    local furnace_id = create_furnace_id(furnace:new_id())
+    meta:set_string("furnace_id", furnace_id)
+    inv:set_stack("input", 1, ItemStack())
+    inv:set_stack("fuel", 1, ItemStack())
+    inv:set_stack("output", 1, ItemStack())
 end
-local function open_furnace(pos, player)
+local function open_furnace(pos, node, player)
+    local meta = core.get_meta(pos)
+    local furnace_id = meta:get_string("furnace_id")
+    if player:is_player() then
+        local player_meta = player:get_meta()
+        player_meta:set_string("furnace_id", furnace_id)
+        if furnace_subscriptions[furnace_id] == nil then
+            furnace_subscriptions[furnace_id] = {}
+        end
+        local list = furnace_subscriptions[furnace_id]
+        formspec_helper.subscribe(list, player:get_player_name())
+        --formspec_helper.multicast(list, furnace_id, "formspec_version[8]size[8,8]real_coordinates[true]label[3,3;Hello]")
+    end
 end
+
+-- Unsubscribe leaving players from furnace updates
+core.register_on_leaveplayer(function(player, timed_out)
+    if player:is_player() then
+        for furnace_id, _ in pairs(furnace_subscriptions) do 
+            local old_list = furnace_subscriptions[furnace_id]
+            for i, p in old_list do
+                if p == player:get_player_name() then table.remove(old_list, i) end
+            end
+            furnace_subscriptions[furnace_id] = old_list
+        end
+    end
+end)
+
+core.register_on_player_receive_fields(function(player, formname, fields)
+    if player:is_player() then
+        local player_name = player:get_player_name()
+        local player_meta = player:get_meta()
+        local furnace_id = player_meta:get_string("furnace_id")
+        if formname == furnace_id and fields["quit"] == "true" then
+            local list = furnace_subscriptions[furnace_id]
+            formspec_helper.unsubscribe(list, player_name)
+        end
+    end
+
+end)
+
 local function furnace_loop(pos)
+    local meta = core.get_meta(pos)
+    local furnace_id = meta:get_string("furnace_id")
+    local list = furnace_subscriptions[furnace_id]
+    formspec_helper.multicast(list, furnace_id, "formspec_version[8]size[8,8]real_coordinates[true]label[3,3;ABM calling]")
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",
