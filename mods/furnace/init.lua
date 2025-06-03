@@ -65,20 +65,31 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 
 end)
-local function generate_formspec(pos, fuel, input)
+local function generate_formspec(pos, arrow_state, input)
     local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
     local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
     local lists = {
         "list["..nodemeta_expr..";input;3.5,1;1,1]",
-        "list["..nodemeta_expr..";output;5.5,2;1,1]",
+        "list["..nodemeta_expr..";output;6.5,2;1,1]",
         "list["..nodemeta_expr..";fuel;3.5,3;1,1]",
-        "list[current_player;main;0.5,4.75;8,4;]"
+        "list[current_player;main;0.5,5;8,4;]"
     }
     local labels = {
-        "label[2,3.5;Fuel:"..tostring(fuel).."]",
-        "label[2,1.5;Input:"..tostring(input).."]"
+        "label[2,3.5;Fuel:"..tostring(input).."]",
+        "label[2,1.5;Input:"..tostring(arrow_state).."]"
     }
-    return preamble..table.concat(lists)..table.concat(labels)
+    local images = {
+        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow_background.png]",
+        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow"..tostring(arrow_state)..".png]"
+    }
+    return preamble..table.concat(lists)..table.concat(labels)..table.concat(images)
+end
+local function calc_arrow(remaining, full)
+    if full == 0 then
+        return 0
+    else
+        return math.round((remaining / full) * 12)
+    end
 end
 local function furnace_loop(pos)
     
@@ -110,7 +121,7 @@ local function furnace_loop(pos)
         width = 1,
         method = "cooking"
     })
-
+    
     
 
     -- Consume fuel items
@@ -118,6 +129,7 @@ local function furnace_loop(pos)
         remaining.fuel = fuel_output.time
         stacks.fuel:take_item(1)
         inventory:set_stack("fuel", 1, stacks.fuel)
+        meta:set_float("total_fuel", fuel_output.time)
     end
     -- Consume items into intermediary only if intermediary is empty
     if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
@@ -126,6 +138,7 @@ local function furnace_loop(pos)
        inventory:set_stack("input", 1, stacks.input)
        inventory:set_stack("intermediary", 1, stacks.intermediary)
        remaining.input = input_output.time
+       meta:set_float("total_input", input_output.time)
     end
     -- Empty Intermediary only if:
     -- * There is still remaining fuel
@@ -146,7 +159,11 @@ local function furnace_loop(pos)
     end
     meta:set_float("remaining_fuel", remaining.fuel)
     meta:set_float("remaining_input", remaining.input)
-    formspec_helper.multicast(list, furnace_id, generate_formspec(pos, remaining.fuel, remaining.input))
+    local total = {
+        fuel = meta:get_float("total_fuel", 0),
+        input = meta:get_float("total_input", 0)
+    }
+    formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow(remaining.input, total.input), remaining.input))
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",

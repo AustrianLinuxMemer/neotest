@@ -70,3 +70,24 @@ end
 function base.from_facedir(facedir)
     return {dir = math.floor(facedir / 4), rot = facedir % 4}
 end
+
+function base.round(number, n)
+    local function value_of_digit(number, digits)
+        local digits_int = math.floor(digits)
+        local shifted = number * (10^digits)
+        local shifted_int = math.floor(shifted)
+        return shifted_int % 10
+    end
+    
+    if type(n) ~= "number" then
+        n = 1
+    end
+    local n_int = math.floor(n)
+    local digit_after = value_of_digit(number, n_int + 1)
+    local factor = 10 ^ n_int
+    if digit_after >= 5 then
+        return math.ceil(number*factor) / factor
+    else
+        return math.floor(number*factor) / factor
+    end
+end
