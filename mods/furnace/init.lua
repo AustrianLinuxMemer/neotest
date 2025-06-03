@@ -65,7 +65,7 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 
 end)
-local function generate_formspec(pos, arrow_state, input)
+local function generate_formspec(pos, arrow_state, fire_state)
     local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
     local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
     local lists = {
@@ -74,17 +74,15 @@ local function generate_formspec(pos, arrow_state, input)
         "list["..nodemeta_expr..";fuel;3.5,3;1,1]",
         "list[current_player;main;0.5,5;8,4;]"
     }
-    local labels = {
-        "label[2,3.5;Fuel:"..tostring(input).."]",
-        "label[2,1.5;Input:"..tostring(arrow_state).."]"
-    }
     local images = {
         "image[4.75,1.75;1.5,1.5;furnace_progress_arrow_background.png]",
-        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow"..tostring(arrow_state)..".png]"
+        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow"..tostring(arrow_state)..".png]",
+        "image[3.5,2;1,1;furnace_fire_background.png]",
+        "image[3.5,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
     }
     return preamble..table.concat(lists)..table.concat(labels)..table.concat(images)
 end
-local function calc_arrow(remaining, full)
+local function calc_arrow_fire(remaining, full)
     if full == 0 then
         return 0
     else
@@ -163,7 +161,7 @@ local function furnace_loop(pos)
         fuel = meta:get_float("total_fuel", 0),
         input = meta:get_float("total_input", 0)
     }
-    formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow(remaining.input, total.input), remaining.input))
+    formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow_fire(remaining.input, total.input), calc_arrow_fire(remaining.fuel, total.fuel)))
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",
