@@ -80,7 +80,7 @@ local function generate_formspec(pos, arrow_state, fire_state)
         "image[3.5,2;1,1;furnace_fire_background.png]",
         "image[3.5,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
     }
-    return preamble..table.concat(lists)..table.concat(labels)..table.concat(images)
+    return preamble..table.concat(lists)..table.concat(images)
 end
 local function calc_arrow_fire(remaining, full)
     if full == 0 then
@@ -128,6 +128,18 @@ local function furnace_loop(pos)
         stacks.fuel:take_item(1)
         inventory:set_stack("fuel", 1, stacks.fuel)
         meta:set_float("total_fuel", fuel_output.time)
+        local current = core.get_node(pos)
+        current.name = "furnace:active_furnace"
+        core.swap_node(pos, current)
+    end
+    -- Turning the furnace off, destroying the intermediary in the process
+    if remaining.fuel <= 0 and (stacks.fuel:is_empty() or stacks.input:is_empty()) then
+        local current = core.get_node(pos)
+        current.name = "furnace:furnace"
+        core.swap_node(pos, current)
+        remaining.input = 0
+        stacks.intermediary:clear()
+        inventory:set_stack("intermediary", 1, stacks.intermediary)
     end
     -- Consume items into intermediary only if intermediary is empty
     if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
@@ -198,7 +210,7 @@ core.register_craft({
 core.register_abm({
     label = "furnace",
     nodenames = {"furnace:furnace", "furnace:active_furnace"},
-    interval = 1,
+    interval = 0.5,
     chance = 1,
     action = furnace_loop
 })
