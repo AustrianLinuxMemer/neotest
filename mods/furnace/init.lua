@@ -17,6 +17,9 @@ local function init_furnace(pos)
     local inv = meta:get_inventory()
     local furnace_id = create_furnace_id(furnace:new_id())
     meta:set_string("furnace_id", furnace_id)
+    inv:set_size("input", 1)
+    inv:set_size("fuel", 1)
+    inv:set_size("output", 1)
     inv:set_stack("input", 1, ItemStack())
     inv:set_stack("fuel", 1, ItemStack())
     inv:set_stack("output", 1, ItemStack())
@@ -61,12 +64,23 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 
 end)
-
+local function generate_formspec(pos)
+    local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
+    local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
+    local lists = {
+        "list["..nodemeta_expr..";input;1,1;1,1]",
+        "list["..nodemeta_expr..";output;3,1.5;1,1]",
+        "list["..nodemeta_expr..";fuel;1,3;1,1]",
+        "list[current_player;main;0.5,4.75;8,4;]"
+    }
+    return preamble..table.concat(lists)
+end
 local function furnace_loop(pos)
     local meta = core.get_meta(pos)
     local furnace_id = meta:get_string("furnace_id")
     local list = furnace_subscriptions[furnace_id]
-    formspec_helper.multicast(list, furnace_id, "formspec_version[8]size[8,8]real_coordinates[true]label[3,3;ABM calling]")
+    
+    formspec_helper.multicast(list, furnace_id, generate_formspec(pos))
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",
