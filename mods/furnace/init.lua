@@ -25,6 +25,7 @@ local function init_furnace(pos)
     inv:set_stack("fuel", 1, ItemStack())
     inv:set_stack("output", 1, ItemStack())
     inv:set_stack("intermediary", 1, ItemStack())
+    core.get_node_timer(pos):start(0.1)
 end
 local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)
@@ -86,10 +87,10 @@ local function calc_arrow_fire(remaining, full)
     if full == 0 then
         return 0
     else
-        return math.round((remaining / full) * 12)
+        return math.abs(math.round((remaining / full) * 12))
     end
 end
-local function furnace_loop(pos)
+local function furnace_loop(pos, elapsed)
     
     local meta = core.get_meta(pos)
     local furnace_id = meta:get_string("furnace_id")
@@ -162,10 +163,10 @@ local function furnace_loop(pos)
     end
     -- Decrease Fuel/Input counter
     if remaining.fuel > 0 then
-        remaining.fuel = remaining.fuel - 1 
+        remaining.fuel = remaining.fuel - elapsed 
     end
     if remaining.input > 0 then
-        remaining.input = remaining.input - 1
+        remaining.input = remaining.input - elapsed
     end
     meta:set_float("remaining_fuel", remaining.fuel)
     meta:set_float("remaining_input", remaining.input)
@@ -174,6 +175,7 @@ local function furnace_loop(pos)
         input = meta:get_float("total_input", 0)
     }
     formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow_fire(remaining.input, total.input), calc_arrow_fire(remaining.fuel, total.fuel)))
+    return true
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",
@@ -182,6 +184,7 @@ core.register_node("furnace:furnace", {
     groups = {cracky = 3},
     on_construct = init_furnace,
     on_rightclick = open_furnace,
+    on_timer = furnace_loop,
     after_place_node = base.correct_orientation_after_place_node
 })
 
@@ -193,6 +196,7 @@ core.register_node("furnace:active_furnace", {
     light_source = core.LIGHT_MAX,
     on_construct = init_furnace,
     on_rightclick = open_furnace,
+    on_timer = furnace_loop,
     drop = "furnace:furnace",
     after_place_node = base.correct_orientation_after_place_node
 })
@@ -205,12 +209,4 @@ core.register_craft({
         {"group:stone", "", "group:stone"},
         {"group:stone", "group:stone", "group:stone"}
     }
-})
-
-core.register_abm({
-    label = "furnace",
-    nodenames = {"furnace:furnace", "furnace:active_furnace"},
-    interval = 0.5,
-    chance = 1,
-    action = furnace_loop
 })
