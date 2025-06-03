@@ -20,9 +20,11 @@ local function init_furnace(pos)
     inv:set_size("input", 1)
     inv:set_size("fuel", 1)
     inv:set_size("output", 1)
+    inv:set_size("intermediary", 1)
     inv:set_stack("input", 1, ItemStack())
     inv:set_stack("fuel", 1, ItemStack())
     inv:set_stack("output", 1, ItemStack())
+    inv:set_stack("intermediary", 1, ItemStack())
 end
 local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)
@@ -35,7 +37,6 @@ local function open_furnace(pos, node, player)
         end
         local list = furnace_subscriptions[furnace_id]
         formspec_helper.subscribe(list, player:get_player_name())
-        --formspec_helper.multicast(list, furnace_id, "formspec_version[8]size[8,8]real_coordinates[true]label[3,3;Hello]")
     end
 end
 
@@ -64,23 +65,88 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 
 end)
-local function generate_formspec(pos)
+local function generate_formspec(pos, fuel, input)
     local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
     local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
     local lists = {
-        "list["..nodemeta_expr..";input;1,1;1,1]",
-        "list["..nodemeta_expr..";output;3,1.5;1,1]",
-        "list["..nodemeta_expr..";fuel;1,3;1,1]",
+        "list["..nodemeta_expr..";input;3.5,1;1,1]",
+        "list["..nodemeta_expr..";output;5.5,2;1,1]",
+        "list["..nodemeta_expr..";fuel;3.5,3;1,1]",
         "list[current_player;main;0.5,4.75;8,4;]"
     }
-    return preamble..table.concat(lists)
+    local labels = {
+        "label[2,3.5;Fuel:"..tostring(fuel).."]",
+        "label[2,1.5;Input:"..tostring(input).."]"
+    }
+    return preamble..table.concat(lists)..table.concat(labels)
 end
 local function furnace_loop(pos)
+    
     local meta = core.get_meta(pos)
     local furnace_id = meta:get_string("furnace_id")
+    local inventory = meta:get_inventory()
     local list = furnace_subscriptions[furnace_id]
+
     
-    formspec_helper.multicast(list, furnace_id, generate_formspec(pos))
+
+    local stacks = {
+        fuel = inventory:get_stack("fuel", 1),
+        input = inventory:get_stack("input", 1),
+        output = inventory:get_stack("output", 1),
+        intermediary = inventory:get_stack("intermediary", 1)
+    }
+    local remaining = {
+        fuel = meta:get_float("remaining_fuel"),
+        input = meta:get_float("remaining_input")
+    }
+    -- Furnaces always use the first listed recipe
+    local fuel_output, d = core.get_craft_result({
+        items = {stacks.fuel},
+        width = 1,
+        method = "fuel"
+    })
+    local input_output, d = core.get_craft_result({
+        items = {stacks.input},
+        width = 1,
+        method = "cooking"
+    })
+
+    
+
+    -- Consume fuel items
+    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() then
+        remaining.fuel = fuel_output.time
+        stacks.fuel:take_item(1)
+        inventory:set_stack("fuel", 1, stacks.fuel)
+    end
+    -- Consume items into intermediary only if intermediary is empty
+    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
+       stacks.input:take_item(1)
+       stacks.intermediary:add_item(input_output.item)
+       inventory:set_stack("input", 1, stacks.input)
+       inventory:set_stack("intermediary", 1, stacks.intermediary)
+       remaining.input = input_output.time
+    end
+    -- Empty Intermediary only if:
+    -- * There is still remaining fuel
+    -- * The Intermediary is not empty
+    -- * The intermediary stack and the output stack contain the same item or the output stack is empty
+    -- * If the items fits into the output stack
+    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.intermediary:is_empty() and ((stacks.output:get_name() == stacks.intermediary:get_name()) or stacks.output:is_empty()) and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
+        stacks.output:add_item(stacks.intermediary)
+        inventory:set_stack("intermediary", 1, ItemStack())
+        inventory:set_stack("output", 1, stacks.output)
+    end
+    -- Decrease Fuel/Input counter
+    if remaining.fuel > 0 then
+        remaining.fuel = remaining.fuel - 1 
+    end
+    if remaining.input > 0 then
+        remaining.input = remaining.input - 1
+    end
+    meta:set_float("remaining_fuel", remaining.fuel)
+    meta:set_float("remaining_input", remaining.input)
+    formspec_helper.multicast(list, furnace_id, generate_formspec(pos, remaining.fuel, remaining.input))
 end
 core.register_node("furnace:furnace", {
     description = "Furnace",
