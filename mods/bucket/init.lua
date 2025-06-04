@@ -1,12 +1,17 @@
 local bucket_index = {}
 local liquid_index = {}
 local function on_bucket_place(itemstack, placer, pointed_thing)
-    local pos = pointed_thing.above
+    local pos = pointed_thing.under
     local empty_bucket = ItemStack("bucket:empty_bucket")
     local bucket_name = itemstack:get_name()
     local liquid_name = bucket_index[bucket_name]
+    local is_liquid = liquid_index[core.get_node(pos).name] ~= nil
     if liquid_name ~= nil then
-        core.set_node(pos, {name = liquid_name})
+        if is_liquid then
+            core.set_node(pos, {name = liquid_name})
+        else
+            core.set_node(vector.new(pos.x, pos.y+1, pos.z), {name = liquid_name})
+        end
         return ItemStack("bucket:empty_bucket")
     else
         return nil
@@ -16,13 +21,21 @@ local function on_bucket_use(itemstack, user, pointed_thing)
     if pointed_thing.type ~= "node" and pointed_thing ~= "object" then
         return nil
     end
-    local pos = pointed_thing.above
+    local pos = pointed_thing.under
     local node = core.get_node(pos)
     local bucket_name = liquid_index[node.name]
     local inventory = user:get_inventory()
     if bucket_name ~= nil and itemstack:get_name() == "bucket:empty_bucket" then
         core.set_node(pos, {name = "air"})
-        inventory:add_item("main", ItemStack(bucket_name))
+        local new_bucket = ItemStack(bucket_name)
+        if inventory:room_for_item("main", new_bucket) then
+            inventory:add_item("main", new_bucket)
+        else
+            if itemstack:get_count() == 1 then
+                return new_bucket
+            end
+            core.add_item(pos, new_bucket)
+        end
         itemstack:take_item(1)
         return itemstack
     else
@@ -37,6 +50,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         inventory_image = bucket_image,
         on_place = on_bucket_place,
         on_use = on_bucket_use,
+        liquids_pointable = true,
         stack_max = 1,
         _byproducts = {name = "bucket:empty_bucket", count = 1}
     })
@@ -45,7 +59,8 @@ core.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
     inventory_image = "bucket.png",
     on_place = on_bucket_place,
-    on_use = on_bucket_use
+    on_use = on_bucket_use,
+    liquids_pointable = true
 })
 core.register_craft({
     type = "shaped",
