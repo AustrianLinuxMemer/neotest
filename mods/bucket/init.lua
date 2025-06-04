@@ -33,7 +33,8 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         description = bucket_description,
         inventory_image = bucket_image,
         on_place = on_bucket_place,
-        on_use = on_bucket_use
+        on_use = on_bucket_use,
+        _byproducts = {name = "bucket:empty_bucket", count = 1}
     })
 end
 core.register_craftitem("bucket:empty_bucket", {
@@ -55,4 +56,8 @@ register_bucket("water_bucket", "Water Bucket", "water_bucket.png", "liquids:wat
 register_bucket("river_water_bucket", "River Water Bucket", "river_water_bucket.png", "liquids:river_water_source")
 register_bucket("lava_bucket", "Lava Bucket", "lava_bucket.png", "liquids:lava_source")
 
-
+core.register_craft({
+    type = "fuel",
+    recipe = "bucket:lava_bucket",
+    burntime = 2000
+})

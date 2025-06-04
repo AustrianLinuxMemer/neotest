@@ -19,11 +19,14 @@ local function init_furnace(pos)
     meta:set_string("furnace_id", furnace_id)
     inv:set_size("input", 1)
     inv:set_size("fuel", 1)
-    inv:set_size("output", 1)
+    inv:set_size("output", 4)
     inv:set_size("intermediary", 1)
     inv:set_stack("input", 1, ItemStack())
     inv:set_stack("fuel", 1, ItemStack())
     inv:set_stack("output", 1, ItemStack())
+    inv:set_stack("output", 2, ItemStack())
+    inv:set_stack("output", 3, ItemStack())
+    inv:set_stack("output", 4, ItemStack())
     inv:set_stack("intermediary", 1, ItemStack())
     core.get_node_timer(pos):start(0.1)
 end
@@ -87,22 +90,26 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 
 end)
-local function generate_formspec(pos, arrow_state, fire_state)
+local function generate_formspec(pos, arrow_state, fire_state, debug1)
     local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
     local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
     local lists = {
-        "list["..nodemeta_expr..";input;3.5,1;1,1]",
-        "list["..nodemeta_expr..";output;6.5,2;1,1]",
-        "list["..nodemeta_expr..";fuel;3.5,3;1,1]",
+        "list["..nodemeta_expr..";input;3,1;1,1]",
+        "list["..nodemeta_expr..";output;5.5,1.5;2,2]",
+        "list["..nodemeta_expr..";fuel;3,3;1,1]",
         "list[current_player;main;0.5,5;8,4;]"
     }
     local images = {
-        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow_background.png]",
-        "image[4.75,1.75;1.5,1.5;furnace_progress_arrow"..tostring(arrow_state)..".png]",
-        "image[3.5,2;1,1;furnace_fire_background.png]",
-        "image[3.5,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
+        "image[4.125,2;1,1;furnace_progress_arrow_background.png]",
+        "image[4.125,2;1,1;furnace_progress_arrow"..tostring(arrow_state)..".png]",
+        "image[3,2;1,1;furnace_fire_background.png]",
+        "image[3,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
     }
-    return preamble..table.concat(lists)..table.concat(images)
+    local formspec = preamble..table.concat(lists)..table.concat(images)
+    if debug1 then
+        return formspec.."label[1,1;4,4;"..debug1.."]"
+    end
+    return formspec
 end
 local function calc_arrow_fire(remaining, full)
     if full == 0 then
@@ -111,25 +118,7 @@ local function calc_arrow_fire(remaining, full)
         return math.abs(math.round((remaining / full) * 12))
     end
 end
-local function furnace_loop(pos, elapsed)
-    
-    local meta = core.get_meta(pos)
-    local furnace_id = meta:get_string("furnace_id")
-    local inventory = meta:get_inventory()
-    local list = furnace_subscriptions[furnace_id]
-
-    
-
-    local stacks = {
-        fuel = inventory:get_stack("fuel", 1),
-        input = inventory:get_stack("input", 1),
-        output = inventory:get_stack("output", 1),
-        intermediary = inventory:get_stack("intermediary", 1)
-    }
-    local remaining = {
-        fuel = meta:get_float("remaining_fuel"),
-        input = meta:get_float("remaining_input")
-    }
+local function get_recipes(stacks)
     -- Furnaces always use the first listed recipe
     local fuel_output, d = core.get_craft_result({
         items = {stacks.fuel},
@@ -141,60 +130,91 @@ local function furnace_loop(pos, elapsed)
         width = 1,
         method = "cooking"
     })
-    
-    
+    local registration_fuel = core.registered_items[stacks.fuel:get_name()]
+    local registration_input = core.registered_items[stacks.input:get_name()]
+    local recipes = {
+        fuel = {
+            input = stacks.input,
+            output = ItemStack(),
+            time = fuel_output.time
+        },
+        input = {
+            input = stacks.input,
+            output = input_output.item,
+            time = input_output.time
+        }
+    }
+    recipes.fuel.byproduct = registration_fuel._byproducts or {}
+    recipes.input.byproduct = registration_input._byproducts or {}
+    return recipes
+end
 
-    -- Consume fuel items
-    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() and input_output.time ~= 0 then
-        remaining.fuel = fuel_output.time
+local function furnace_loop(pos, elapsed)
+    local meta = core.get_meta(pos)
+    local furnace_id = meta:get_string("furnace_id")
+    local inventory = meta:get_inventory()
+    local list = furnace_subscriptions[furnace_id]
+
+    local stacks = {
+        fuel = inventory:get_stack("fuel", 1),
+        input = inventory:get_stack("input", 1)
+    }
+    local intermediary = inventory:get_stack("intermediary", 1)
+    local remaining = {
+        fuel = meta:get_float("remaining_fuel"),
+        input = meta:get_float("remaining_input")
+    }
+    local total = {
+        fuel = meta:get_float("total_fuel"),
+        input = meta:get_float("total_input")
+    }
+    local recipes = get_recipes(stacks)
+    -- Consume fuel and add byproduct to output if:
+    -- * remaining.fuel is under or equals zero
+    -- * there is fuel
+    -- * the byproduct would fit into the output list
+    -- * the burntime is greater than zero
+    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and inventory:room_for_item("output", recipes.fuel.byproduct) and recipes.fuel.time > 0 then
         stacks.fuel:take_item(1)
-        inventory:set_stack("fuel", 1, stacks.fuel)
-        meta:set_float("total_fuel", fuel_output.time)
-        local current = core.get_node(pos)
-        current.name = "furnace:active_furnace"
-        core.swap_node(pos, current)
+        inventory:add_item("output", recipes.fuel.byproduct)
+        remaining.fuel = recipes.fuel.time
+        total.fuel = recipes.fuel.time
     end
-    -- Turning the furnace off, destroying the intermediary in the process
-    if remaining.fuel <= 0 and (stacks.fuel:is_empty() or stacks.input:is_empty()) then
-        local current = core.get_node(pos)
-        current.name = "furnace:furnace"
-        core.swap_node(pos, current)
-        remaining.input = 0
-        stacks.intermediary:clear()
-        inventory:set_stack("intermediary", 1, stacks.intermediary)
+
+    -- Consume item into intermediary if:
+    -- * remaining.fuel is over zero
+    -- * there are items
+    -- * If the cooktime is not zero
+    -- * If the intermediary is empty
+    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and intermediary:is_empty() and recipes.input.time > 0 then
+        stacks.input:take_item(1)
+        intermediary:add_item(ItemStack(recipes.input.output))
+        remaining.input = recipes.input.time
+        total.input = recipes.input.time
     end
-    -- Consume items into intermediary only if intermediary is empty
-    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() and input_output.time ~= 0 then
-       stacks.input:take_item(1)
-       stacks.intermediary:add_item(input_output.item)
-       inventory:set_stack("input", 1, stacks.input)
-       inventory:set_stack("intermediary", 1, stacks.intermediary)
-       remaining.input = input_output.time
-       meta:set_float("total_input", input_output.time)
+
+    --Empty the intermediary if:
+    -- * the intermediary is not empty
+    -- * there is space in the output
+    -- * remaining.input below or at zero
+    if remaining.input <= 0 and not intermediary:is_empty() and inventory:room_for_item("output", intermediary) then
+        inventory:add_item("output", intermediary)
+        intermediary:clear()
     end
-    -- Empty Intermediary only if:
-    -- * There is still remaining fuel
-    -- * The Intermediary is not empty
-    -- * The intermediary stack and the output stack contain the same item or the output stack is empty
-    -- * If the items fits into the output stack
-    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.intermediary:is_empty() and ((stacks.output:get_name() == stacks.intermediary:get_name()) or stacks.output:is_empty()) and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
-        stacks.output:add_item(stacks.intermediary)
-        inventory:set_stack("intermediary", 1, ItemStack())
-        inventory:set_stack("output", 1, stacks.output)
-    end
-    -- Decrease Fuel/Input counter
+
     if remaining.fuel > 0 then
-        remaining.fuel = remaining.fuel - elapsed 
+        remaining.fuel = remaining.fuel - elapsed
     end
     if remaining.input > 0 then
         remaining.input = remaining.input - elapsed
     end
+    inventory:set_stack("input", 1, stacks.input)
+    inventory:set_stack("fuel", 1, stacks.fuel)
+    inventory:set_stack("intermediary", 1, intermediary)
     meta:set_float("remaining_fuel", remaining.fuel)
     meta:set_float("remaining_input", remaining.input)
-    local total = {
-        fuel = meta:get_float("total_fuel", 0),
-        input = meta:get_float("total_input", 0)
-    }
+    meta:set_float("total_fuel", total.fuel)
+    meta:set_float("total_input", total.input)
     formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow_fire(remaining.input, total.input), calc_arrow_fire(remaining.fuel, total.fuel)))
     return true
 end

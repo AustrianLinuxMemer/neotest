@@ -9,3 +9,22 @@ local testing_definition = {
 core.register_node("testing:testing", testing_definition)
 stairs.register_stair("testing:testing", "testing Stair", testing_definition, true)
 stairs.register_slab("testing:testing", "testing Slab", testing_definition, true)
+
+core.register_craftitem("testing:testing_fuel_byproduct", {
+    description = "Testing Fuel Byproduct",
+    inventory_image = "test_fuel_byproduct.png",
+    wield_image = "test_fuel_byproduct.png"
+})
+
+core.register_craftitem("testing:testing_fuel", {
+    description = "Testing Fuel",
+    inventory_image = "test_fuel.png",
+    wield_image = "test_fuel.png",
+    _byproducts = {name = "testing:testing_fuel_byproduct", count = 1}
+})
+
+core.register_craft({
+    type = "fuel",
+    recipe = "testing:testing_fuel",
+    burntime = 1
+})
