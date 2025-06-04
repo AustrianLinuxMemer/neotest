@@ -19,9 +19,12 @@ local function on_bucket_use(itemstack, user, pointed_thing)
     local pos = pointed_thing.above
     local node = core.get_node(pos)
     local bucket_name = liquid_index[node.name]
+    local inventory = user:get_inventory()
     if bucket_name ~= nil and itemstack:get_name() == "bucket:empty_bucket" then
         core.set_node(pos, {name = "air"})
-        return ItemStack(bucket_name)
+        inventory:add_item("main", ItemStack(bucket_name))
+        itemstack:take_item(1)
+        return itemstack
     else
         return nil
     end
@@ -34,6 +37,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         inventory_image = bucket_image,
         on_place = on_bucket_place,
         on_use = on_bucket_use,
+        stack_max = 1,
         _byproducts = {name = "bucket:empty_bucket", count = 1}
     })
 end
