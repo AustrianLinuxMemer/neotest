@@ -40,7 +40,28 @@ local function open_furnace(pos, node, player)
         formspec_helper.subscribe(list, player:get_player_name())
     end
 end
-
+local function destroy_furnace(pos, node, digger)
+    if digger:is_player() then
+        local node_meta = core.get_meta(pos)
+        local node_inv = node_meta:get_inventory()
+        local digger_inv = digger:get_inventory()
+        local list_names = {"fuel","input","output"}
+        for _, name in ipairs(list_names) do
+            local list_size = node_inv:get_size(name)
+            for i = 1, list_size do
+                local stack = node_inv:get_stack(name, i)
+                if not stack:is_empty() then
+                    local leftover = digger_inv:add_item("main", stack)
+                    if not leftover:is_empty() then
+                        local item_pos = vector.new(pos.x, pos.y+1, pos.z)
+                        core.add_item(item_pos, leftover)
+                    end
+                end
+            end
+        end
+        core.node_dig(pos, node, digger)
+    end
+end
 -- Unsubscribe leaving players from furnace updates
 core.register_on_leaveplayer(function(player, timed_out)
     if player:is_player() then
@@ -124,7 +145,7 @@ local function furnace_loop(pos, elapsed)
     
 
     -- Consume fuel items
-    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() then
+    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() and input_output.time ~= 0 then
         remaining.fuel = fuel_output.time
         stacks.fuel:take_item(1)
         inventory:set_stack("fuel", 1, stacks.fuel)
@@ -143,7 +164,7 @@ local function furnace_loop(pos, elapsed)
         inventory:set_stack("intermediary", 1, stacks.intermediary)
     end
     -- Consume items into intermediary only if intermediary is empty
-    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() then
+    if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and stacks.intermediary:is_empty() and stacks.output:get_free_space() >= stacks.intermediary:get_count() and input_output.time ~= 0 then
        stacks.input:take_item(1)
        stacks.intermediary:add_item(input_output.item)
        inventory:set_stack("input", 1, stacks.input)
@@ -185,6 +206,7 @@ core.register_node("furnace:furnace", {
     on_construct = init_furnace,
     on_rightclick = open_furnace,
     on_timer = furnace_loop,
+    on_dig = destroy_furnace,
     after_place_node = base.correct_orientation_after_place_node
 })
 
@@ -197,6 +219,7 @@ core.register_node("furnace:active_furnace", {
     on_construct = init_furnace,
     on_rightclick = open_furnace,
     on_timer = furnace_loop,
+    on_dig = destroy_furnace,
     drop = "furnace:furnace",
     after_place_node = base.correct_orientation_after_place_node
 })
