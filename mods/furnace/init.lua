@@ -174,11 +174,12 @@ local function furnace_loop(pos, elapsed)
     -- * there is fuel
     -- * the byproduct would fit into the output list
     -- * the burntime is greater than zero
-    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and inventory:room_for_item("output", recipes.fuel.byproduct) and recipes.fuel.time > 0 then
+    if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() and inventory:room_for_item("output", recipes.fuel.byproduct) and recipes.fuel.time > 0 then
         stacks.fuel:take_item(1)
         inventory:add_item("output", recipes.fuel.byproduct)
         remaining.fuel = recipes.fuel.time
         total.fuel = recipes.fuel.time
+        
     end
 
     -- Consume item into intermediary if:
@@ -193,6 +194,21 @@ local function furnace_loop(pos, elapsed)
         total.input = recipes.input.time
     end
 
+    -- If the fuel ran out, power off the furnace and destory the intermediary, otherwise keep the furnace on
+    if remaining.fuel <= 0 then
+        remaining.input = 0
+        total.input = 0
+        intermediary:clear()
+        local this_node = core.get_node(pos)
+        this_node.name = "furnace:furnace"
+        core.swap_node(pos, this_node)
+    else
+        local this_node = core.get_node(pos)
+        this_node.name = "furnace:active_furnace"
+        core.swap_node(pos, this_node)
+    end
+
+
     --Empty the intermediary if:
     -- * the intermediary is not empty
     -- * there is space in the output
@@ -201,6 +217,8 @@ local function furnace_loop(pos, elapsed)
         inventory:add_item("output", intermediary)
         intermediary:clear()
     end
+
+    
 
     if remaining.fuel > 0 then
         remaining.fuel = remaining.fuel - elapsed
