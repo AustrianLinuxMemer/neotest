@@ -26,3 +26,5 @@ In Neotest, instead of using hard dependencies for cross-mod crafting recipes, w
 - `gold`: Used Gold Ingots and equivalent
 - `diamond`: Used for Diamonds and equivalent
 - `gem`: An overarching group that all gems (including diamonds) belong to
+
+For items that wish to not be included in the creative menu, simply set `no_creative` to anything but `nil`

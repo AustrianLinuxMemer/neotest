@@ -78,17 +78,11 @@ core.register_globalstep(function(dtime)
         end
     end
 end)
+
+
+
 if creative then
     core.register_tool(":", hand_creative)
 else
     core.register_tool(":", hand_survival)
 end
-
-
-sfinv.register_page("player:inventory", {
-    title = "Rezepte",
-    get = function(self, player, context)
-        return sfinv.make_formspec(player, context,
-                "label[0.1,0.1;Noch keine Rezepte :-(!]", true)
-    end
-})
