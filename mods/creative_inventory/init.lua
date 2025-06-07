@@ -4,7 +4,8 @@ local function get_all_items()
     local forbidden = {
         air = true,
         ignore = true,
-        unknown = true
+        unknown = true,
+        [""] = true
     }
     for k, v in pairs(core.registered_items) do
         if not v.groups["no_creative"] and not forbidden[k] then
@@ -25,10 +26,9 @@ local function create_creative_inventory()
     local inv = core.get_inventory({type = "detached", name = "creative"})
     if not inv then
         inv = core.create_detached_inventory("creative", {
-            allow_put = function() return 0 end,
-            allow_take = function(_, _, _, stack) return stack:get_count() end,
-            allow_move = function(_, _, _, count) return count end,
-            on_take = function(inv, listname, index, stack) inv:set_stack(listname, index, ItemStack(stack:get_name())) end
+            allow_put = function() return -1 end,
+            allow_take = function(_, _, _, stack) return -1 end,
+            allow_move = function(_, _, _, count) return count end
         })
     end
     inv:set_size("items", #all_items)

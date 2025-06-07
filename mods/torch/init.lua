@@ -23,7 +23,12 @@ base.register_node("torch:torch", {
     mesh = "torch_freestanding.obj",
     tiles = {"torch.png"},
     groups = {oddly_breakable_by_hand = 1},
-    on_place = on_place_torch
+    on_place = on_place_torch,
+    selection_box = {
+		type = "wallmounted",
+		wall_bottom = {-2/16, -8/16, -2/16, 2/16, 2/16, 2/16},
+        wall_top = {-2/16, -2/16, -2/16, 2/16, 8/16, 2/16}
+	},
 })
 
 base.register_node("torch:torch_attached", {
@@ -36,6 +41,10 @@ base.register_node("torch:torch_attached", {
     paramtype2 = "wallmounted",
     mesh = "torch_attached.obj",
     tiles = {"torch.png"},
-    groups = {oddly_breakable_by_hand = 1},
-    drop = "torch:torch"
+    groups = {oddly_breakable_by_hand = 1, no_creative = 1},
+    drop = "torch:torch",
+    selection_box = {
+		type = "wallmounted",
+		wall_side = {-8/16, -4/16, -2/16, -2/16, 6/16, 2/16},
+	}
 })

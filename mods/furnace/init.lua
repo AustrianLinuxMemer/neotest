@@ -91,19 +91,19 @@ core.register_on_player_receive_fields(function(player, formname, fields)
 
 end)
 local function generate_formspec(pos, arrow_state, fire_state, debug1)
-    local preamble = "formspec_version[8]size[11,10]real_coordinates[true]"
+    local preamble = "formspec_version[8]size[10.25,10]real_coordinates[true]"
     local nodemeta_expr = "nodemeta:"..tostring(pos.x)..","..tostring(pos.y)..","..tostring(pos.z)
     local lists = {
-        "list["..nodemeta_expr..";input;3,1;1,1]",
-        "list["..nodemeta_expr..";output;5.5,1.5;2,2]",
-        "list["..nodemeta_expr..";fuel;3,3;1,1]",
-        "list[current_player;main;0.5,5;8,4;]"
+        "list["..nodemeta_expr..";input;2.75,1;1,1]",
+        "list["..nodemeta_expr..";output;5.25,1.5;2,2]",
+        "list["..nodemeta_expr..";fuel;2.75,3;1,1]",
+        "list[current_player;main;0.25,5;8,4;]"
     }
     local images = {
-        "image[4.125,2;1,1;furnace_progress_arrow_background.png]",
-        "image[4.125,2;1,1;furnace_progress_arrow"..tostring(arrow_state)..".png]",
-        "image[3,2;1,1;furnace_fire_background.png]",
-        "image[3,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
+        "image[3.875,2;1,1;furnace_progress_arrow_background.png]",
+        "image[3.875,2;1,1;furnace_progress_arrow"..tostring(arrow_state)..".png]",
+        "image[2.75,2;1,1;furnace_fire_background.png]",
+        "image[2.75,2;1,1;furnace_fire"..tostring(fire_state)..".png]",
     }
     local formspec = preamble..table.concat(lists)..table.concat(images)
     if debug1 then
@@ -252,7 +252,7 @@ base.register_node("furnace:active_furnace", {
     description = "Furnace (active)",
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front_lit.png"},
-    groups = {cracky = 3},
+    groups = {cracky = 3, no_creative = 1},
     light_source = core.LIGHT_MAX,
     on_construct = init_furnace,
     on_rightclick = open_furnace,

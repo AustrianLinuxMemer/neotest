@@ -99,8 +99,7 @@ local geology_def_table = {
         "geology:sandstone",
         "geology:dirt",
         "geology:sand",
-        "geology:gravel",
-        "geology:grass_block"
+        "geology:gravel"
     },
     crafts = {
         {

@@ -2,7 +2,7 @@ local testing_definition = {
     description = "testing",
     paramtype2 = "facedir",
     tiles = {"test_top.png", "test_bottom.png", "test_plus_x.png", "test_minus_x.png", "test_plus_z.png", "test_minus_z.png"},
-    groups = {oddly_breakable_by_hand = 1, pane_connect = 1},
+    groups = {oddly_breakable_by_hand = 1, pane_connect = 1, no_creative = 1},
     after_place_node = base.correct_orientation_after_place_node
 }
 
@@ -13,13 +13,15 @@ stairs.register_slab("testing:testing", "testing Slab", testing_definition, true
 base.register_craftitem("testing:testing_fuel_byproduct", {
     description = "Testing Fuel Byproduct",
     inventory_image = "test_fuel_byproduct.png",
-    wield_image = "test_fuel_byproduct.png"
+    wield_image = "test_fuel_byproduct.png",
+    groups = {no_creative = 1}
 })
 
 base.register_craftitem("testing:testing_fuel", {
     description = "Testing Fuel",
     inventory_image = "test_fuel.png",
     wield_image = "test_fuel.png",
+    groups = {no_creative = 1},
     _byproducts = {name = "testing:testing_fuel_byproduct", count = 1}
 })
 

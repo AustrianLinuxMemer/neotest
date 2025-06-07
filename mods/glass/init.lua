@@ -5,6 +5,7 @@ local glass_def = {
     is_ground_content = false,
     sunlight_propagates = true,
     paramtype = "light",
+    use_texture_alpha = "blend",
     groups = {choppy = 2, glass = 1, pane_connect = 1}
 }
 local glass_pane_def = {
@@ -16,8 +17,6 @@ local glass_pane_def = {
 }
 base.register_node("glass:glass", glass_def)
 panes.register_pane("glass:glass", "Glass Pane", "glass_glass.png",glass_pane_def)
-stairs.register_stair("glass:glass", glass_def.description.." Stairs", glass_def, true)
-stairs.register_slab("glass:glass", glass_def.description.." Slab", glass_def, true)
 core.register_craft({
     type = "cooking",
     output = "glass:glass",
