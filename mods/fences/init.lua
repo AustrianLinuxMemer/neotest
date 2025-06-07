@@ -33,5 +33,5 @@ function fences.register_fence(t_name, name, node_def)
         }
     }
     fence_def.connects_to = {"group:fence", "group:connect_fence"}
-    core.register_node(t_name, fence_def)
+    base.register_node(t_name, fence_def)
 end

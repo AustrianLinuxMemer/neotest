@@ -19,5 +19,5 @@ function panes.register_pane(t_name, name, texture_item, node_def)
         connect_back = {{-1/32, -1/2, 1/32, 1/32, 1/2, 1/2}},
         connect_right = {{1/32, -1/2, -1/32, 1/2, 1/2, 1/32}},
     }
-    core.register_node(t_name.."_pane", pane_def)
+    base.register_node(t_name.."_pane", pane_def)
 end

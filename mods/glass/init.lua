@@ -14,7 +14,7 @@ local glass_pane_def = {
     paramtype = "light",
     groups = {choppy = 2, glass = 1}
 }
-core.register_node("glass:glass", glass_def)
+base.register_node("glass:glass", glass_def)
 panes.register_pane("glass:glass", "Glass Pane", "glass_glass.png",glass_pane_def)
 stairs.register_stair("glass:glass", glass_def.description.." Stairs", glass_def, true)
 stairs.register_slab("glass:glass", glass_def.description.." Slab", glass_def, true)

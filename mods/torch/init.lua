@@ -10,7 +10,7 @@ local function on_place_torch(itemstack, placer, pointed_thing)
     return itemstack
 end
 
-core.register_node("torch:torch", {
+base.register_node("torch:torch", {
     description = "Torch",
     drawtype = "mesh",
     paramtype = "light",
@@ -26,7 +26,7 @@ core.register_node("torch:torch", {
     on_place = on_place_torch
 })
 
-core.register_node("torch:torch_attached", {
+base.register_node("torch:torch_attached", {
     description = "Torch",
     drawtype = "mesh",
     paramtype = "light",

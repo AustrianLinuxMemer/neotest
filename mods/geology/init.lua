@@ -29,7 +29,7 @@ local geology_def_table = {
         },
         ["geology:sandstone"] = {
             description = "Sandstone",
-            tiles = {"geology_sandstone.png"},
+            tiles = {"geology_sandstone_top.png", "geology_sandstone_bottom.png", "geology_sandstone.png"},
             groups = {cracky=3, stone=1, pane_connect = 1}
         },
         ["geology:stone"] = {
@@ -130,10 +130,10 @@ local geology_def_table = {
 }
 
 for k, v in pairs(geology_def_table.craftitems) do
-    core.register_craftitem(k,v)    
+    base.register_craftitem(k,v)    
 end
 for k, v in pairs(geology_def_table.nodes) do
-    core.register_node(k,v)
+    base.register_node(k,v)
 end
 for k, v in pairs(geology_def_table.crafts) do
     core.register_craft(v)

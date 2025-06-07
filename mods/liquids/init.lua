@@ -1,6 +1,6 @@
 -- Courtesy of of Minetest Game (Line 2204-2483 in nodes.lua)
 
-core.register_node("liquids:water_source", {
+base.register_node("liquids:water_source", {
 	description = "Water Source",
 	drawtype = "liquid",
 	waving = 3,
@@ -43,7 +43,7 @@ core.register_node("liquids:water_source", {
 	groups = {water = 3, liquid = 3, cools_lava = 1}
 })
 
-core.register_node("liquids:water_flowing", {
+base.register_node("liquids:water_flowing", {
 	description = "Flowing Water",
 	drawtype = "flowingliquid",
 	waving = 3,

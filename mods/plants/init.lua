@@ -4,7 +4,7 @@ local cactus_def = {
         groups = {choppy = 2, pane_connect = 1}
 }
 
-core.register_node("plants:cactus", cactus_def)
+base.register_node("plants:cactus", cactus_def)
 stairs.register_stair("plants:cactus", cactus_def.description.." Stairs", cactus_def, true)
 stairs.register_stair("plants:cactus", cactus_def.description.." Slab", cactus_def, true)
 core.register_decoration({

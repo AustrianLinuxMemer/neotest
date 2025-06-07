@@ -91,3 +91,13 @@ function base.round(number, n)
         return math.floor(number*factor) / factor
     end
 end
+
+function base.register_craftitem(name, def)
+    def.stack_max = def.stack_max or 64
+    core.register_craftitem(name, def)
+end
+
+function base.register_node(name, def)
+    def.stack_max = def.stack_max or 64
+    core.register_node(name, def)
+end

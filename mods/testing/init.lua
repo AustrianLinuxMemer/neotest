@@ -6,17 +6,17 @@ local testing_definition = {
     after_place_node = base.correct_orientation_after_place_node
 }
 
-core.register_node("testing:testing", testing_definition)
+base.register_node("testing:testing", testing_definition)
 stairs.register_stair("testing:testing", "testing Stair", testing_definition, true)
 stairs.register_slab("testing:testing", "testing Slab", testing_definition, true)
 
-core.register_craftitem("testing:testing_fuel_byproduct", {
+base.register_craftitem("testing:testing_fuel_byproduct", {
     description = "Testing Fuel Byproduct",
     inventory_image = "test_fuel_byproduct.png",
     wield_image = "test_fuel_byproduct.png"
 })
 
-core.register_craftitem("testing:testing_fuel", {
+base.register_craftitem("testing:testing_fuel", {
     description = "Testing Fuel",
     inventory_image = "test_fuel.png",
     wield_image = "test_fuel.png",

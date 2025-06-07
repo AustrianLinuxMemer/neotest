@@ -14,7 +14,7 @@ function stairs.register_slab(t_name, n_name, block_def, add_recipe)
     }
     slab_def["groups"]["slab"] = 1
     slab_def["after_place_node"] = base.correct_orientation_after_place_node
-    core.register_node(slab_name, slab_def)
+    base.register_node(slab_name, slab_def)
     if add_recipe then    
         core.register_craft({
             type = "shaped",
@@ -41,7 +41,7 @@ function stairs.register_stair(t_name, n_name, block_def, add_recipe)
     }
     stair_def["groups"]["stair"] = 1
     stair_def["after_place_node"] = base.correct_orientation_after_place_node
-    core.register_node(stair_name, stair_def)
+    base.register_node(stair_name, stair_def)
     if add_recipe then
         core.register_craft({
             type = "shaped",

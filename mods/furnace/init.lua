@@ -236,7 +236,7 @@ local function furnace_loop(pos, elapsed)
     formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow_fire(remaining.input, total.input), calc_arrow_fire(remaining.fuel, total.fuel)))
     return true
 end
-core.register_node("furnace:furnace", {
+base.register_node("furnace:furnace", {
     description = "Furnace",
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
@@ -248,7 +248,7 @@ core.register_node("furnace:furnace", {
     after_place_node = base.correct_orientation_after_place_node
 })
 
-core.register_node("furnace:active_furnace", {
+base.register_node("furnace:active_furnace", {
     description = "Furnace (active)",
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front_lit.png"},

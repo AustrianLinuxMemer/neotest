@@ -79,9 +79,9 @@ core.register_globalstep(function(dtime)
     end
 end)
 if creative then
-    core.register_item(":", hand_creative)
+    core.register_tool(":", hand_creative)
 else
-    core.register_item(":", hand_survival)
+    core.register_tool(":", hand_survival)
 end
 
 

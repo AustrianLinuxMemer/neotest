@@ -45,7 +45,7 @@ end
 function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name)
     bucket_index["bucket:"..bucket_name] = liquid_name
     liquid_index[liquid_name] = "bucket:"..bucket_name
-    core.register_craftitem("bucket:"..bucket_name, {
+    base.register_craftitem("bucket:"..bucket_name, {
         description = bucket_description,
         inventory_image = bucket_image,
         on_place = on_bucket_place,
@@ -55,11 +55,12 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         _byproducts = {name = "bucket:empty_bucket", count = 1}
     })
 end
-core.register_craftitem("bucket:empty_bucket", {
+base.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
     inventory_image = "bucket.png",
     on_place = on_bucket_place,
     on_use = on_bucket_use,
+    stack_max = 16,
     liquids_pointable = true
 })
 core.register_craft({
