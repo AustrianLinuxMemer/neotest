@@ -83,6 +83,7 @@ for _, t in ipairs(types) do
         tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
         is_ground_content = false,
         groups = {choppy=3, log=1, pane_connect = 1},
+        on_place = base.sixdir_place_node_column
     }
     base.register_node(base_name.."_log", log_def)
     stairs.register_stair(base_name.."_log", log_def.description.." Stairs", log_def, true)

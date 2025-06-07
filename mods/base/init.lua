@@ -30,45 +30,82 @@ function base.is_transparent(pos)
         return false
     end
 end
-function base.rad_to_deg(rad)
-    return ((rad)/(2*math.pi))*360
+function base.dir_to_facedir_column(direction)
+    if direction.x ~= 0 then
+        if direction.x > 0 then
+            return 3*4
+        else
+            return 4*4
+        end
+    elseif direction.y ~= 0 then
+        if direction.y > 0 then
+            return 0*4
+        else
+            return 5*4
+        end
+    elseif direction.z ~= 0 then
+        if direction.z > 0 then
+            return 1*4
+        else
+            return 2*4
+        end
+    else
+        return 0
+    end
 end
-function base.rad_to_facedir(rad_player)
+
+function base.dir_to_facedir_stair(pitch, yaw)
+    local upside_down = yaw > 0
     local dir = {
         math.pi/4,
         (3*math.pi)/4,
         (5*math.pi)/4,
         (7*math.pi)/4
     }
-    local rad = rad_player % (2*math.pi)
+    local param2 = {
+        [true] = {
+            [0] = 0,
+            [1] = 3,
+            [2] = 2,
+            [3] = 1,
+        },
+        [false] = {
+            [0] = 20,
+            [1] = 21,
+            [2] = 22,
+            [3] = 23,
+        }
+    }
+    local rad = pitch
     if rad >= dir[4] or rad < dir[1] then
-        return 2
+        return param2[upside_down][0]
     elseif rad >= dir[1] and rad < dir[2] then
-        return 1
+        return param2[upside_down][1]
     elseif rad >= dir[2] and rad < dir[3] then
-        return 0
+        return param2[upside_down][2]
     elseif rad >= dir[3] and rad < dir[4] then
-        return 3
+        return param2[upside_down][3]
     end
 end
 
-function base.correct_orientation_after_place_node(pos, placer, itemstack, pointed_thing)
-    if placer ~= nil and placer:is_player() then
-        local rot = placer:get_look_horizontal()
-        local node = core.get_node(pos)
-        node.param2 = base.rad_to_facedir(rot+math.pi)
-        core.swap_node(pos, node)
-    end
-    return false
+function base.sixdir_place_node_column(itemstack, placer, pointed_thing)
+    local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
+    local pos = vector.add(direction, pointed_thing.under)
+    local node = {name = itemstack:get_name(), param2 = base.dir_to_facedir_column(direction)}
+    itemstack:take_item(1)
+    core.set_node(pos, node)
+    return itemstack
 end
 
-function base.to_facedir(dir, rot)
-    if dir >= 0 and dir <= 5 and rot >= 0 and rot <= 3 then
-        return dir * 4 + rot
-    end
-end
-function base.from_facedir(facedir)
-    return {dir = math.floor(facedir / 4), rot = facedir % 4}
+function base.place_node_stair(itemstack, placer, pointed_thing)
+    local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
+    local pos = vector.add(direction, pointed_thing.under)
+    local pitch = placer:get_look_horizontal()
+    local yaw = placer:get_look_vertical()
+    local node = {name = itemstack:get_name(), param2 = base.dir_to_facedir_stair(pitch, yaw)}
+    itemstack:take_item(1)
+    core.set_node(pos, node)
+    return itemstack
 end
 
 function base.round(number, n)

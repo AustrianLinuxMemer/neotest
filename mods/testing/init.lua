@@ -25,6 +25,14 @@ base.register_craftitem("testing:testing_fuel", {
     _byproducts = {name = "testing:testing_fuel_byproduct", count = 1}
 })
 
+core.register_tool("testing:orientation", {
+    description = "Orientation tester",
+    on_use = function(_, _, pointed_thing)
+        local dir = vector.subtract(pointed_thing.above, pointed_thing.under)
+        core.chat_send_all(core.serialize(dir))
+    end
+})
+
 core.register_craft({
     type = "fuel",
     recipe = "testing:testing_fuel",
