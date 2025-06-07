@@ -1,1 +1,1 @@
-
+neotest_creative_empty_bucket (Empty the bucket in creative mode) bool true

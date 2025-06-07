@@ -64,7 +64,7 @@ for _, t in ipairs(types) do
         is_ground_content = false,
         groups = {choppy=3, wood=1, pane_connect = 1}
     }
-    core.register_node(base_name.."_planks", planks_def)
+    base.register_node(base_name.."_planks", planks_def)
     fences.register_fence(base_name.."_fence", t.name.." Fence", planks_def)
     core.register_craft({
         type = "shaped",
@@ -84,10 +84,10 @@ for _, t in ipairs(types) do
         is_ground_content = false,
         groups = {choppy=3, log=1, pane_connect = 1},
     }
-    core.register_node(base_name.."_log", log_def)
+    base.register_node(base_name.."_log", log_def)
     stairs.register_stair(base_name.."_log", log_def.description.." Stairs", log_def, true)
     stairs.register_slab(base_name.."_log", log_def.description.." Slab", log_def, true)
-    core.register_node(base_name.."_leaves", {
+    base.register_node(base_name.."_leaves", {
         description = t.name.." leaves",
         drawtype = "allfaces_optional",
         sunlight_propagates = true,
@@ -96,7 +96,7 @@ for _, t in ipairs(types) do
         groups = {snappy=3, leaf=1}
     })
 
-    core.register_node(base_name.."_sapling", {
+    base.register_node(base_name.."_sapling", {
         description = t.name.." sapling",
         drawtype = "plantlike",
         inventory_image = t.tname.."_sapling.png",
@@ -207,7 +207,7 @@ for _, t in ipairs(types) do
         rotation = "random",
     })
 end
-core.register_craftitem("tree:stick", {
+base.register_craftitem("tree:stick", {
     description = "Stick",
     inventory_image = "tree_stick.png",
     groups = {stick=1}

@@ -12,7 +12,12 @@ local function on_bucket_place(itemstack, placer, pointed_thing)
         else
             core.set_node(vector.new(pos.x, pos.y+1, pos.z), {name = liquid_name})
         end
-        return ItemStack("bucket:empty_bucket")
+        if core.settings:get_bool("neotest_creative_empty_bucket", true) then
+            return ItemStack("bucket:empty_bucket")
+        else
+            return itemstack
+        end
+        
     else
         return nil
     end

@@ -9,7 +9,7 @@ local function get_all_items()
     }
     for k, v in pairs(core.registered_items) do
         if not v.groups["no_creative"] and not forbidden[k] then
-            table.insert(list, ItemStack(k))
+            table.insert(list, ItemStack({name = k, count = v.stack_max}))
         end
     end
     -- Sorting the items after technical name
