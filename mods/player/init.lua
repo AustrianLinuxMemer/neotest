@@ -1,4 +1,4 @@
-local creative = core.settings:get_bool("creative_mode", false) or false
+local creative = core.settings:get_bool("creative_mode", false)
 local hand_survival = {
     type = "none",  -- Makes it the player's hand
     wield_image = "wieldhand.png",
