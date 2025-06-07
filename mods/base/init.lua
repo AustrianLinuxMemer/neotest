@@ -31,81 +31,63 @@ function base.is_transparent(pos)
     end
 end
 function base.dir_to_facedir_column(direction)
-    if direction.x ~= 0 then
-        if direction.x > 0 then
-            return 3*4
-        else
-            return 4*4
-        end
-    elseif direction.y ~= 0 then
-        if direction.y > 0 then
-            return 0*4
-        else
-            return 5*4
-        end
-    elseif direction.z ~= 0 then
-        if direction.z > 0 then
-            return 1*4
-        else
-            return 2*4
-        end
-    else
-        return 0
-    end
+    if direction.y ~= 0 then return 0 end
+    if direction.z ~= 0 then return 4 end
+    if direction.x ~= 0 then return 12 end
+    return 0
 end
 
 function base.dir_to_facedir_stair(pitch, yaw)
-    local upside_down = yaw > 0
-    local dir = {
-        math.pi/4,
-        (3*math.pi)/4,
-        (5*math.pi)/4,
-        (7*math.pi)/4
+    local upright = pitch > 0
+    local facedir = minetest.dir_to_facedir({x = math.cos(yaw+math.pi/2), y = 0, z = math.sin(yaw+math.pi/2)})
+    core.chat_send_all(facedir)
+    local param2_map = {
+        [true] = {0, 1, 2, 3},
+        [false] = {20, 23, 22, 21},
     }
-    local param2 = {
-        [true] = {
-            [0] = 0,
-            [1] = 3,
-            [2] = 2,
-            [3] = 1,
-        },
-        [false] = {
-            [0] = 20,
-            [1] = 21,
-            [2] = 22,
-            [3] = 23,
-        }
-    }
-    local rad = pitch
-    if rad >= dir[4] or rad < dir[1] then
-        return param2[upside_down][0]
-    elseif rad >= dir[1] and rad < dir[2] then
-        return param2[upside_down][1]
-    elseif rad >= dir[2] and rad < dir[3] then
-        return param2[upside_down][2]
-    elseif rad >= dir[3] and rad < dir[4] then
-        return param2[upside_down][3]
+    return param2_map[upright][facedir + 1]
+end
+
+function base.dir_to_fourdir(direction, yaw)
+    if direction.y ~= 0 then
+        -- Placed on top of a node, needing yaw
+        return core.dir_to_facedir({x = math.cos(yaw+math.pi/2), y = 0, z = math.sin(yaw+math.pi/2)})
+    else
+        -- Placed against a node, not needing yaw, negating vector to make the block face towards the player
+        local opposite = vector.multiply(direction, -1)
+        return core.dir_to_fourdir(opposite)
     end
+
 end
 
-function base.sixdir_place_node_column(itemstack, placer, pointed_thing)
+function base.mod_column(pos, placer, itemstack, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(direction, pointed_thing.under)
-    local node = {name = itemstack:get_name(), param2 = base.dir_to_facedir_column(direction)}
-    itemstack:take_item(1)
-    core.set_node(pos, node)
-    return itemstack
+    local node = core.get_node(pos)
+    node.param2 = base.dir_to_facedir_column(direction)
+    core.swap_node(pos, node)
+    return core.settings:get_bool("creative_mode", false)
 end
 
-function base.place_node_stair(itemstack, placer, pointed_thing)
+function base.mod_stair(pos, placer, itemstack, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(direction, pointed_thing.under)
-    local pitch = placer:get_look_horizontal()
-    local yaw = placer:get_look_vertical()
-    local node = {name = itemstack:get_name(), param2 = base.dir_to_facedir_stair(pitch, yaw)}
-    itemstack:take_item(1)
-    core.set_node(pos, node)
-    return itemstack
+    local pitch = placer:get_look_vertical()
+    local yaw = placer:get_look_horizontal()
+    local node = core.get_node(pos)
+    node.param2 = base.dir_to_facedir_stair(pitch, yaw)
+    core.swap_node(pos, node)
+    return core.settings:get_bool("creative_mode", false)
+end
+
+function base.mod_fordir_node(pos, placer, itemstack, pointed_thing)
+    local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
+    local pos = vector.add(direction, pointed_thing.under)
+    local yaw = placer:get_look_horizontal()
+    local node = core.get_node(pos)
+    node.param2 = base.dir_to_fourdir(direction)
+    core.swap_node(pos, node)
+    return core.settings:get_bool("creative_mode", false)
 end
 
 function base.round(number, n)

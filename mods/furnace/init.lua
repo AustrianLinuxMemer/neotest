@@ -245,7 +245,7 @@ base.register_node("furnace:furnace", {
     on_rightclick = open_furnace,
     on_timer = furnace_loop,
     on_dig = destroy_furnace,
-    after_place_node = base.correct_orientation_after_place_node
+    after_place_node = base.mod_fourdir_node
 })
 
 base.register_node("furnace:active_furnace", {
@@ -259,7 +259,7 @@ base.register_node("furnace:active_furnace", {
     on_timer = furnace_loop,
     on_dig = destroy_furnace,
     drop = "furnace:furnace",
-    after_place_node = base.correct_orientation_after_place_node
+    after_place_node = base.mod_fourdir_node
 })
 
 core.register_craft({
