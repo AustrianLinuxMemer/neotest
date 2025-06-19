@@ -133,6 +133,7 @@ for _, t in ipairs(types) do
     stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
     local door_name = base_name.."_door"
     local door_def = table.copy(planks_def)
+    door_def.description = t.name.." Door"
     door_def.use_texture_alpha = "blend"
     door_def.tiles = {{name = t.tname.."_door.png", backface_culling=true}}
     doors.register_door(door_name, door_def)
