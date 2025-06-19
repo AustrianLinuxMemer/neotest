@@ -76,7 +76,20 @@ for _, t in ipairs(types) do
     })
     stairs.register_stair(base_name.."_planks", planks_def.description.." Stairs", planks_def, true)
     stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
-    
+    local door_name = base_name.."_door"
+    local door_def = table.copy(planks_def)
+    door_def.use_texture_alpha = "blend"
+    door_def.tiles = {{name = t.tname.."_door.png", backface_culling=true}}
+    doors.register_door(door_name, door_def)
+    core.register_craft({
+    	type = "shaped",
+    	output = door_name.." 3",
+    	recipe = {
+    		{base_name.."_planks", base_name.."_planks"},
+    		{base_name.."_planks", base_name.."_planks"},
+    		{base_name.."_planks", base_name.."_planks"}
+    	}
+    })
     local log_def = {
         description = t.name.." Log",
         paramtype2 = "facedir",

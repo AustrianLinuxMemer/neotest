@@ -48,3 +48,12 @@ base.register_node("torch:torch_attached", {
 		wall_side = {-8/16, -4/16, -2/16, -2/16, 6/16, 2/16},
 	}
 })
+
+core.register_craft({
+	type = "shaped",
+	output = "torch:torch 4",
+	recipe = {
+		{"group:coal"},
+		{"group:stick"}
+	}
+})
