@@ -12,7 +12,7 @@ local cactus_def = {
 
 base.register_node("plants:cactus", cactus_def)
 stairs.register_stair("plants:cactus", cactus_def.description.." Stairs", cactus_def, true)
-stairs.register_stair("plants:cactus", cactus_def.description.." Slab", cactus_def, true)
+stairs.register_slab("plants:cactus", cactus_def.description.." Slab", cactus_def, true)
 core.register_decoration({
     deco_type = "schematic",
     place_on = {"geology:sand"},
