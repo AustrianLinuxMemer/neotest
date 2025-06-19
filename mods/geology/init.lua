@@ -63,7 +63,8 @@ local geology_def_table = {
                 "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png"
             },
             is_ground_content = true,
-            groups = {crumbly=3, soil=1, pane_connect = 1}
+            groups = {crumbly=3, soil=1, pane_connect = 1},
+            drop = "geology:dirt"
         },
         ["geology:coal_ore"] = {
             description = "Coal ore",

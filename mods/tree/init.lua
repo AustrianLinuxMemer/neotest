@@ -1,6 +1,68 @@
 local types = {
     {name = "Oak", tname = "oak"}
 }
+local schematics = {
+    ["tree:oak_sapling"] = {
+        {name = core.get_modpath("tree").."/schematics/oak_tree_large.mts", stem_dimension = vector.new(1,3,1), crown_dimension = vector.new(5,5,5)},
+        {name = core.get_modpath("tree").."/schematics/oak_tree_medium.mts", stem_dimension = vector.new(1,2,1), crown_dimension = vector.new(5,5,5)},
+        {name = core.get_modpath("tree").."/schematics/oak_tree_small.mts", stem_dimension = vector.new(1,1,1), crown_dimension = vector.new(5,5,5)},
+    }
+}
+local valid_grow_nodes = {
+    ["geology:dirt"] = true,
+    ["geology:grass_block"] = true
+}
+local function count_air(pos1, pos2, nodenames)
+    local table = core.find_nodes_in_area(pos1, pos2, nodenames, true)
+    local count = 0
+    for _, c in pairs(table) do
+        count = count + #c
+    end
+    return count
+end
+local function calc_volume(pos1, pos2)
+    local dx = pos2.x - pos1.x + 1
+    local dy = pos2.y - pos1.y + 1
+    local dz = pos2.z - pos1.z + 1
+    return dx * dy * dz
+end
+local function place_if_space(center_pos, schematic, sapling_name)
+    halves = {
+        stem = {
+            x = (schematic.stem_dimension.x - 1) / 2,
+            y = (schematic.stem_dimension.y - 1) / 2,
+            z = (schematic.stem_dimension.z - 1) / 2,
+        },
+        crown = {
+            x = (schematic.crown_dimension.x - 1) / 2,
+            y = (schematic.crown_dimension.y - 1) / 2,
+            z = (schematic.crown_dimension.z - 1) / 2,
+        }
+    }
+    pmin = {
+        stem = vector.new(center_pos.x - halves.stem.x, center_pos.y, center_pos.z - halves.stem.z),
+        crown = vector.new(center_pos.x - halves.crown.x, center_pos.y + schematic.stem_dimension.y, center_pos.z - halves.crown.z)
+    }
+    pmax = {
+        stem = vector.new(center_pos.x + halves.stem.x, center_pos.y + schematic.stem_dimension.y, center_pos.z + halves.stem.z),
+        crown = vector.new(center_pos.x + halves.crown.x, center_pos.y + schematic.stem_dimension.y + schematic.crown_dimension.y, center_pos.z + halves.crown.z)
+    }
+    nodes = {
+        stem = count_air(pmin.stem, pmax.stem, {"air", sapling_name}),
+        crown = count_air(pmin.crown, pmax.crown, {"air"})
+    }
+    volume = {
+        stem = calc_volume(pmin.stem, pmax.stem),
+        crown = calc_volume(pmin.crown, pmax.crown)
+    }
+    local place_at = vector.new(center_pos.x - halves.crown.x, center_pos.y, center_pos.z - halves.crown.z)
+    if nodes.stem == volume.stem and nodes.crown == volume.crown then
+        core.place_schematic(place_at, schematic.name, "random", nil, true)
+    else
+        local timer = core.get_node_timer(center_pos)
+        timer:set(math.random(15, 25))
+    end
+end
 local leaf_abm = {
     nodenames = {"group:leaf"},
     interval = 0.1,
@@ -32,29 +94,17 @@ local leaf_abm = {
         end
     end
 }
-
-local sapling_abm = {
-    nodenames = {"group:sapling"},
-    interval = 1,
-    chance = 25,
-    action = function(pos, node)
-        local sapling = core.get_node(pos)
-        local min_blocks_above = 15 -- later configurable
-        local block_beneath = core.get_node({x = pos.x, y = pos.y-1, z = pos.z})
-        local viable = true
-        for dy = pos.y, pos.y+min_blocks_above do
-            local block_name = core.get_node({x = pos.x, y = pos.y + dy, z = pos.z}).name
-            if not block_name == "air" then
-                viable = false
-                break
-            end
-        end
-        local block_above = core.get_node({x = pos.x, y = pos.y+1, z = pos.z})
-        if core.get_item_group(block_beneath, "soil") > 0 and viable then
-            
-        end
+local function sapling_grows(pos)
+    local ground = core.get_node({pos.x, pos.y - 1, pos.z})
+    local sapling = core.get_node(pos)
+    local valid_ground = valid_grow_nodes[ground.name]
+    local schematic_list = schematics[sapling.name]
+    if schematic_list ~= nil then
+        local schematic = schematic_list[math.random(#schematic_list)]
+        place_if_space(pos, schematic, sapling.name)
     end
-}
+end
+
 for _, t in ipairs(types) do
     local base_name = "tree:"..t.tname
     
@@ -107,7 +157,15 @@ for _, t in ipairs(types) do
         sunlight_propagates = true,
         tiles = {t.tname.."_leaves.png"},
         is_ground_content = false,
-        groups = {snappy=3, leaf=1}
+        groups = {snappy=3, leaf=1},
+        drop = {
+            max_items = 1,
+            items = {
+                {rarity = 3, items = {base_name.."_sapling"}},
+                {rarity = 3, items = {base_name.."_leaves"}},
+                {rarity = 3, items = {"tree:stick"}}
+            }
+        }
     })
 
     base.register_node(base_name.."_sapling", {
@@ -115,7 +173,12 @@ for _, t in ipairs(types) do
         drawtype = "plantlike",
         inventory_image = t.tname.."_sapling.png",
         tiles = {t.tname.."_sapling.png"},
-        groups = {oddly_breakable_by_hand=1}
+        groups = {oddly_breakable_by_hand=1, sapling=1},
+        on_timer = sapling_grows,
+        on_construct = function(pos)
+            local timer = core.get_node_timer(pos)
+            timer:start(math.random(15, 30))
+        end
     })
     core.register_craft({
         type = "fuel",
@@ -232,4 +295,3 @@ core.register_craft({
     recipe = {{"group:wood"}, {"group:wood"}}
 })
 core.register_abm(leaf_abm)
-core.register_abm(sapling_abm)
