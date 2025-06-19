@@ -9,7 +9,7 @@ Block groups for tools
 Here are all node groups that tools of this game care about:
 
 - `choppy`: Used for node resembling wood and wood products
-- `snappy`: Used for nodes that can be cut by fine tools (currently not used by tools)
+- `snappy`: Used for nodes that can be cut by fine tools
 - `crumbly`: Used for dirt, sand, gravel, etc...
 - `cracky`: Used for stones and ores
 - `oddly\_breakable\_by\_hand`: Used for things the player needs to break instantly
@@ -26,5 +26,7 @@ In Neotest, instead of using hard dependencies for cross-mod crafting recipes, w
 - `gold`: Used Gold Ingots and equivalent
 - `diamond`: Used for Diamonds and equivalent
 - `gem`: An overarching group that all gems (including diamonds) belong to
+- `nugget_iron`: Used to identify items that smelt down to iron nuggets
+- `nugget_gold`: Used to identify items that smelt down to gold nuggets
 
 For items that wish to not be included in the creative menu, simply add `no_creative = 1` to the item's group

@@ -90,7 +90,12 @@ local leaf_abm = {
             end
         end
         if to_remove then
+            local node = core.get_node(pos)    
+            local node_drops = core.get_node_drops(node, ":")
             core.set_node(pos, {name = "air"})
+            for _, v in pairs(node_drops) do
+                core.add_item(pos, v)
+            end
         end
     end
 }
@@ -157,13 +162,13 @@ for _, t in ipairs(types) do
         sunlight_propagates = true,
         tiles = {t.tname.."_leaves.png"},
         is_ground_content = false,
-        groups = {snappy=3, leaf=1},
+        groups = {snappy=1, leaf=1},
         drop = {
             max_items = 1,
             items = {
-                {rarity = 3, items = {base_name.."_sapling"}},
-                {rarity = 3, items = {base_name.."_leaves"}},
-                {rarity = 3, items = {"tree:stick"}}
+                {rarity = 1, tools = {"tools:shears"}, items = {base_name.."_leaves"}},
+                {rarity = 2, items = {base_name.."_sapling"}},
+                {rarity = 2, items = {"tree:stick"}}
             }
         }
     })
