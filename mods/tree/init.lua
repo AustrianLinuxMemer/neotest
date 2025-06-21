@@ -3,9 +3,9 @@ local types = {
 }
 local schematics = {
     ["tree:oak_sapling"] = {
-        {name = core.get_modpath("tree").."/schematics/oak_tree_large.mts", stem_dimension = vector.new(1,3,1), crown_dimension = vector.new(5,5,5)},
-        {name = core.get_modpath("tree").."/schematics/oak_tree_medium.mts", stem_dimension = vector.new(1,2,1), crown_dimension = vector.new(5,5,5)},
-        {name = core.get_modpath("tree").."/schematics/oak_tree_small.mts", stem_dimension = vector.new(1,1,1), crown_dimension = vector.new(5,5,5)},
+        {name = core.get_modpath("tree").."/schematics/oak_tree_large.mts", stem_dimension = vector.new(1,4,1), crown_dimension = vector.new(5,5,5)},
+        {name = core.get_modpath("tree").."/schematics/oak_tree_medium.mts", stem_dimension = vector.new(1,3,1), crown_dimension = vector.new(5,5,5)},
+        {name = core.get_modpath("tree").."/schematics/oak_tree_small.mts", stem_dimension = vector.new(1,2,1), crown_dimension = vector.new(5,5,5)},
     }
 }
 local valid_grow_nodes = {
