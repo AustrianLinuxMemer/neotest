@@ -19,6 +19,10 @@ local geology_def_table = {
             description = "Diamond",
             inventory_image = "geology_diamond.png",
             groups = {diamond = 1, gemstone = 1}
+        },
+        ["geology:clay_lump"] = {
+            description = "Clay lump",
+            inventory_image = "geology_clay_lump.png"
         }
     },
     nodes = {
@@ -92,7 +96,19 @@ local geology_def_table = {
             groups = {cracky=3, ore=1, pane_connect = 1},
             drop = "geology:diamond",
             stack_max = 64
-        },  
+        },
+        ["geology:clay"] = {
+            description = "Clay",
+            tiles = {"geology_clay.png"},
+            is_ground_content = true,
+            groups = {crumbly=3, pane_connect = 1},
+            drop = {
+                {chance = 3, drop = "geology:clay_lump 3"},
+                {chance = 3, drop = "geology:clay_lump 4"},
+                {chance = 3, drop = "geology:clay_lump 5"},
+            },
+            stack_max = 64
+        }
     },
     yes_slab_stair = {
         "geology:cobble",
@@ -100,7 +116,8 @@ local geology_def_table = {
         "geology:sandstone",
         "geology:dirt",
         "geology:sand",
-        "geology:gravel"
+        "geology:gravel",
+        "geology:clay"
     },
     crafts = {
         {

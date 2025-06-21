@@ -129,6 +129,25 @@ core.register_ore({
     },
 })
 
+-- Clay
+core.register_ore({
+    ore_type = "blob",
+    ore = "geology:clay",
+    wherein = {"geology:gravel", "geology:sand", "geology:dirt"},
+    clust_scarcity = 10*10*10,
+    clust_size = 4,
+    y_max = 31000,
+    y_min = -31000,
+    noise_params = {
+        offset = 0,
+        scale = 1,
+        spread = {x = 100, y = 100, z = 100},
+        seed = 23,
+        octaves = 3,
+        persistence = 0.7
+    },
+})
+
 -- Gravel
 core.register_ore({
     ore_type = "blob",
