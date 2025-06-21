@@ -22,7 +22,8 @@ local geology_def_table = {
         },
         ["geology:clay_lump"] = {
             description = "Clay lump",
-            inventory_image = "geology_clay_lump.png"
+            inventory_image = "geology_clay_lump.png",
+            stack_max = 16
         }
     },
     nodes = {
@@ -94,8 +95,7 @@ local geology_def_table = {
             tiles = {"geology_diamond_ore.png"},
             is_ground_content = true,
             groups = {cracky=3, ore=1, pane_connect = 1},
-            drop = "geology:diamond",
-            stack_max = 64
+            drop = "geology:diamond"
         },
         ["geology:clay"] = {
             description = "Clay",
@@ -103,11 +103,13 @@ local geology_def_table = {
             is_ground_content = true,
             groups = {crumbly=3, pane_connect = 1},
             drop = {
-                {chance = 3, drop = "geology:clay_lump 3"},
-                {chance = 3, drop = "geology:clay_lump 4"},
-                {chance = 3, drop = "geology:clay_lump 5"},
-            },
-            stack_max = 64
+                max_items = 1,
+                items = {
+                    {rarity = 3, items = {"geology:clay_lump 3"}},
+                    {rarity = 2, items = {"geology:clay_lump 4"}},
+                    {rarity = 1, items = {"geology:clay_lump 5"}}
+                }
+            }
         }
     },
     yes_slab_stair = {
@@ -116,8 +118,7 @@ local geology_def_table = {
         "geology:sandstone",
         "geology:dirt",
         "geology:sand",
-        "geology:gravel",
-        "geology:clay"
+        "geology:gravel"
     },
     crafts = {
         {
@@ -142,6 +143,14 @@ local geology_def_table = {
             type = "fuel",
             recipe = "geology:coal",
             burntime = 30
+        },
+        {
+            type = "shaped",
+            output = "geology:clay",
+            recipe = {
+                {"geology:clay_lump", "geology:clay_lump"},
+                {"geology:clay_lump", "geology:clay_lump"}
+            }
         }
     }
 }
