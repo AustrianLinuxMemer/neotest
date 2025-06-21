@@ -147,6 +147,6 @@ function base.chat_send_all_debug(msg)
 end
 function base.chat_send_player_debug(player_name, msg)
     if neotest_debug then
-        core.chat_send_all(player_name, msg)
+        core.chat_send_player(player_name, msg)
     end
 end
