@@ -61,7 +61,7 @@ core.register_tool("screwdriver:screwdriver", {
 })
 
 core.register_craft({
-    type = shaped,
+    type = "shaped",
     output = "screwdriver:screwdriver",
     recipe = {
         {"group:iron"},

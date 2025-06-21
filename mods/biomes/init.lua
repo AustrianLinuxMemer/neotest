@@ -41,11 +41,10 @@ core.register_biome({
     name = "desert",
     node_top = "geology:sand",
     depth_top = 3,
-    node_filler = "geology:sandstone",
-    depth_filler = 128,
     node_riverbed = "geology:sand",
     depth_riverbed = 2,
-    y_min = 7,
+    node_stone = "geology:sandstone",
+    y_min = 1,
     heat_point = 75,
     humidity_point = 25
 })
@@ -58,31 +57,19 @@ core.register_biome({
     depth_filler = 1,
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,
-    y_max = 6,    
+    y_max = 6,
+    y_min = 0,   
     heat_point = 50,
     humidity_point = 50
 })
--- Desert Beach
+-- Temperate Gravel Ocean
 core.register_biome({
-    name = "temperate_beach",
-    node_top = "geology:sand",
-    depth_top = 3,
-    node_filler = "geology:sandstone",
-    depth_filler = 1,
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    y_max = 6,    
-    heat_point = 75,
-    humidity_point = 75
-})
--- Temperate Gravel Beach
-core.register_biome({
-    name = "temperate_gravel_beach",
+    name = "temperate_gravel_ocean",
     node_top = "geology:gravel",
     depth_top = 3,
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,    
-    y_max = 6,
+    y_max = -1,
     heat_point = 50,
     humidity_point = 50
 })
@@ -136,7 +123,7 @@ core.register_ore({
     wherein = {"geology:gravel", "geology:sand", "geology:dirt"},
     clust_scarcity = 10*10*10,
     clust_size = 4,
-    y_max = 31000,
+    y_max = -1,
     y_min = -31000,
     noise_params = {
         offset = 0,

@@ -48,7 +48,7 @@ local function open_furnace(pos, node, player)
 end
 local function destroy_furnace(pos, node, digger)
     if digger:is_player() then
-        if base.is_protected(pos, player:get_player_name(), "tried to dig a furnace at") then
+        if base.is_protected(pos, digger:get_player_name(), "tried to dig a furnace at") then
             return
         end
         local node_meta = core.get_meta(pos)

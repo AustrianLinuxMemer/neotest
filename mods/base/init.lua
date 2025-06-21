@@ -25,7 +25,7 @@ function base.is_transparent(pos)
     if node_def ~= nil then
         local transparent_by_drawtype = transparent_drawtypes[node_def.drawtype]
         local transparent_by_sunlight_propagates = node_def.sunlight_propagates
-        return transparent_by_drawtype or transparent_by_paramtype or transparent_by_sunlight_propagates
+        return transparent_by_drawtype or transparent_by_sunlight_propagates
     else
         return false
     end
