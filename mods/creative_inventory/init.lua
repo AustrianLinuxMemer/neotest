@@ -1,5 +1,9 @@
 local creative = core.settings:get_bool("creative_mode", false) or false
 
+local function compare_items(a,b)
+    return a:get_name() < b:get_name()
+end
+
 local items = {}
 function items.get_all_nodes()
     local list = {}
@@ -15,11 +19,7 @@ function items.get_all_nodes()
         end
     end
     -- Sorting the items after technical name
-    table.sort(list, function(a,b)
-        local name_a = a:get_name()
-        local name_b = b:get_name()
-        return name_a < name_b
-    end)
+    table.sort(list, compare_items)
     return list
 end
 function items.get_all_tools()
@@ -36,11 +36,7 @@ function items.get_all_tools()
         end
     end
     -- Sorting the items after technical name
-    table.sort(list, function(a,b)
-        local name_a = a:get_name()
-        local name_b = b:get_name()
-        return name_a < name_b
-    end)
+    table.sort(list, compare_items)
     return list
 end
 function items.get_all_craftitems()
@@ -57,11 +53,7 @@ function items.get_all_craftitems()
         end
     end
     -- Sorting the items after technical name
-    table.sort(list, function(a,b)
-        local name_a = a:get_name()
-        local name_b = b:get_name()
-        return name_a < name_b
-    end)
+    table.sort(list, compare_items)
     return list
 end
 
