@@ -68,7 +68,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
 end
 base.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
-    inventory_image = "bucket.png",
+    inventory_image = "bucket_bucket.png",
     on_place = on_bucket_place,
     on_use = on_bucket_use,
     stack_max = 16,
@@ -83,9 +83,9 @@ core.register_craft({
     }
 })
 
-register_bucket("water_bucket", "Water Bucket", "water_bucket.png", "liquids:water_source")
-register_bucket("river_water_bucket", "River Water Bucket", "river_water_bucket.png", "liquids:river_water_source")
-register_bucket("lava_bucket", "Lava Bucket", "lava_bucket.png", "liquids:lava_source")
+register_bucket("water_bucket", "Water Bucket", "bucket_bucket_water.png", "liquids:water_source")
+register_bucket("river_water_bucket", "River Water Bucket", "bucket_bucket_river_water.png", "liquids:river_water_source")
+register_bucket("lava_bucket", "Lava Bucket", "bucket_bucket_lava.png", "liquids:lava_source")
 
 core.register_craft({
     type = "fuel",
