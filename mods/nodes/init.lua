@@ -1,8 +1,13 @@
 local nodes = {
-    ["nodes:brick"] = {
+    ["nodes:bricks"] = {
         description = "Brick",
-        tiles = {"nodes_brick_block.png"},
-        groups ={cracky=3}
+        tiles = {"nodes_bricks.png"},
+        groups = {cracky=3}
+    },
+    ["nodes:stone_bricks"] = {
+        description = "Stone Brick",
+        tiles = {"nodes_stone_bricks.png"},
+        groups = {cracky=3}
     }
 }
 local recipes = {
@@ -10,13 +15,22 @@ local recipes = {
         type = "shaped",
         output = "nodes:bricks",
         recipe = {
-            {"nodes:bricks","nodes:bricks"},
-            {"nodes:bricks","nodes:bricks"}
+            {"materials:brick","materials:brick"},
+            {"materials:brick","materials:brick"}
+        }
+    },
+    {
+        type = "shaped",
+        output = "nodes:stone_bricks",
+        recipe = {
+            {"geology:stone", "geology:stone"},
+            {"geology:stone", "geology:stone"}
         }
     }
 }
 local stairs_slabs = {
-    "nodes:brick"
+    "nodes:bricks",
+    "nodes:stone_bricks"
 }
 
 for k, v in pairs(nodes) do
