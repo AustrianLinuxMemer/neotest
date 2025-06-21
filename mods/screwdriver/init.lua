@@ -11,7 +11,7 @@ end
 
 core.register_tool("screwdriver:screwdriver", {
     description = "Screwdriver",
-    inventory_image = "screwdriver.png",
+    inventory_image = "screwdriver_screwdriver.png",
     on_place = function(itemstack, user, pointed_thing)
         local pos = pointed_thing.under
         local node = core.get_node(pos)
