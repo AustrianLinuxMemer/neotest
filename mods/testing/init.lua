@@ -22,7 +22,7 @@ base.register_craftitem("testing:testing_fuel", {
     inventory_image = "test_fuel.png",
     wield_image = "test_fuel.png",
     groups = {no_creative = 1},
-    _byproducts = {name = "testing:testing_fuel_byproduct", count = 1}
+    _byproducts = {{name = "testing:testing_fuel_byproduct", count = 1}}
 })
 
 core.register_tool("testing:orientation", {
@@ -30,7 +30,8 @@ core.register_tool("testing:orientation", {
     on_use = function(_, _, pointed_thing)
         local dir = vector.subtract(pointed_thing.above, pointed_thing.under)
         core.chat_send_all(core.serialize(dir))
-    end
+    end,
+    groups = {no_creative = 1}
 })
 
 core.register_craft({

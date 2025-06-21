@@ -63,7 +63,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         on_use = on_bucket_use,
         liquids_pointable = true,
         stack_max = 1,
-        _byproducts = {name = "bucket:empty_bucket", count = 1}
+        _byproducts = {{name = "bucket:empty_bucket", count = 1}}
     })
 end
 base.register_craftitem("bucket:empty_bucket", {

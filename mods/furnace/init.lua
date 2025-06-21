@@ -176,7 +176,15 @@ local function furnace_loop(pos, elapsed)
     -- * the burntime is greater than zero
     if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() and inventory:room_for_item("output", recipes.fuel.byproduct) and recipes.fuel.time > 0 then
         stacks.fuel:take_item(1)
-        inventory:add_item("output", recipes.fuel.byproduct)
+        for _, byproduct in ipairs(recipes.fuel.byproduct) do
+            local itemstack = ItemStack(byproduct)
+            if inventory:room_for_item("output", itemstack) then
+                inventory:add_item("output", itemstack)
+            else
+                core.add_item(pos, itemstack)
+            end
+        end
+        
         remaining.fuel = recipes.fuel.time
         total.fuel = recipes.fuel.time
         
@@ -190,6 +198,14 @@ local function furnace_loop(pos, elapsed)
     if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and intermediary:is_empty() and recipes.input.time > 0 then
         stacks.input:take_item(1)
         intermediary:add_item(ItemStack(recipes.input.output))
+        for _, byproduct in ipairs(recipes.input.byproduct) do
+            local itemstack = ItemStack(byproduct)
+            if inventory:room_for_item("output", itemstack) then
+                inventory:add_item("output", itemstack)
+            else
+                core.add_item(pos, itemstack)
+            end
+        end
         remaining.input = recipes.input.time
         total.input = recipes.input.time
     end
