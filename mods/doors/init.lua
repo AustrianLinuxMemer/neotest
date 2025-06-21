@@ -33,7 +33,10 @@ function door_on_destroy(pos)
 	local above = vector.add(pos, vector.new(0,1,0))
 	core.set_node(above, {name="air"})
 end
-function door_on_rightclick(pos, node)
+function door_on_rightclick(pos, node, player)
+    if base.is_protected(pos, player:get_player_name(), "tried to interact with a door") then
+        return
+    end
     local meta = core.get_meta(pos)
     local closed = meta:get_int("closed")
     local lr = meta:get_int("lr")
@@ -66,5 +69,42 @@ function doors.register_door(door_name, def)
     door_def.on_rightclick = door_on_rightclick
     door_def.after_place_node = door_after_place
     door_def.on_destruct = door_on_destroy
+    door_def.groups["door"] = 1
     base.register_node(door_name, door_def)
 end
+
+core.register_chatcommand("fixdoorair", {
+    params = "pos1 pos2 [pos1 pos2]...",
+    description = "Removes \"door air\"",
+    privs = {server = true},
+    func = function(name, param)
+        local params = string.split(param, " ", false)
+        if #params % 6 ~= 0 then
+            return false
+        end
+        local cords = {}
+        for i = 1, #params, 3 do
+            local x = tonumber(params[i])
+            local y = tonumber(params[i+1])
+            local z = tonumber(params[i+2])
+            if x == nil or y == nil or z == nil then
+                return false
+            end
+            table.insert(cords, vector.new(x,y,z))
+        end
+        for i = 1, #cords, 2 do
+            local pos1 = cords[i]
+            local pos2 = cords[i+1]
+            local instances = core.find_nodes_in_area(pos1, pos2, {"doors:top_node"}, true)
+            if instances["doors:top_node"] ~= nil then
+                for k,v in ipairs(instances["doors:top_node"]) do
+                    local below = vector.new(v.x, v.y-1, v.z)
+                    if core.get_node_group(core.get_node(below).name, "door") <= 0 then
+                        core.set_node(v, {name = "air"})
+                    end
+                end
+            end
+        end
+        return true
+    end
+})

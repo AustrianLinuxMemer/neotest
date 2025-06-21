@@ -120,3 +120,21 @@ function base.register_node(name, def)
     def.stack_max = def.stack_max or 64
     core.register_node(name, def)
 end
+
+function base.log_protection_violation(pos, player_name, action)
+    core.log("action", "[Protection] "..player_name.." tried to "..action.." at "..vector.to_string(pos))
+end
+
+function base.communicate_protection_violation(pos, player_name, action)
+    core.chat_send_player(player_name, "You are not allowed to do "..action.." at "..vector.to_string(pos))
+end
+
+function base.is_protected(pos, player_name, action)
+    if core.is_protected(pos, player_name) then
+        base.log_protection_violation(pos, player_name, action)
+        base.communicate_protection_violation(pos, player_name, action)
+        return true
+    else
+        return false
+    end
+end

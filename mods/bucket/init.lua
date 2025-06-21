@@ -5,6 +5,9 @@ local function on_bucket_place(itemstack, placer, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(pointed_thing.under, direction)
     local liquid_name = bucket_index[itemstack:get_name()]
+    if base.is_protected(pos, placer:get_player_name(), "tried to take a bucket of "..liquid_name) then
+        return itemstack
+    end
     if core.get_node(pos).name == "air" then
         local creative = core.settings:get_bool("creative_mode", false)
         local empty_bucket = core.settings:get_bool("neotest_creative_empty_bucket", false)
@@ -33,7 +36,9 @@ local function on_bucket_use(itemstack, user, pointed_thing)
     core.chat_send_all(core.get_node(pos).name)
     local bucket_name = liquid_index[core.get_node(pos).name]
     local inv = user:get_inventory()
-
+    if base.is_protected(pos, user:get_player_name(), "tried to empty a bucket") then
+        return itemstack
+    end
     if bucket_name ~= nil then
         local item = ItemStack(bucket_name)
         itemstack:take_item(1)

@@ -15,6 +15,9 @@ core.register_tool("screwdriver:screwdriver", {
     on_place = function(itemstack, user, pointed_thing)
         local pos = pointed_thing.under
         local node = core.get_node(pos)
+        if base.is_protected(pos, user:get_player_name(), "tried to modify a node with a screwdriver") then
+            return
+        end
         if core.registered_nodes[node.name].paramtype2 == "facedir" then
             local dir_rot = from_facedir(node.param2)
             if (dir_rot.dir < 6) then
@@ -30,6 +33,9 @@ core.register_tool("screwdriver:screwdriver", {
     on_use = function(itemstack, user, pointed_thing)
         local pos = pointed_thing.under
         local node = core.get_node(pos)
+        if base.is_protected(pos, user:get_player_name(), "tried to modify a node with a screwdriver") then
+            return
+        end
         if core.registered_nodes[node.name].paramtype2 == "facedir" then
             local dir_rot = from_facedir(node.param2)
             if (dir_rot.rot < 5) then

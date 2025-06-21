@@ -1,1 +1,2 @@
 neotest_creative_empty_bucket (Empty the bucket in creative mode) bool true
+neotest_creative_singleplayer_autogrant_privs (automatically grant all privileges to singleplayer if creative mode is enabled) bool false

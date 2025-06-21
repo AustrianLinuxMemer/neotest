@@ -1,4 +1,5 @@
 local creative = core.settings:get_bool("creative_mode", false)
+local creative_singleplayer_autogrant_privs = core.settings:get_bool("neotest_creative_singleplayer_autogrant_privs", false)
 local hand_survival = {
     type = "none",  -- Makes it the player's hand
     wield_image = "wieldhand.png",
@@ -83,6 +84,17 @@ end)
 
 if creative then
     core.register_tool(":", hand_creative)
+    -- Grant all privileges to "singleplayer" if configured to do so
+    if core.is_singleplayer() and creative_singleplayer_autogrant_privs then
+        core.register_on_joinplayer(function(player, last_login)
+            local name = player:get_player_name()
+            local grant = {}
+            for k, _ in pairs(core.registered_privileges) do
+                grant[k] = true
+            end
+            core.set_player_privs(name, grant)
+        end)
+    end
 else
     core.register_tool(":", hand_survival)
 end

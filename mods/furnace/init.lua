@@ -34,6 +34,9 @@ local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)
     local furnace_id = meta:get_string("furnace_id")
     if player:is_player() then
+        if base.is_protected(pos, player:get_player_name(), "tried to open a furnace at") then
+            return
+        end
         local player_meta = player:get_meta()
         player_meta:set_string("furnace_id", furnace_id)
         if furnace_subscriptions[furnace_id] == nil then
@@ -45,6 +48,9 @@ local function open_furnace(pos, node, player)
 end
 local function destroy_furnace(pos, node, digger)
     if digger:is_player() then
+        if base.is_protected(pos, player:get_player_name(), "tried to dig a furnace at") then
+            return
+        end
         local node_meta = core.get_meta(pos)
         local node_inv = node_meta:get_inventory()
         local digger_inv = digger:get_inventory()
