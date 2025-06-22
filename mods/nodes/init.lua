@@ -8,12 +8,22 @@ local nodes = {
         description = "Stone Brick",
         tiles = {"nodes_stone_bricks.png"},
         groups = {cracky=3}
+    },
+    ["nodes:smooth_sandstone"] = {
+        description = "Smooth Sandstone",
+        tiles = {"nodes_smooth_sandstone_top.png", "nodes_smooth_sandstone_top.png", "nodes_smooth_sandstone.png"},
+        groups = {cracky=3}
+    },
+    ["nodes:sandstone_bricks"] = {
+        description = "Sandstone Bricks",
+        tiles = {"nodes_sandstone_bricks.png"},
+         groups = {cracky=3}
     }
 }
 local recipes = {
     {
         type = "shaped",
-        output = "nodes:bricks",
+        output = "nodes:bricks 4",
         recipe = {
             {"materials:brick","materials:brick"},
             {"materials:brick","materials:brick"}
@@ -21,16 +31,32 @@ local recipes = {
     },
     {
         type = "shaped",
-        output = "nodes:stone_bricks",
+        output = "nodes:stone_bricks 4",
         recipe = {
             {"geology:stone", "geology:stone"},
             {"geology:stone", "geology:stone"}
+        }
+    },
+    {
+        type = "cooking",
+        output = "nodes:smooth_sandstone",
+        recipe = "geology:sandstone",
+        cooktime = 20
+    },
+    {
+        type = "shaped",
+        output = "nodes:sandstone_bricks 4",
+        recipe = {
+            {"nodes:smooth_sandstone", "nodes:smooth_sandstone"},
+            {"nodes:smooth_sandstone", "nodes:smooth_sandstone"}
         }
     }
 }
 local stairs_slabs = {
     "nodes:bricks",
-    "nodes:stone_bricks"
+    "nodes:stone_bricks",
+    "nodes:smooth_sandstone",
+    "nodes:sandstone_bricks"
 }
 
 for k, v in pairs(nodes) do

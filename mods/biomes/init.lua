@@ -57,6 +57,7 @@ core.register_biome({
     depth_filler = 1,
     node_riverbed = "geology:gravel",
     depth_riverbed = 2,
+    vertical_blend = 8,
     y_max = 6,
     y_min = 0,   
     heat_point = 50,
@@ -68,11 +69,27 @@ core.register_biome({
     node_top = "geology:gravel",
     depth_top = 3,
     node_riverbed = "geology:gravel",
-    depth_riverbed = 2,    
+    depth_riverbed = 2,
+    vertical_blend = 8,   
     y_max = -1,
     heat_point = 50,
-    humidity_point = 50
+    humidity_point = 50,
 })
+-- Temperate Sand Ocean
+core.register_biome({
+    name = "temperate_sand_ocean",
+    node_top = "geology:sand",
+    depth_top = 3,
+    node_filler = "geology:sandstone",
+    depth_filler = 1,
+    node_riverbed = "geology:gravel",
+    depth_riverbed = 2,
+    vertical_blend = 8,    
+    y_max = -1,
+    heat_point = 50,
+    humidity_point = 50,
+})
+
 -- Replace all grass blocks under non-air with dirt
 core.register_on_generated(function(minp, maxp, seed)
     local is_liquid = {
