@@ -28,7 +28,7 @@ local function init_furnace(pos)
     inv:set_stack("output", 3, ItemStack())
     inv:set_stack("output", 4, ItemStack())
     inv:set_stack("intermediary", 1, ItemStack())
-    core.get_node_timer(pos):start(2)
+    core.get_node_timer(pos):start(0.01)
 end
 local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)

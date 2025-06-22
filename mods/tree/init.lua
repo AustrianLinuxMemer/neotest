@@ -112,10 +112,10 @@ end
 
 for _, t in ipairs(types) do
     local base_name = "tree:"..t.tname
-    
+    local texture_base_name = "tree_"..t.tname
     local planks_def = {
         description = t.name.." Planks",
-        tiles = {t.tname.."_planks.png"},
+        tiles = {texture_base_name.."_planks.png"},
         is_ground_content = false,
         groups = {choppy=3, wood=1, pane_connect = 1}
     }
@@ -133,10 +133,10 @@ for _, t in ipairs(types) do
     stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
     local door_name = base_name.."_door"
     local door_def = table.copy(planks_def)
-    door_def.inventory_image = t.tname.."_door_item.png"
+    door_def.inventory_image = texture_base_name.."_door_item.png"
     door_def.description = t.name.." Door"
     door_def.use_texture_alpha = "blend"
-    door_def.tiles = {{name = t.tname.."_door.png", backface_culling=true}}
+    door_def.tiles = {{name = texture_base_name.."_door.png", backface_culling=true}}
     doors.register_door(door_name, door_def)
     core.register_craft({
     	type = "shaped",
@@ -150,7 +150,7 @@ for _, t in ipairs(types) do
     local log_def = {
         description = t.name.." Log",
         paramtype2 = "facedir",
-        tiles = {t.tname.."_log.png", t.tname.."_log.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png", t.tname.."_bark.png"},
+        tiles = {texture_base_name.."_log.png", texture_base_name.."_log.png", texture_base_name.."_bark.png", texture_base_name.."_bark.png", texture_base_name.."_bark.png", texture_base_name.."_bark.png"},
         is_ground_content = false,
         groups = {choppy=3, log=1, pane_connect = 1},
         after_place_node = base.mod_column
@@ -162,7 +162,7 @@ for _, t in ipairs(types) do
         description = t.name.." leaves",
         drawtype = "allfaces_optional",
         sunlight_propagates = true,
-        tiles = {t.tname.."_leaves.png"},
+        tiles = {texture_base_name.."_leaves.png"},
         is_ground_content = false,
         groups = {snappy=1, leaf=1},
         drop = {
@@ -178,8 +178,8 @@ for _, t in ipairs(types) do
     base.register_node(base_name.."_sapling", {
         description = t.name.." sapling",
         drawtype = "plantlike",
-        inventory_image = t.tname.."_sapling.png",
-        tiles = {t.tname.."_sapling.png"},
+        inventory_image = texture_base_name.."_sapling.png",
+        tiles = {texture_base_name.."_sapling.png"},
         groups = {oddly_breakable_by_hand=1, sapling=1},
         on_timer = sapling_grows,
         on_construct = function(pos)
