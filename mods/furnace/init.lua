@@ -28,7 +28,7 @@ local function init_furnace(pos)
     inv:set_stack("output", 3, ItemStack())
     inv:set_stack("output", 4, ItemStack())
     inv:set_stack("intermediary", 1, ItemStack())
-    core.get_node_timer(pos):start(0.1)
+    core.get_node_timer(pos):start(2)
 end
 local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)
@@ -126,32 +126,34 @@ local function calc_arrow_fire(remaining, full)
 end
 local function get_recipes(stacks)
     -- Furnaces always use the first listed recipe
-    local fuel_output, d = core.get_craft_result({
+    local fuel_output, d_fuel = core.get_craft_result({
         items = {stacks.fuel},
-        width = 1,
         method = "fuel"
     })
-    local input_output, d = core.get_craft_result({
+    local input_output, d_input = core.get_craft_result({
         items = {stacks.input},
-        width = 1,
         method = "cooking"
     })
-    local registration_fuel = core.registered_items[stacks.fuel:get_name()]
-    local registration_input = core.registered_items[stacks.input:get_name()]
+    base.chat_send_all_debug(dump2(input_output, "input_output"))
+    base.chat_send_all_debug(dump2(d_input, "d_input"))
+    base.chat_send_all_debug(dump2(fuel_output, "fuel_output"))
+    base.chat_send_all_debug(dump2(d_input, "d_fuel"))
     local recipes = {
         fuel = {
-            input = stacks.input,
-            output = ItemStack(),
-            time = fuel_output.time
+            input = stacks.fuel,
+            remaining = d_fuel.items,
+            byproducts = fuel_output.replacements,
+            time = fuel_output.time,
+            output = fuel_output.item
         },
         input = {
             input = stacks.input,
-            output = input_output.item,
-            time = input_output.time
+            remaining = d_input.items,
+            byproducts = input_output.replacements,
+            time = input_output.time,
+            output = input_output.item
         }
     }
-    recipes.fuel.byproduct = registration_fuel._byproducts or {}
-    recipes.input.byproduct = registration_input._byproducts or {}
     return recipes
 end
 
@@ -181,8 +183,13 @@ local function furnace_loop(pos, elapsed)
     -- * the byproduct would fit into the output list
     -- * the burntime is greater than zero
     if remaining.fuel <= 0 and not stacks.fuel:is_empty() and not stacks.input:is_empty() and inventory:room_for_item("output", recipes.fuel.byproduct) and recipes.fuel.time > 0 then
-        stacks.fuel:take_item(1)
-        for _, byproduct in ipairs(recipes.fuel.byproduct) do
+        stacks.fuel = recipes.fuel.remaining[1]
+        -- Drop out additinal remainders
+        for i = 2, #recipes.fuel.remaining do
+            local remains = recipes.fuel.remaining[i]
+            core.add_item(pos, remains)
+        end
+        for _, byproduct in ipairs(recipes.fuel.byproducts) do
             local itemstack = ItemStack(byproduct)
             if inventory:room_for_item("output", itemstack) then
                 inventory:add_item("output", itemstack)
@@ -202,9 +209,14 @@ local function furnace_loop(pos, elapsed)
     -- * If the cooktime is not zero
     -- * If the intermediary is empty
     if remaining.fuel > 0 and remaining.input <= 0 and not stacks.input:is_empty() and intermediary:is_empty() and recipes.input.time > 0 then
-        stacks.input:take_item(1)
+        stacks.input = recipes.input.remaining[1]
+        -- Drop out additinal remainders
+        for i = 2, #recipes.input.remaining do
+            local remains = recipes.input.remaining[i]
+            core.add_item(pos, remains)
+        end
         intermediary:add_item(ItemStack(recipes.input.output))
-        for _, byproduct in ipairs(recipes.input.byproduct) do
+        for _, byproduct in ipairs(recipes.input.byproducts) do
             local itemstack = ItemStack(byproduct)
             if inventory:room_for_item("output", itemstack) then
                 inventory:add_item("output", itemstack)

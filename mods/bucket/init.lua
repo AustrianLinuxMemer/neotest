@@ -1,17 +1,20 @@
 local bucket_index = {}
 local liquid_index = {}
 
+
+
+
 local function on_bucket_place(itemstack, placer, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(pointed_thing.under, direction)
-    local liquid_name = bucket_index[itemstack:get_name()]
-    if base.is_protected(pos, placer:get_player_name(), "tried to take a bucket of "..liquid_name) then
+    local liquid_name = bucket_index[itemstack:get_name()] or ""
+    if base.is_protected(pos, placer:get_player_name(), "tried to place a bucket of "..liquid_name) then
         return itemstack
     end
     if core.get_node(pos).name == "air" then
         local creative = core.settings:get_bool("creative_mode", false)
         local empty_bucket = core.settings:get_bool("neotest_creative_empty_bucket", false)
-        if liquid_name == nil then
+        if liquid_name == nil or liquid_name == "" then
             return itemstack
         end
         core.set_node(pos, {name = liquid_name})
@@ -33,10 +36,10 @@ local function on_bucket_use(itemstack, user, pointed_thing)
         return itemstack
     end
     local pos = pointed_thing.under
-    core.chat_send_all(core.get_node(pos).name)
+    base.chat_send_all_debug(core.get_node(pos).name)
     local bucket_name = liquid_index[core.get_node(pos).name]
     local inv = user:get_inventory()
-    if base.is_protected(pos, user:get_player_name(), "tried to empty a bucket") then
+    if base.is_protected(pos, user:get_player_name(), "tried to pick up "..core.get_node(pos).name.." with a bucket") then
         return itemstack
     end
     if bucket_name ~= nil then
@@ -58,7 +61,7 @@ local function on_bucket_use(itemstack, user, pointed_thing)
         return itemstack
     end
 end
-function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name)
+function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name, fuel, btime)
     bucket_index["bucket:"..bucket_name] = liquid_name
     liquid_index[liquid_name] = "bucket:"..bucket_name
     base.register_craftitem("bucket:"..bucket_name, {
@@ -68,8 +71,15 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         on_use = on_bucket_use,
         liquids_pointable = true,
         stack_max = 1,
-        _byproducts = {{name = "bucket:empty_bucket", count = 1}}
     })
+    if fuel and btime ~= 0 then
+        core.register_craft({
+            type = "fuel",
+            recipe = "bucket:"..bucket_name,
+            burntime = btime,
+            replacements = {{"bucket:"..bucket_name, "bucket:empty_bucket"}},
+        })
+    end
 end
 base.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
@@ -90,10 +100,5 @@ core.register_craft({
 
 register_bucket("water_bucket", "Water Bucket", "bucket_bucket_water.png", "liquids:water_source")
 register_bucket("river_water_bucket", "River Water Bucket", "bucket_bucket_river_water.png", "liquids:river_water_source")
-register_bucket("lava_bucket", "Lava Bucket", "bucket_bucket_lava.png", "liquids:lava_source")
+register_bucket("lava_bucket", "Lava Bucket", "bucket_bucket_lava.png", "liquids:lava_source", true, 2000)
 
-core.register_craft({
-    type = "fuel",
-    recipe = "bucket:lava_bucket",
-    burntime = 2000
-})

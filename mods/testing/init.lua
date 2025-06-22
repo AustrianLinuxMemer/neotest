@@ -22,7 +22,6 @@ base.register_craftitem("testing:testing_fuel", {
     inventory_image = "test_fuel.png",
     wield_image = "test_fuel.png",
     groups = {no_creative = 1},
-    _byproducts = {{name = "testing:testing_fuel_byproduct", count = 1}}
 })
 
 core.register_tool("testing:orientation", {
@@ -37,5 +36,6 @@ core.register_tool("testing:orientation", {
 core.register_craft({
     type = "fuel",
     recipe = "testing:testing_fuel",
-    burntime = 1
+    burntime = 1,
+    replacements = {{"testing:testing_fuel", "testing:testing_fuel_byproduct"}}
 })
