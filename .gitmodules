@@ -1,3 +1,6 @@
 [submodule "mods/sfinv"]
 	path = mods/sfinv
 	url = https://github.com/rubenwardy/sfinv.git
+[submodule "mods/creatura"]
+	path = mods/creatura
+	url = https://github.com/ElCeejo/creatura.git
