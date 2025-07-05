@@ -24,3 +24,5 @@ core.register_decoration({
     height = 1,
     height_max = 3
 })
+
+loot.add_to_loot_pool({item = "plants:cactus", max_q = 3, prob = 0.2, keys = {"desert"}})

@@ -1,3 +1,5 @@
 neotest_creative_empty_bucket (Empty the bucket in creative mode) bool true
-neotest_creative_singleplayer_autogrant_privs (automatically grant all privileges to singleplayer if creative mode is enabled) bool false
+neotest_creative_singleplayer_autogrant_privs (grant all privileges in creative singleplayer) bool false
 neotest_debug (Enable Debug chat outputs) bool false
+neotest_default_prop (Default probability for loot) float 0.2 0 1
+neotest_default_max_w (Default value for maximum tool wear) int 65535 0 65535

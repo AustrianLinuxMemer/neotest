@@ -57,3 +57,5 @@ core.register_craft({
 		{"group:stick"}
 	}
 })
+
+loot.add_to_loot_pool({item = "torch:torch", max_q = 8, prob = 0.2})

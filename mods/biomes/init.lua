@@ -9,111 +9,106 @@ minetest.register_alias("mapgen_dirt_with_grass", "geology:grass_block")
 
 minetest.register_alias("mapgen_tree", "tree:oak_log")
 minetest.register_alias("mapgen_leaves", "tree:oak_leaves")
--- Temperate Biome
-core.register_biome({
-    name = "temperate",
-    node_top = "geology:grass_block",
-    depth_top = 1,
-    node_filler = "geology:dirt",
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    depth_filler = 3,
-    y_min = 7,
-    heat_point = 50,
-    humidity_point = 50
-})
 
--- Temperate Forest Biome
-core.register_biome({
-    name = "temperate_forest",
-    node_top = "geology:grass_block",
-    depth_top = 1,
-    node_filler = "geology:dirt",
-    depth_filler = 3,
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    y_min = 7,    
-    heat_point = 50,
-    humidity_point = 50
-})
--- Desert biome
-core.register_biome({
-    name = "desert",
-    node_top = "geology:sand",
-    depth_top = 3,
-    node_riverbed = "geology:sand",
-    depth_riverbed = 2,
-    node_stone = "geology:sandstone",
-    y_min = 1,
-    heat_point = 75,
-    humidity_point = 25
-})
--- Temperate Beach
-core.register_biome({
-    name = "temperate_beach",
-    node_top = "geology:sand",
-    depth_top = 3,
-    node_filler = "geology:sandstone",
-    depth_filler = 1,
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    vertical_blend = 8,
-    y_max = 6,
-    y_min = 0,   
-    heat_point = 50,
-    humidity_point = 50
-})
--- Temperate Gravel Ocean
-core.register_biome({
-    name = "temperate_gravel_ocean",
-    node_top = "geology:gravel",
-    depth_top = 3,
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    vertical_blend = 8,   
-    y_max = -1,
-    heat_point = 50,
-    humidity_point = 50,
-})
--- Temperate Sand Ocean
-core.register_biome({
-    name = "temperate_sand_ocean",
-    node_top = "geology:sand",
-    depth_top = 3,
-    node_filler = "geology:sandstone",
-    depth_filler = 1,
-    node_riverbed = "geology:gravel",
-    depth_riverbed = 2,
-    vertical_blend = 8,    
-    y_max = -1,
-    heat_point = 50,
-    humidity_point = 50,
-})
-
--- Replace all grass blocks under non-air with dirt
-core.register_on_generated(function(minp, maxp, seed)
-    local is_liquid = {
-        [core.get_content_id("liquids:water_source")] = true,
-        [core.get_content_id("liquids:water_flowing")] = true,
+biomes = {
+    biome_def = {
+        ["biomes:temperate"] = {
+            node_top = "geology:grass_block",
+            depth_top = 1,
+            node_filler = "geology:dirt",
+            depth_filler = 3,
+            node_riverbed = "geology:gravel",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            y_min = 7,
+            heat_point = 50,
+            humidity_point = 50
+        },
+        ["biomes:temperate_forest"] = {
+            node_top = "geology:grass_block",
+            depth_top = 1,
+            node_filler = "geology:dirt",
+            depth_filler = 3,
+            node_riverbed = "geology:gravel",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            y_min = 7,    
+            heat_point = 50,
+            humidity_point = 50
+        },
+        ["biomes:desert"] = {
+            node_top = "geology:sand",
+            depth_top = 3,
+            node_riverbed = "geology:sand",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:sandstone_bricks",
+            node_dungeon_stair = "nodes:sandstone_bricks_stairs",
+            node_stone = "geology:sandstone",
+            y_min = 1,
+            heat_point = 75,
+            humidity_point = 25
+        },
+        ["biomes:temperate_beach"] = {
+            node_top = "geology:sand",
+            depth_top = 3,
+            node_filler = "geology:sandstone",
+            depth_filler = 1,
+            node_riverbed = "geology:gravel",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            vertical_blend = 8,
+            y_max = 6,
+            y_min = 0,   
+            heat_point = 50,
+            humidity_point = 50
+        },
+        ["biomes:temperate_gravel_ocean"] = {
+            node_top = "geology:gravel",
+            depth_top = 3,
+            node_riverbed = "geology:gravel",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            vertical_blend = 8,   
+            y_max = -1,
+            heat_point = 50,
+            humidity_point = 50,
+        },
+        ["biome:temperate_sand_ocean"] = {
+            node_top = "geology:sand",
+            depth_top = 3,
+            node_filler = "geology:sandstone",
+            depth_filler = 1,
+            node_riverbed = "geology:sand",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            vertical_blend = 8,    
+            y_max = -1,
+            heat_point = 50,
+            humidity_point = 50,
+        }
     }
-    local voxelmanip = core.get_mapgen_object("voxelmanip")
-    local emin, emax = voxelmanip:read_from_map(minp, maxp)
-    local area = VoxelArea:new({MinEdge = emin, MaxEdge = emax})
-    local data = voxelmanip:get_data()
-    for z = emin.z, emax.z do
-        for y = emin.y, emax.y do
-            for x = emin.x, emax.x do
-                local index = area:index(x, y, z)
-                local index_beneath = area:index(x, y-1, z)
-                if data[index_beneath] == core.get_content_id("geology:grass_block") and data[index] ~= core.get_content_id("air") then
-                    data[index_beneath] = core.get_content_id("geology:dirt")
-                end
-            end
-        end
-    end
-    voxelmanip:set_data(data)
-    voxelmanip:write_to_map(true)
-end)
+}
+for _, biome in pairs(biomes.biome_def) do
+    core.register_biome(biome)
+end
+
+chest.register_loot_chest("biomes:loot_temperate", {{
+    deco_type = "simple",
+    place_on = {"geology:cobble", "nodes:stone_bricks"},
+    decoration = "biomes:loot_temperate",
+    fill_ratio = 0.01
+}}, "temperate")
+chest.register_loot_chest("biomes:loot_desert", {{
+    deco_type = "simple",
+    place_on = {"nodes:sandstone_bricks"},
+    decoration = "biomes:loot_desert",
+    fill_ratio = 0.01
+}}, "desert")
 -- Sand
 core.register_ore({
     ore_type = "blob",

@@ -102,3 +102,7 @@ register_bucket("water_bucket", "Water Bucket", "bucket_bucket_water.png", "liqu
 register_bucket("river_water_bucket", "River Water Bucket", "bucket_bucket_river_water.png", "liquids:river_water_source")
 register_bucket("lava_bucket", "Lava Bucket", "bucket_bucket_lava.png", "liquids:lava_source", true, 2000)
 
+loot.add_to_loot_pool({item = "bucket:bucket", max_q = 4, prob = 0.2})
+loot.add_to_loot_pool({item = "bucket:water_bucket", max_q = 1, prob = 0.2})
+loot.add_to_loot_pool({item = "bucket:river_water_bucket", max_q = 1, prob = 0.2})
+loot.add_to_loot_pool({item = "bucket:lava_bucket", max_q = 1, prob = 0.01})

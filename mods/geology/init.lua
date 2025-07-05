@@ -199,3 +199,12 @@ core.register_abm({
         end
     end
 })
+loot.add_to_loot_pool({item = "geology:coal", max_q = 16, prob = 0.1})
+loot.add_to_loot_pool({item = "geology:iron_ingot", max_q = 16, prob = 0.1})
+loot.add_to_loot_pool({item = "geology:gold_ingot", max_q = 16, prob = 0.01})
+loot.add_to_loot_pool({item = "geology:clay_lump", max_q = 16, prob = 0.1})
+loot.add_to_loot_pool({item = "geology:diamond", max_q = 16, prob = 0.001})
+loot.add_to_loot_pool({item = "geology:sand", max_q = 16, prob = 0.1, keys = {"desert"}})
+loot.add_to_loot_pool({item = "geology:sandstone", max_q = 16, prob = 0.1, keys = {"desert"}})
+loot.add_to_loot_pool({item = "geology:cobble", max_q = 16, prob = 0.1})
+loot.add_to_loot_pool({item = "geology:gravel", max_q = 16, prob = 0.1})

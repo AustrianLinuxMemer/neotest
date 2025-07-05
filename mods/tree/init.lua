@@ -117,7 +117,7 @@ for _, t in ipairs(types) do
         description = t.name.." Planks",
         tiles = {texture_base_name.."_planks.png"},
         is_ground_content = false,
-        groups = {choppy=3, wood=1, pane_connect = 1}
+        groups = {choppy=3, planks=1, pane_connect = 1}
     }
     base.register_node(base_name.."_planks", planks_def)
     fences.register_fence(base_name.."_fence", t.name.." Fence", planks_def)
@@ -290,6 +290,10 @@ for _, t in ipairs(types) do
         flags = "place_center_x, place_center_z",
         rotation = "random",
     })
+    loot.add_to_loot_pool({item = base_name.."_log", max_q = 16, prob = 0.2, keys = {"temperate"}})
+    loot.add_to_loot_pool({item = base_name.."_planks", max_q = 16, prob = 0.2, keys = {"temperate"}})
+    loot.add_to_loot_pool({item = base_name.."_door", max_q = 16, prob = 0.2, keys = {"temperate"}})
+    loot.add_to_loot_pool({item = base_name.."_sapling", max_q = 16, prob = 0.2, keys = {"temperate"}})
 end
 base.register_craftitem("tree:stick", {
     description = "Stick",
@@ -299,6 +303,7 @@ base.register_craftitem("tree:stick", {
 core.register_craft({
     type = "shaped",
     output = "tree:stick 4",
-    recipe = {{"group:wood"}, {"group:wood"}}
+    recipe = {{"group:planks"}, {"group:planks"}}
 })
 core.register_abm(leaf_abm)
+loot.add_to_loot_pool({item = "tree:stick", max_q = 16, prob = 0.2})

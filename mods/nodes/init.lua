@@ -70,3 +70,8 @@ end
 for _, v in ipairs(recipes) do
     core.register_craft(v)
 end
+
+loot.add_to_loot_pool({item = "nodes:bricks", max_q = 16, prob = 0.2})
+loot.add_to_loot_pool({item = "nodes:stone_bricks", max_q = 16, prob = 0.2})
+loot.add_to_loot_pool({item = "nodes:sandstone_bricks", max_q = 16, prob = 0.2, keys = {"desert"}})
+loot.add_to_loot_pool({item = "nodes:smooth_sandstone", max_q = 16, prob = 0.2, keys = {"desert"}})

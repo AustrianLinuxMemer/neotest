@@ -43,7 +43,7 @@ core.register_craft({
     replacements = {{"bucket:river_water_bucket", "bucket:empty_bucket"}}
 })
 
-core.register_craftitem("materials:paper", {
+base.register_craftitem("materials:paper", {
     description = "Paper",
     inventory_image = "materials_paper.png"
 })
@@ -54,3 +54,8 @@ core.register_craft({
     recipe = "materials:pulp",
     cooktime = 10
 })
+
+loot.add_to_loot_pool({item = "materials:brick", max_q = 16, prob = 0.2})
+loot.add_to_loot_pool({item = "materials:sawdust", max_q = 16, prob = 0.2})
+loot.add_to_loot_pool({item = "materials:pulp", max_q = 16, prob = 0.2})
+loot.add_to_loot_pool({item = "materials:paper", max_q = 16, prob = 0.2})

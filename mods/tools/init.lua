@@ -104,7 +104,7 @@ core.register_craft({
     type = "shaped",
     output = "tools:wooden_pickaxe",
     recipe = {
-        {"group:wood", "group:wood", "group:wood"},
+        {"group:planks", "group:planks", "group:planks"},
         {"", "group:stick", ""},
         {"", "group:stick", ""}
     }
@@ -447,3 +447,20 @@ core.register_craft({
         {"group:stick", ""}
     }
 })
+
+
+loot.add_to_loot_pool({item = "tools:wooden_pickaxe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:stone_pickaxe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:iron_pickaxe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:gold_pickaxe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:diamond_pickaxe", max_q = 1, prob = 0.02})
+
+loot.add_to_loot_pool({item = "tools:stone_shovel", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:iron_shovel", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:gold_shovel", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:diamond_shovel", max_q = 1, prob = 0.02})
+
+loot.add_to_loot_pool({item = "tools:stone_axe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:iron_axe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:gold_axe", max_q = 1, prob = 0.02})
+loot.add_to_loot_pool({item = "tools:diamond_axe", max_q = 1, prob = 0.02})

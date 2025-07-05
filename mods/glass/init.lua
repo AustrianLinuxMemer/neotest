@@ -23,3 +23,6 @@ core.register_craft({
     recipe = "group:sand",
     cooktime = 15
 })
+
+loot.add_to_loot_pool({item = "glass:glass", max_q = 16, prob = 0.1, keys = {"desert"}})
+loot.add_to_loot_pool({item = "glass:glass_pane", max_q = 16, prob = 0.1, keys = {"desert"}})

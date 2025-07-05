@@ -1,5 +1,5 @@
 base = {}
-transparent_drawtypes = {
+local transparent_drawtypes = {
     normal = false,
     airlike = true,
     liquid = false,
