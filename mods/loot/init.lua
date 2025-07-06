@@ -48,15 +48,18 @@ function loot.add_to_loot_pool(loot_def)
         -- add the loot definition to it's appropriate loot pool
         if loot.loot_pool[key] == nil then
             loot.loot_pool[key] = {}
-        else
-            table.insert(loot.loot_pool[key], loot_def)
         end
+        table.insert(loot.loot_pool[key], loot_def)
     end
 end
 function loot.get_chest_loot(invlist, key)
     local key = key or "default"
     -- Every chest loot starts with the default table
-    local loot_list = loot.loot_pool["default"]
+    local loot_list = {}
+    for _, loot in ipairs(loot.loot_pool["default"]) do
+        table.insert(loot_list, loot)
+    end
+    
     -- If the key does not equal to default, the key's loot table gets appended to the loot list, but only if the loot list exists
     if key ~= "default" then
         local additional = loot.loot_pool[key]
