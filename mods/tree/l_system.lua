@@ -8,9 +8,10 @@ trees = {
 		[2] = "oak_medium"
 	},
 	["oak_large"] = {
-		axiom="FFFFFFFAFFBF",
-		rules_a="[&FFF&&FF][&&&+++FFF&&FFFF][&&FFF&&FF]",
-		rules_b="[&&+FF&&+FF][&&&FFF&&FFF][&&&FFF&&++FFF]",
+		axiom = "FFFACB",
+		rules_a = "F[+FFFf][-FFFf]",
+		rules_b = "F[&FFFf][^^FFFf]",
+		rules_c = "F[//FFf][**FFf]",
 		trunk="tree:oak_log",
 		leaves="tree:oak_leaves",
 		angle=30,
@@ -20,9 +21,10 @@ trees = {
 		thin_branches=true
 	},
 	["oak_medium"] = {
-		axiom="FFFAFB",
-		rules_a="[F&&FF][&FFFF][&F&&FF]",
-		rules_b="[&FF][&&FF&&FFF][&&++FF]",
+		axiom = "FFFACB",
+		rules_a = "F[+FFFf][-FFFf]",
+		rules_b = "F[&FFFf][^^FFFf]",
+		rules_c = "F[//FFf][**FFf]",
 		trunk="tree:oak_log",
 		leaves="tree:oak_leaves",
 		angle=30,
