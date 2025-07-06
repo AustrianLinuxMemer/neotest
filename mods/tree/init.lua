@@ -66,9 +66,10 @@ local leaf_abm = {
         end
     end
 }
-local function sapling_grows(pos)
-    local tree_name = trees.indices[math.random(#trees.indices)]
-    local ltree = trees[tree_name]
+local function sapling_grows(pos, tree_type)
+    local available_trees = trees[tree_type]
+    local tree_name = available_trees.indices[math.random(#available_trees.indices)]
+    local ltree = available_trees[tree_name]
     if place_ltree(pos, ltree) then
         core.remove_node(pos)
     end
@@ -154,11 +155,11 @@ for _, t in ipairs(types) do
         inventory_image = texture_base_name.."_sapling.png",
         tiles = {texture_base_name.."_sapling.png"},
         groups = {oddly_breakable_by_hand=1, sapling=1},
-        on_timer = sapling_grows,
+        on_timer = function(pos) sapling_grows(pos, t.tname) end,
         on_construct = function(pos)
             local timer = core.get_node_timer(pos)
             timer:start(math.random(15, 30))
-        end
+        end,
     })
     core.register_craft({
         type = "fuel",
@@ -191,87 +192,14 @@ for _, t in ipairs(types) do
         output = base_name.."_sapling",
         recipe = {base_name.."_leaves"}
     })
-    local tree_path = core.get_modpath("tree").."/schematics/"
-    local short = tree_path..t.tname.."_tree_small.mts"
-    local medium = tree_path..t.tname.."_tree_medium.mts"
-    local large = tree_path..t.tname.."_tree_large.mts"
-    -- Forest trees
-    --[[
-	core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.02,
-        biomes = {"temperate_forest"},
-        y_max = 4000,
-        schematic = short,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-    core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.02,
-        biomes = {"temperate_forest"},
-        y_max = 3500,
-        schematic = medium,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-    core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.02,
-        biomes = {"temperate_forest"},
-        y_max = 3000,
-        schematic = large,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-    -- Trees in non-forests
-    core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.002,
-        biomes = {"temperate"},
-        y_max = 4000,
-        schematic = short,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-    core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.002,
-        biomes = {"temperate"},
-        y_max = 3500,
-        schematic = medium,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-    core.register_decoration({
-        deco_type = "schematic",
-        place_on = {"geology:grass_block"},
-        sidelen = 16,
-        fill_ratio = 0.002,
-        biomes = {"temperate"},
-        y_max = 3000,
-        schematic = large,
-        flags = "place_center_x, place_center_z",
-        rotation = "random",
-    })
-	]]
+
 	core.register_decoration({
 		deco_type = "lsystem",
 		place_on = {"geology:grass_block"},
         biomes = {"temperate_forest"},
 		sidelen = 16,
 		fill_ratio = 0.01,
-		treedef = trees.oak_large
+		treedef = trees[t.tname]["large"]
 	})
     core.register_decoration({
 		deco_type = "lsystem",
@@ -279,7 +207,7 @@ for _, t in ipairs(types) do
         biomes = {"temperate"},
 		sidelen = 16,
 		fill_ratio = 0.0005,
-		treedef = trees.oak_large
+		treedef = trees[t.tname]["large"]
 	})
     core.register_decoration({
 		deco_type = "lsystem",
@@ -287,7 +215,7 @@ for _, t in ipairs(types) do
         biomes = {"temperate_forest"},
 		sidelen = 16,
 		fill_ratio = 0.01,
-		treedef = trees.oak_medium
+		treedef = trees[t.tname]["medium"]
 	})
     core.register_decoration({
 		deco_type = "lsystem",
@@ -295,7 +223,7 @@ for _, t in ipairs(types) do
         biomes = {"temperate"},
 		sidelen = 16,
 		fill_ratio = 0.0005,
-		treedef = trees.oak_medium
+		treedef = trees[t.tname]["medium"]
 	})
     loot.add_to_loot_pool({item = base_name.."_log", max_q = 16, prob = 0.2, keys = {"temperate"}})
     loot.add_to_loot_pool({item = base_name.."_planks", max_q = 16, prob = 0.2, keys = {"temperate"}})
