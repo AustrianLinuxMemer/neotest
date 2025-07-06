@@ -64,7 +64,7 @@ local function init_loot_chest(pos)
     local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
     local key = core.registered_nodes[oldnode.name]["_key"]
-    local list_with_loot = loot.get_chest_loot(inv:get_list("chest"), key)
+    local list_with_loot = loot.get_loot(inv:get_list("chest"), key)
     inv:set_list("chest", list_with_loot)
 end
 function chest.register_loot_chest(name, decorations, key)

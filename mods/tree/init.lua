@@ -1,67 +1,34 @@
+dofile(core.get_modpath("tree").."/l_system.lua")
+
 local types = {
     {name = "Oak", tname = "oak"}
-}
-local schematics = {
-    ["tree:oak_sapling"] = {
-        {name = core.get_modpath("tree").."/schematics/oak_tree_large.mts", stem_dimension = vector.new(1,4,1), crown_dimension = vector.new(5,5,5)},
-        {name = core.get_modpath("tree").."/schematics/oak_tree_medium.mts", stem_dimension = vector.new(1,3,1), crown_dimension = vector.new(5,5,5)},
-        {name = core.get_modpath("tree").."/schematics/oak_tree_small.mts", stem_dimension = vector.new(1,2,1), crown_dimension = vector.new(5,5,5)},
-    }
 }
 local valid_grow_nodes = {
     ["geology:dirt"] = true,
     ["geology:grass_block"] = true
 }
-local function count_air(pos1, pos2, nodenames)
-    local table = core.find_nodes_in_area(pos1, pos2, nodenames, true)
-    local count = 0
-    for _, c in pairs(table) do
-        count = count + #c
+local function place_ltree(center_pos, ltree)
+    local corner_1 = vector.new(center_pos.x-25, center_pos.y, center_pos.z-25)
+    local corner_2 = vector.new(center_pos.x+25, center_pos.y+75, center_pos.z+25)
+    
+    local lvm, emin, emax = core.get_voxel_manip(corner_1, corner_2)
+    local voxelarea = VoxelArea(emin, emax)
+
+    local old_data = lvm:get_data()
+    core.spawn_tree_on_vmanip(lvm, center_pos, ltree)
+
+    local new_data = lvm:get_data()
+    -- Check if non-air nodes are overridden
+    for i = 1, #old_data do
+        local old_id = old_data[i]
+        local new_id = new_data[i]
+        if old_id ~= core.CONTENT_AIR and old_id ~= new_id then 
+            base.chat_send_all_debug("Tree growth failed")
+            return false 
+        end
     end
-    return count
-end
-local function calc_volume(pos1, pos2)
-    local dx = pos2.x - pos1.x + 1
-    local dy = pos2.y - pos1.y + 1
-    local dz = pos2.z - pos1.z + 1
-    return dx * dy * dz
-end
-local function place_if_space(center_pos, schematic, sapling_name)
-    halves = {
-        stem = {
-            x = (schematic.stem_dimension.x - 1) / 2,
-            y = (schematic.stem_dimension.y - 1) / 2,
-            z = (schematic.stem_dimension.z - 1) / 2,
-        },
-        crown = {
-            x = (schematic.crown_dimension.x - 1) / 2,
-            y = (schematic.crown_dimension.y - 1) / 2,
-            z = (schematic.crown_dimension.z - 1) / 2,
-        }
-    }
-    pmin = {
-        stem = vector.new(center_pos.x - halves.stem.x, center_pos.y, center_pos.z - halves.stem.z),
-        crown = vector.new(center_pos.x - halves.crown.x, center_pos.y + schematic.stem_dimension.y, center_pos.z - halves.crown.z)
-    }
-    pmax = {
-        stem = vector.new(center_pos.x + halves.stem.x, center_pos.y + schematic.stem_dimension.y, center_pos.z + halves.stem.z),
-        crown = vector.new(center_pos.x + halves.crown.x, center_pos.y + schematic.stem_dimension.y + schematic.crown_dimension.y, center_pos.z + halves.crown.z)
-    }
-    nodes = {
-        stem = count_air(pmin.stem, pmax.stem, {"air", sapling_name}),
-        crown = count_air(pmin.crown, pmax.crown, {"air"})
-    }
-    volume = {
-        stem = calc_volume(pmin.stem, pmax.stem),
-        crown = calc_volume(pmin.crown, pmax.crown)
-    }
-    local place_at = vector.new(center_pos.x - halves.crown.x, center_pos.y, center_pos.z - halves.crown.z)
-    if nodes.stem == volume.stem and nodes.crown == volume.crown then
-        core.place_schematic(place_at, schematic.name, "random", nil, true)
-    else
-        local timer = core.get_node_timer(center_pos)
-        timer:set(math.random(15, 25))
-    end
+    lvm:write_to_map()
+    return true
 end
 local leaf_abm = {
     nodenames = {"group:leaf"},
@@ -100,38 +67,44 @@ local leaf_abm = {
     end
 }
 local function sapling_grows(pos)
-    local ground = core.get_node({pos.x, pos.y - 1, pos.z})
-    local sapling = core.get_node(pos)
-    local valid_ground = valid_grow_nodes[ground.name]
-    local schematic_list = schematics[sapling.name]
-    if schematic_list ~= nil then
-        local schematic = schematic_list[math.random(#schematic_list)]
-        place_if_space(pos, schematic, sapling.name)
+    local tree_name = trees.indices[math.random(#trees.indices)]
+    local ltree = trees[tree_name]
+    if place_ltree(pos, ltree) then
+        core.remove_node(pos)
     end
 end
 
 for _, t in ipairs(types) do
+    -- technical names
     local base_name = "tree:"..t.tname
     local texture_base_name = "tree_"..t.tname
+	local log_name = "tree:"..t.tname.."_log"
+	local planks_name = "tree:"..t.tname.."_planks"
+	local fence_name = "tree:"..t.tname.."_fence"
+	local sapling_name = "tree:"..t.tname.."_sapling"
+    local door_name = "tree:"..t.tname.."_door"
+
+    -- human name
+
     local planks_def = {
         description = t.name.." Planks",
         tiles = {texture_base_name.."_planks.png"},
         is_ground_content = false,
         groups = {choppy=3, planks=1, pane_connect = 1}
     }
-    base.register_node(base_name.."_planks", planks_def)
-    fences.register_fence(base_name.."_fence", t.name.." Fence", planks_def)
+    base.register_node(planks_name, planks_def)
+    fences.register_fence(fence_name, t.name.." Fence", planks_def)
     core.register_craft({
         type = "shaped",
-        output = base_name.."_fence",
+        output = fence_name,
         recipe = {
-            {base_name.."_planks", "group:stick", base_name.."_planks"},
-            {base_name.."_planks", "group:stick", base_name.."_planks"}
+            {planks_name, "group:stick", planks_name},
+            {planks_name, "group:stick", planks_name}
         }
     })
-    stairs.register_stair(base_name.."_planks", planks_def.description.." Stairs", planks_def, true)
-    stairs.register_slab(base_name.."_planks", planks_def.description.." Slab", planks_def, true)
-    local door_name = base_name.."_door"
+    stairs.register_stair(planks_name, planks_def.description.." Stairs", planks_def, true)
+    stairs.register_slab(planks_name, planks_def.description.." Slab", planks_def, true)
+    
     local door_def = table.copy(planks_def)
     door_def.inventory_image = texture_base_name.."_door_item.png"
     door_def.description = t.name.." Door"
@@ -142,9 +115,9 @@ for _, t in ipairs(types) do
     	type = "shaped",
     	output = door_name.." 3",
     	recipe = {
-    		{base_name.."_planks", base_name.."_planks"},
-    		{base_name.."_planks", base_name.."_planks"},
-    		{base_name.."_planks", base_name.."_planks"}
+    		{planks_name, planks_name},
+    		{planks_name, planks_name},
+    		{planks_name, planks_name}
     	}
     })
     local log_def = {
@@ -223,7 +196,8 @@ for _, t in ipairs(types) do
     local medium = tree_path..t.tname.."_tree_medium.mts"
     local large = tree_path..t.tname.."_tree_large.mts"
     -- Forest trees
-    core.register_decoration({
+    --[[
+	core.register_decoration({
         deco_type = "schematic",
         place_on = {"geology:grass_block"},
         sidelen = 16,
@@ -290,6 +264,39 @@ for _, t in ipairs(types) do
         flags = "place_center_x, place_center_z",
         rotation = "random",
     })
+	]]
+	core.register_decoration({
+		deco_type = "lsystem",
+		place_on = {"geology:grass_block"},
+        biomes = {"temperate_forest"},
+		sidelen = 16,
+		fill_ratio = 0.01,
+		treedef = trees.oak_large
+	})
+    core.register_decoration({
+		deco_type = "lsystem",
+		place_on = {"geology:grass_block"},
+        biomes = {"temperate"},
+		sidelen = 16,
+		fill_ratio = 0.0005,
+		treedef = trees.oak_large
+	})
+    core.register_decoration({
+		deco_type = "lsystem",
+		place_on = {"geology:grass_block"},
+        biomes = {"temperate_forest"},
+		sidelen = 16,
+		fill_ratio = 0.01,
+		treedef = trees.oak_medium
+	})
+    core.register_decoration({
+		deco_type = "lsystem",
+		place_on = {"geology:grass_block"},
+        biomes = {"temperate"},
+		sidelen = 16,
+		fill_ratio = 0.0005,
+		treedef = trees.oak_medium
+	})
     loot.add_to_loot_pool({item = base_name.."_log", max_q = 16, prob = 0.2, keys = {"temperate"}})
     loot.add_to_loot_pool({item = base_name.."_planks", max_q = 16, prob = 0.2, keys = {"temperate"}})
     loot.add_to_loot_pool({item = base_name.."_door", max_q = 16, prob = 0.2, keys = {"temperate"}})

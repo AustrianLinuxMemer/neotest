@@ -150,3 +150,23 @@ function base.chat_send_player_debug(player_name, msg)
         core.chat_send_player(player_name, msg)
     end
 end
+
+function base.utf_8_iter(s)
+	local pos = 1
+    local len = #s
+    return function()
+        if pos > len then return nil end
+        local c = string.byte(s, pos)
+        local char_len = 1
+        if c >= 0xF0 then
+            char_len = 4
+        elseif c >= 0xE0 then
+            char_len = 3
+        elseif c >= 0xC0 then
+            char_len = 2
+        end
+        local char = string.sub(s, pos, pos + char_len - 1)
+        pos = pos + char_len
+        return char
+    end
+end

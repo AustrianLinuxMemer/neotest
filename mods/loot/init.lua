@@ -52,7 +52,7 @@ function loot.add_to_loot_pool(loot_def)
         table.insert(loot.loot_pool[key], loot_def)
     end
 end
-function loot.get_chest_loot(invlist, key)
+function loot.get_loot(invlist, key)
     local key = key or "default"
     -- Every chest loot starts with the default table
     local loot_list = {}

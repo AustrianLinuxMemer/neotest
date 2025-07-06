@@ -1,0 +1,34 @@
+--[[
+	This is the Lua file defining standardized L-System tree templates to be used by the `tree` mod
+]]
+
+trees = {
+	indices = {
+		[1] = "oak_large",
+		[2] = "oak_medium"
+	},
+	["oak_large"] = {
+		axiom="FFFFFFFAFFBF",
+		rules_a="[&FFF&&FF][&&&+++FFF&&FFFF][&&FFF&&FF]",
+		rules_b="[&&+FF&&+FF][&&&FFF&&FFF][&&&FFF&&++FFF]",
+		trunk="tree:oak_log",
+		leaves="tree:oak_leaves",
+		angle=30,
+		iterations=2,
+		random_level=0,
+		trunk_type="single",
+		thin_branches=true
+	},
+	["oak_medium"] = {
+		axiom="FFFAFB",
+		rules_a="[F&&FF][&FFFF][&F&&FF]",
+		rules_b="[&FF][&&FF&&FFF][&&++FF]",
+		trunk="tree:oak_log",
+		leaves="tree:oak_leaves",
+		angle=30,
+		iterations=2,
+		random_level=0,
+		trunk_type="single",
+		thin_branches=true
+	}
+}
