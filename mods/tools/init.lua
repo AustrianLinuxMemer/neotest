@@ -1,5 +1,7 @@
 -- Groupcap table, to easily adjust the tools as needed, no hard-coding the properties of each tool, use these tables instead
 
+
+
 local groupcap_table = {
     pickaxes = {
         wood = {cracky = {times={[3]=1.60}, uses=10, maxlevel=1}},
@@ -21,8 +23,6 @@ local groupcap_table = {
         diamond = {choppy={times={[1]=2.10, [2]=0.90, [3]=0.50}, uses=30, maxlevel=3}}
     },
     swords = {
-    },
-    hoe = {
     },
     shears = {snappy = {times = {[1] = 0.1, [2] = 0.1, [3] = 0.1}, uses = 20}}
 }
@@ -53,14 +53,158 @@ local damage_groups = {
         gold = {fleshy = 7},
         diamond = {fleshy = 8}
     },
-    hoe = {
+    
+    shears = {fleshy = 1}
+}
+
+local farming_present = core.get_modpath("farming") ~= nil
+-- Only activate hoes if the "farming" mod exists
+-- Hoes have the same stats as shovels
+if farming_present then
+    groupcap_table.hoes = {
+        stone = {crumbly = {times={[1]=1.80, [2]=1.20, [3]=0.50}, uses=20, maxlevel=1}},
+        iron = {crumbly = {times={[1]=1.50, [2]=0.90, [3]=0.40}, uses=30, maxlevel=2}},
+        gold = {crumbly = {times={[1]=1.10, [2]=0.5, [3]=0.3}, uses=5, maxlevel=2}},
+        diamond = {crumbly = {times={[1]=1.10, [2]=0.50, [3]=0.30}, uses=30, maxlevel=3}}
+    }
+    damage_groups.hoes = {
         stone = {fleshy = 1},
         iron = {fleshy = 2},
         gold = {fleshy = 3},
         diamond = {fleshy = 4}
-    },
-    shears = {fleshy = 1}
-}
+    }
+    core.register_tool("tools:stone_hoe", {
+        description = "Stone Hoe",
+        inventory_image = "hoe_stone.png",
+        tool_capabilities = {
+            full_punch_interval = 1.3,
+            groupcaps = {
+                crumbly = groupcap_table.hoes.stone.crumbly       
+            },
+            damage_groups = damage_groups.hoes.stone
+        },
+        groups = {tool_stone=1, hoe=1},
+        on_use = farming.tilt_land
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:stone_hoe",
+        recipe = {
+            {"group:stone", "group:stone"},
+            {"group:stick", ""},
+            {"group:stick", ""},
+        }
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:stone_hoe",
+        recipe = {
+            {"group:stone", "group:stone"},
+            {"", "group:stick"},
+            {"", "group:stick"},
+        }
+    })
+    core.register_tool("tools:iron_hoe", {
+        description = "Iron hoe",
+        inventory_image = "hoe_iron.png",
+        tool_capabilities = {
+            full_punch_interval = 1.0,
+            max_drop_level=1,
+            groupcaps={
+                crumbly = groupcap_table.hoes.iron.crumbly,
+            },
+            damage_groups = damage_groups.hoes.iron,
+        },
+        groups = {tool_iron=1, hoe=1},
+        on_use = farming.tilt_land
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:iron_hoe",
+        recipe = {
+            {"group:iron", "group:iron"},
+            {"group:stick", ""},
+            {"group:stick", ""},
+        }
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:iron_hoe",
+        recipe = {
+            {"group:iron", "group:iron"},
+            {"", "group:stick"},
+            {"", "group:stick"},
+        }
+    })
+    core.register_tool("tools:gold_hoe", {
+        description = "Golden hoe",
+        inventory_image = "hoe_gold.png",
+        tool_capabilities = {
+            full_punch_interval = 1.0,
+            max_drop_level=1,
+            groupcaps={
+                crumbly = groupcap_table.hoes.gold.crumbly,
+            },
+            damage_groups = damage_groups.hoes.gold,
+        },
+        groups = {tool_gold=1, hoe=1},
+        on_use = farming.tilt_land
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:gold_hoe",
+        recipe = {
+            {"group:gold", "group:gold"},
+            {"group:stick", ""},
+            {"group:stick", ""},
+        }
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:gold_hoe",
+        recipe = {
+            {"group:gold", "group:gold"},
+            {"", "group:stick"},
+            {"", "group:stick"},
+        }
+    })
+    core.register_tool("tools:diamond_hoe", {
+        description = "Diamond hoe",
+        inventory_image = "hoe_diamond.png",
+        tool_capabilities = {
+            full_punch_interval = 0.9,
+            max_drop_level=3,
+            groupcaps={
+                crumbly = groupcap_table.hoes.diamond.crumbly,
+            },
+            damage_groups = damage_groups.hoes.diamond,
+        },
+        groups = {tool_diamond=1, hoe=1},
+        on_use = farming.tilt_land
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:diamond_hoe",
+        recipe = {
+            {"group:diamond", "group:diamond"},
+            {"group:stick", ""},
+            {"group:stick", ""},
+        }
+    })
+    core.register_craft({
+        type = "shaped",
+        output = "tools:diamond_hoe",
+        recipe = {
+            {"group:diamond", "group:diamond"},
+            {"", "group:stick"},
+            {"", "group:stick"},
+        }
+    })
+    loot.add_to_loot_pool({item = "tools:stone_hoe", max_q = 1, prob = 0.02})
+    loot.add_to_loot_pool({item = "tools:iron_hoe", max_q = 1, prob = 0.02})
+    loot.add_to_loot_pool({item = "tools:gold_hoe", max_q = 1, prob = 0.02})
+    loot.add_to_loot_pool({item = "tools:diamond_hoe", max_q = 1, prob = 0.02})
+end
 
 
 
@@ -74,7 +218,8 @@ core.register_tool("tools:shears", {
             snappy = groupcap_table.shears.snappy,
         },
         damage_groups = damage_groups.shears,
-    }
+    },
+    groups = {tool_iron=1, shears=1}
 })
 
 core.register_craft({
@@ -99,6 +244,7 @@ core.register_tool("tools:wooden_pickaxe", {
 		},
 		damage_groups = damage_groups.pickaxes.wood,
 	},
+    groups = {tool_wood=1, pickaxe=1}
 })
 core.register_craft({
     type = "shaped",
@@ -124,7 +270,8 @@ core.register_tool("tools:stone_pickaxe", {
             cracky = groupcap_table.pickaxes.stone.cracky        
         },
         damage_groups = damage_groups.pickaxes.stone
-    }
+    },
+    groups = {tool_stone=1, pickaxe=1}
 })
 
 core.register_craft({
@@ -147,7 +294,8 @@ core.register_tool("tools:iron_pickaxe", {
 			cracky = groupcap_table.pickaxes.iron.cracky,
 		},
 		damage_groups = damage_groups.pickaxes.iron,
-	}
+	},
+    groups = {tool_iron=1, pickaxe=1}
 })
 
 core.register_craft({
@@ -170,7 +318,8 @@ core.register_tool("tools:gold_pickaxe", {
 			cracky = groupcap_table.pickaxes.gold.cracky,
 		},
 		damage_groups = damage_groups.pickaxes.gold,
-	}
+	},
+    groups = {tool_gold=1, pickaxe=1}
 })
 
 core.register_craft({
@@ -194,6 +343,7 @@ core.register_tool("tools:diamond_pickaxe", {
 		},
 		damage_groups = damage_groups.pickaxes.diamond,
 	},
+    groups = {tool_diamond=1, pickaxe=1}
 })
 
 core.register_craft({
@@ -219,7 +369,8 @@ core.register_tool("tools:stone_shovel", {
 			crumbly = groupcap_table.shovels.stone.crumbly,
 		},
 		damage_groups = damage_groups.shovels.stone,
-	}
+	},
+    groups = {tool_stone=1, shovel=1}
 })
 
 core.register_craft({
@@ -243,7 +394,8 @@ core.register_tool("tools:iron_shovel", {
 			crumbly = groupcap_table.shovels.iron.crumbly,
 		},
 		damage_groups = damage_groups.shovels.iron,
-	}
+	},
+    groups = {tool_iron=1, shovel=1}
 })
 
 core.register_craft({
@@ -267,7 +419,8 @@ core.register_tool("tools:gold_shovel", {
 			crumbly = groupcap_table.shovels.gold.crumbly,
 		},
 		damage_groups = damage_groups.shovels.gold,
-	}
+	},
+    groups = {tool_gold=1, shovel=1}
 })
 
 core.register_craft({
@@ -291,7 +444,8 @@ core.register_tool("tools:diamond_shovel", {
 			crumbly = groupcap_table.shovels.diamond.crumbly,
 		},
 		damage_groups = damage_groups.shovels.diamond,
-	}
+	},
+    groups = {tool_diamond=1, shovel=1}
 })
 
 core.register_craft({
@@ -317,7 +471,7 @@ core.register_tool("tools:stone_axe", {
 		},
 		damage_groups = damage_groups.axes.stone,
 	},
-	groups = {axe = 1}
+	groups = {tool_stone = 1, axe = 1}
 })
 -- Righthand recipe
 core.register_craft({
@@ -352,7 +506,8 @@ core.register_tool("tools:iron_axe", {
 			choppy=groupcap_table.axes.iron.choppy,
 		},
 		damage_groups = damage_groups.axes.iron,
-	}
+	},
+    groups = {tool_iron=1, axe=1}
 })
 
 -- Righthand recipe
@@ -388,7 +543,8 @@ core.register_tool("tools:gold_axe", {
 			choppy=groupcap_table.axes.gold.choppy,
 		},
 		damage_groups = damage_groups.axes.gold,
-	}
+	},
+    groups = {tool_gold=1, axe=1}
 })
 
 -- Righthand recipe
@@ -423,7 +579,8 @@ minetest.register_tool("tools:diamond_axe", {
 			choppy=groupcap_table.axes.iron.choppy,
 		},
 		damage_groups = damage_groups.axes.diamond,
-	}
+	},
+    groups = {tool_diamond=1,axe=1}
 })
 
 -- Righthand recipe

@@ -144,7 +144,7 @@ for _, t in ipairs(types) do
         drop = {
             max_items = 1,
             items = {
-                {rarity = 1, tools = {"tools:shears"}, items = {base_name.."_leaves"}},
+                {rarity = 1, tools = {"group:shears"}, items = {base_name.."_leaves"}},
                 {rarity = 2, items = {base_name.."_sapling"}},
                 {rarity = 2, items = {"tree:stick"}}
             }

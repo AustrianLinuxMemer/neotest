@@ -68,7 +68,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         description = bucket_description,
         inventory_image = bucket_image,
         on_place = on_bucket_place,
-        on_use = on_bucket_use,
+        --on_use = on_bucket_use,
         liquids_pointable = true,
         stack_max = 1,
     })
@@ -84,7 +84,7 @@ end
 base.register_craftitem("bucket:empty_bucket", {
     description = "Bucket",
     inventory_image = "bucket_bucket.png",
-    on_place = on_bucket_place,
+    --on_place = on_bucket_place,
     on_use = on_bucket_use,
     stack_max = 16,
     liquids_pointable = true
