@@ -58,12 +58,11 @@ base.register_node("chest:chest", {
     on_blast = on_chest_blast
 })
 
-local function init_loot_chest(pos)
+local function init_loot_chest(pos, key)
     local oldnode = core.get_node(pos)
     core.set_node(pos, {name = "chest:chest", param2 = oldnode.param2})
     local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
-    local key = core.registered_nodes[oldnode.name]["_key"]
     local list_with_loot = loot.get_loot(inv:get_list("chest"), key)
     inv:set_list("chest", list_with_loot)
 end
@@ -75,18 +74,17 @@ function chest.register_loot_chest(name, decorations, key)
         groups = {choppy=3, pane_connect = 1},
         after_place_node = base.mod_fourdir_node,
         on_dig = function(pos, node, digger)
-            init_loot_chest(pos)
+            init_loot_chest(pos, key)
             dig_chest(pos, node, digger)
         end,
         on_rightclick = function(pos, node, clicker)
-            init_loot_chest(pos)
+            init_loot_chest(pos, key)
             on_chest_open(pos, node, clicker)
         end,
         on_blast = function(pos, intensity)
-            init_loot_chest(pos)
+            init_loot_chest(pos, key)
             on_chest_blast(pos, intensity)
-        end,
-        _key = key
+        end
     })
     for _, decoration in ipairs(decorations) do
         core.register_decoration(decoration)

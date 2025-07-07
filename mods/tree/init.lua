@@ -7,27 +7,31 @@ local valid_grow_nodes = {
     ["geology:dirt"] = true,
     ["geology:grass_block"] = true
 }
-local function place_ltree(center_pos, ltree)
+local function place_ltree(center_pos, ltree, tree_type)
     local corner_1 = vector.new(center_pos.x-25, center_pos.y, center_pos.z-25)
     local corner_2 = vector.new(center_pos.x+25, center_pos.y+75, center_pos.z+25)
     
     local lvm, emin, emax = core.get_voxel_manip(corner_1, corner_2)
     local voxelarea = VoxelArea(emin, emax)
-
     local old_data = lvm:get_data()
     core.spawn_tree_on_vmanip(lvm, center_pos, ltree)
 
     local new_data = lvm:get_data()
     -- Check if non-air nodes are overridden
+    local is_tree_node = {
+        [core.get_content_id("tree:"..tree_type.."_log")] = true,
+        [core.get_content_id("tree:"..tree_type.."_leaves")] = true
+    }
     for i = 1, #old_data do
         local old_id = old_data[i]
         local new_id = new_data[i]
-        if old_id ~= core.CONTENT_AIR and old_id ~= new_id then 
+        if is_tree_node[new_id] and old_id ~= core.CONTENT_AIR then
             base.chat_send_all_debug("Tree growth failed")
-            return false 
+            return false
         end
     end
     lvm:write_to_map()
+    core.set_node(center_pos, {name = "tree:"..tree_type.."_log"})
     return true
 end
 local leaf_abm = {
@@ -70,9 +74,7 @@ local function sapling_grows(pos, tree_type)
     local available_trees = trees[tree_type]
     local tree_name = available_trees.indices[math.random(#available_trees.indices)]
     local ltree = available_trees[tree_name]
-    if place_ltree(pos, ltree) then
-        core.remove_node(pos)
-    end
+    place_ltree(pos, ltree, tree_type)
 end
 
 for _, t in ipairs(types) do

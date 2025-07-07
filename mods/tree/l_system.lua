@@ -35,5 +35,4 @@ trees = {
 			thin_branches=true
 		}
 	},
-	
 }
