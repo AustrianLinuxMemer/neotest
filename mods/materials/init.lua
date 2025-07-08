@@ -1,3 +1,5 @@
+local farming_loaded = core.get_modpath("farming") ~= nil
+
 base.register_craftitem("materials:brick", {
     description = "Brick",
     inventory_image = "materials_brick.png"
@@ -8,11 +10,19 @@ core.register_craft({
     recipe = "geology:clay_lump",
     cooktime = 10
 })
+if farming_loaded then
+    base.register_craftitem("materials:sawdust", {
+        description = "Sawdust",
+        inventory_image = "materials_sawdust.png",
+        on_use = farming.fertilize
+    })
+else
+    base.register_craftitem("materials:sawdust", {
+        description = "Sawdust",
+        inventory_image = "materials_sawdust.png"
+    })
+end
 
-base.register_craftitem("materials:sawdust", {
-    description = "Sawdust",
-    inventory_image = "materials_sawdust.png"
-})
 core.register_craft({
     type = "fuel",
     recipe = "materials:sawdust",

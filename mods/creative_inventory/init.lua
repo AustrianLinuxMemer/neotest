@@ -3,18 +3,20 @@ local creative = core.settings:get_bool("creative_mode", false) or false
 local function compare_items(a,b)
     return a:get_name() < b:get_name()
 end
-
-local items = {}
-function items.get_all_nodes()
-    local list = {}
+local function is_allowed(k, v)
     local forbidden = {
         air = true,
         ignore = true,
         unknown = true,
         [""] = true
     }
+    return not v.groups["no_creative"] and not v.groups["not_in_creative_inventory"] and not forbidden[k]
+end
+local items = {}
+function items.get_all_nodes()
+    local list = {}
     for k, v in pairs(core.registered_nodes) do
-        if not v.groups["no_creative"] and not forbidden[k] then
+        if is_allowed(k,v) then
             table.insert(list, ItemStack({name = k, count = v.stack_max}))
         end
     end
@@ -24,14 +26,8 @@ function items.get_all_nodes()
 end
 function items.get_all_tools()
     local list = {}
-    local forbidden = {
-        air = true,
-        ignore = true,
-        unknown = true,
-        [""] = true
-    }
     for k, v in pairs(core.registered_tools) do
-        if not v.groups["no_creative"] and not forbidden[k] then
+        if is_allowed(k,v) then
             table.insert(list, ItemStack({name = k, count = v.stack_max}))
         end
     end
@@ -41,14 +37,8 @@ function items.get_all_tools()
 end
 function items.get_all_craftitems()
     local list = {}
-    local forbidden = {
-        air = true,
-        ignore = true,
-        unknown = true,
-        [""] = true
-    }
     for k, v in pairs(core.registered_craftitems) do
-        if not v.groups["no_creative"] and not forbidden[k] then
+        if is_allowed(k,v) then
             table.insert(list, ItemStack({name = k, count = v.stack_max}))
         end
     end

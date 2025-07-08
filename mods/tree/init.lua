@@ -154,6 +154,8 @@ for _, t in ipairs(types) do
     base.register_node(base_name.."_sapling", {
         description = t.name.." sapling",
         drawtype = "plantlike",
+        walkable = false,
+        sunlight_propagates = true,
         inventory_image = texture_base_name.."_sapling.png",
         tiles = {texture_base_name.."_sapling.png"},
         groups = {oddly_breakable_by_hand=1, sapling=1},
