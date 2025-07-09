@@ -40,7 +40,7 @@ base.register_node("torch:torch_attached", {
     paramtype2 = "wallmounted",
     mesh = "torch_attached.obj",
     tiles = {"torch.png"},
-    groups = {oddly_breakable_by_hand = 1},
+    groups = {oddly_breakable_by_hand = 1, no_creative=1},
     drop = "torch:torch",
     selection_box = {
 		type = "wallmounted",
