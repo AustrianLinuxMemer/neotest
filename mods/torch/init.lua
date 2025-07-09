@@ -14,8 +14,11 @@ local function place_torch(itemstack, placer, pointed_thing)
     local param2 = core.dir_to_wallmounted(direction)
     local above = core.get_node(pointed_thing.above)
     local under = core.get_node(pointed_thing.under)
+    base.chat_send_all_debug(above.name)
+    base.chat_send_all_debug(under.name)
     local no_torch = core.get_item_group(under.name, "torch") == 0
     local is_air = above.name == "air"
+    base.chat_send_all_debug(tostring(no_torch and is_air))
     if no_torch and is_air then
         if freestanding[param2] then
             core.set_node(pointed_thing.above, {name = "torch:torch_freestanding", param2 = param2})
@@ -40,7 +43,7 @@ base.register_node("torch:torch_attached", {
     paramtype2 = "wallmounted",
     mesh = "torch_attached.obj",
     tiles = {"torch.png"},
-    groups = {oddly_breakable_by_hand = 1, no_creative=1},
+    groups = {oddly_breakable_by_hand=1, no_creative=1, torch=1},
     drop = "torch:torch",
     selection_box = {
 		type = "wallmounted",
@@ -57,7 +60,7 @@ base.register_node("torch:torch_freestanding", {
     paramtype2 = "wallmounted",
     mesh = "torch_freestanding.obj",
     tiles = {"torch.png"},
-    groups = {oddly_breakable_by_hand = 1, no_creative = 1},
+    groups = {oddly_breakable_by_hand=1, no_creative=1, torch=1},
     drop = "torch:torch",
     selection_box = {
 		type = "wallmounted",
