@@ -8,7 +8,7 @@ function furnace:new_id()
     end
     return self.id
 end
-
+local S = core.get_translator("mods:furnace")
 local function create_furnace_id(id_number)
     return "furnace:furnace_"..tostring(id_number)
 end
@@ -34,7 +34,8 @@ local function open_furnace(pos, node, player)
     local meta = core.get_meta(pos)
     local furnace_id = meta:get_string("furnace_id")
     if player:is_player() then
-        if base.is_protected(pos, player:get_player_name(), "tried to open a furnace at") then
+        local msg = S("open a furnace")
+        if base.is_protected(pos, player:get_player_name(), msg) then
             return
         end
         local player_meta = player:get_meta()
@@ -48,7 +49,8 @@ local function open_furnace(pos, node, player)
 end
 local function destroy_furnace(pos, node, digger)
     if digger:is_player() then
-        if base.is_protected(pos, digger:get_player_name(), "tried to dig a furnace at") then
+        local msg = S("dig a furnace")
+        if base.is_protected(pos, digger:get_player_name(), msg) then
             return
         end
         local node_meta = core.get_meta(pos)
@@ -271,7 +273,7 @@ local function furnace_loop(pos, elapsed)
     return true
 end
 base.register_node("furnace:furnace", {
-    description = "Furnace",
+    description = S("Furnace"),
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
     groups = {cracky = 3},
@@ -283,7 +285,7 @@ base.register_node("furnace:furnace", {
 })
 
 base.register_node("furnace:active_furnace", {
-    description = "Furnace (active)",
+    description = S("Furnace (active)"),
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front_lit.png"},
     groups = {cracky = 3, no_creative = 1},

@@ -1,7 +1,7 @@
 -- Courtesy of of Minetest Game (Line 2204-2483 in nodes.lua)
-
+local S = core.get_translator("mods:liquids")
 base.register_node("liquids:water_source", {
-	description = "Water Source",
+	description = S("Water Source"),
 	drawtype = "liquid",
 	waving = 3,
 	tiles = {
@@ -44,7 +44,7 @@ base.register_node("liquids:water_source", {
 })
 
 base.register_node("liquids:water_flowing", {
-	description = "Flowing Water",
+	description = S("Flowing Water"),
 	drawtype = "flowingliquid",
 	waving = 3,
 	tiles = {"liquids_water.png"},
@@ -90,7 +90,7 @@ base.register_node("liquids:water_flowing", {
 
 
 core.register_node("liquids:river_water_source", {
-	description = "River Water Source",
+	description = S("River Water Source"),
 	drawtype = "liquid",
 	tiles = {
 		{
@@ -138,7 +138,7 @@ core.register_node("liquids:river_water_source", {
 })
 
 core.register_node("liquids:river_water_flowing", {
-	description = "Flowing River Water",
+	description = S("Flowing River Water"),
 	drawtype = "flowingliquid",
 	tiles = {"liquids_river_water.png"},
 	special_tiles = {
@@ -185,7 +185,7 @@ core.register_node("liquids:river_water_flowing", {
 
 
 core.register_node("liquids:lava_source", {
-	description = "Lava Source",
+	description = S("Lava Source"),
 	drawtype = "liquid",
 	tiles = {
 		{
@@ -229,7 +229,7 @@ core.register_node("liquids:lava_source", {
 })
 
 core.register_node("liquids:lava_flowing", {
-	description = "Flowing Lava",
+	description = S("Flowing Lava"),
 	drawtype = "flowingliquid",
 	tiles = {"liquids_lava.png"},
 	special_tiles = {

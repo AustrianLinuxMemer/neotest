@@ -1,5 +1,8 @@
-screwdriver = {}
 
+local S = core.get_translator("mods:screwdriver")
+screwdriver = {
+    msg = S("modify a node with a screwdriver")
+}
 local function to_facedir(dir, rot)
     if dir >= 0 and dir <= 5 and rot >= 0 and rot <= 3 then
         return dir * 4 + rot
@@ -10,12 +13,12 @@ local function from_facedir(facedir)
 end
 
 core.register_tool("screwdriver:screwdriver", {
-    description = "Screwdriver",
+    description = S("Screwdriver"),
     inventory_image = "screwdriver_screwdriver.png",
     on_place = function(itemstack, user, pointed_thing)
         local pos = pointed_thing.under
         local node = core.get_node(pos)
-        if base.is_protected(pos, user:get_player_name(), "tried to modify a node with a screwdriver") then
+        if base.is_protected(pos, user:get_player_name(), screwdriver.msg) then
             return
         end
         if core.registered_nodes[node.name].paramtype2 == "facedir" then
@@ -33,7 +36,7 @@ core.register_tool("screwdriver:screwdriver", {
     on_use = function(itemstack, user, pointed_thing)
         local pos = pointed_thing.under
         local node = core.get_node(pos)
-        if base.is_protected(pos, user:get_player_name(), "tried to modify a node with a screwdriver") then
+        if base.is_protected(pos, user:get_player_name(), screwdriver.msg) then
             return
         end
         if core.registered_nodes[node.name].paramtype2 == "facedir" then

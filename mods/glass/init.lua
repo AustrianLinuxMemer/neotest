@@ -1,5 +1,6 @@
+local S = core.get_translator("mods:glass")
 local glass_def = {
-    description = "Glass",
+    description = S("Glass"),
     drawtype = "glasslike_framed_optional",
     tiles = {"glass_glass.png"},
     is_ground_content = false,
@@ -16,7 +17,7 @@ local glass_pane_def = {
     groups = {choppy = 2, glass = 1}
 }
 base.register_node("glass:glass", glass_def)
-panes.register_pane("glass:glass", "Glass Pane", "glass_glass.png",glass_pane_def)
+panes.register_pane("glass:glass", S("Glass Pane"), "glass_glass.png",glass_pane_def)
 core.register_craft({
     type = "cooking",
     output = "glass:glass",

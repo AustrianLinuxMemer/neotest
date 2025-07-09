@@ -1,5 +1,5 @@
 chest = {}
-
+local S = core.get_translator("mods:chest")
 local function on_chest_construct(pos)
     local meta = core.get_meta(pos)
     local inv = meta:get_inventory()
@@ -10,7 +10,8 @@ local function dig_chest(pos, node, digger)
     local inv = meta:get_inventory()
     local item_list = inv:get_list("chest")
     if digger:is_player() then
-        if base.is_protected(pos, digger:get_player_name(), " tried to dig a chest at "..vector.to_string(pos)) then
+        local msg = S("dig a chest at")
+        if base.is_protected(pos, digger:get_player_name(), msg) then
             return false
         end
         local player_inv = digger:get_inventory()
@@ -28,7 +29,8 @@ end
 local function on_chest_open(pos, node, clicker)
     if clicker:is_player() then
         local name = clicker:get_player_name()
-        if base.is_protected(pos, name, " tried to open a chest at "..vector.to_string(pos)) then
+        local msg = S("open a chest")
+        if base.is_protected(pos, name, msg) then
             return
         else
             local preamble = "formspec_version[8]size[10.25,10]real_coordinates[true]"
@@ -47,7 +49,7 @@ local function on_chest_blast(pos, intensity)
     end
 end
 base.register_node("chest:chest", {
-    description = "Chest",
+    description = S("Chest"),
     tiles = {"chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png", "chest_front.png"},
     paramtype2 = "4dir",
     groups = {choppy=3, pane_connect = 1},
@@ -68,7 +70,7 @@ local function init_loot_chest(pos, key)
 end
 function chest.register_loot_chest(name, decorations, key)
     base.register_node(name, {
-        description = "Generated Chest ("..key..")",
+        description = S("Generated Chest (@1)", key),
         tiles = {"chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png", "chest_front.png"},
         paramtype2 = "4dir",
         groups = {choppy=3, pane_connect = 1},

@@ -2,13 +2,14 @@ local bucket_index = {}
 local liquid_index = {}
 
 
-
+local S = core.get_translator("mods:bucket")
 
 local function on_bucket_place(itemstack, placer, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(pointed_thing.under, direction)
     local liquid_name = bucket_index[itemstack:get_name()] or ""
-    if base.is_protected(pos, placer:get_player_name(), "tried to place a bucket of "..liquid_name) then
+    local msg = S("placing a bucket of @", liquid_name)
+    if base.is_protected(pos, placer:get_player_name(), msg) then
         return itemstack
     end
     if core.get_node(pos).name == "air" then
@@ -39,7 +40,8 @@ local function on_bucket_use(itemstack, user, pointed_thing)
     base.chat_send_all_debug(core.get_node(pos).name)
     local bucket_name = liquid_index[core.get_node(pos).name]
     local inv = user:get_inventory()
-    if base.is_protected(pos, user:get_player_name(), "tried to pick up "..core.get_node(pos).name.." with a bucket") then
+    local msg = S("pick up a @1 with a bucket", core.get_node(pos).name)
+    if base.is_protected(pos, user:get_player_name(), msg) then
         return itemstack
     end
     if bucket_name ~= nil then
@@ -98,9 +100,9 @@ core.register_craft({
     }
 })
 
-register_bucket("water_bucket", "Water Bucket", "bucket_bucket_water.png", "liquids:water_source")
-register_bucket("river_water_bucket", "River Water Bucket", "bucket_bucket_river_water.png", "liquids:river_water_source")
-register_bucket("lava_bucket", "Lava Bucket", "bucket_bucket_lava.png", "liquids:lava_source", true, 2000)
+register_bucket("water_bucket", S("Water Bucket"), "bucket_bucket_water.png", "liquids:water_source")
+register_bucket("river_water_bucket", S("River Water Bucket"), "bucket_bucket_river_water.png", "liquids:river_water_source")
+register_bucket("lava_bucket", S("Lava Bucket"), "bucket_bucket_lava.png", "liquids:lava_source", true, 2000)
 
 loot.add_to_loot_pool({item = "bucket:bucket", max_q = 4, prob = 0.2})
 loot.add_to_loot_pool({item = "bucket:water_bucket", max_q = 1, prob = 0.2})

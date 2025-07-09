@@ -1,5 +1,5 @@
 farming = {}
-
+local S = core.get_translator("mods:farming")
 core.register_node("farming:dry_farmland", {
     description = "Dry Farmland",
     tiles = {"farming_dry_farmland_top.png", "farming_dry_farmland_bottom.png"},
@@ -87,7 +87,8 @@ local function place_seed(itemstack, placer, pointed_thing, node)
         base.chat_send_all_debug("wrong pointed_thing")
         return itemstack
     end
-    if base.is_protected(pointed_thing.above, placer:get_player_name(), " tried to plant a seed") then
+    local msg = S("plant a seed")
+    if base.is_protected(pointed_thing.above, placer:get_player_name(), msg) then
         base.chat_send_all_debug("protected")
         return itemstack
     end
@@ -148,7 +149,8 @@ function farming.tilt_land(itemstack, user, pointed_thing)
     end
     local above = core.get_node(pointed_thing.above)
     local under = core.get_node(pointed_thing.under)
-    if base.is_protected(pointed_thing.under, user:get_player_name(), " tried to tilt farmland") then
+    local msg = S("tilt farmland")
+    if base.is_protected(pointed_thing.under, user:get_player_name(), msg) then
         return itemstack
     end
     if core.get_item_group(under.name, "soil") ~= 0 and core.get_item_group(under.name, "farmland") == 0 then
@@ -163,7 +165,8 @@ function farming.fertilize(itemstack, user, pointed_thing)
     if pointed_thing.type ~= "node" then
         return itemstack
     end
-    if base.is_protected(pointed_thing.under, user:get_player_name(), " tried to fertilize") then
+    local msg = S("fertilize")
+    if base.is_protected(pointed_thing.under, user:get_player_name(), msg) then
         return itemstack
     end
     local plant = core.get_node(pointed_thing.under)
@@ -205,7 +208,7 @@ farming.register_plant({
     seed = {
         name = "farming:wheat_seed",
         def = {
-            description = "Wheat seeds",
+            description = S("Wheat seeds"),
             inventory_image = "farming_wheat_seed.png"
         }
     },
@@ -213,18 +216,18 @@ farming.register_plant({
         {
             name = "farming:wheat",
             def = {
-                description = "Wheat",
+                description = S("Wheat"),
                 inventory_image = "farming_wheat.png"
             }
         }
     },
     plants = {
-        {tname = "farming:wheat_1", name = "Wheat (stage 1)", texture = "farming_wheat_plant1.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_2", name = "Wheat (stage 2)", texture = "farming_wheat_plant2.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_3", name = "Wheat (stage 3)", texture = "farming_wheat_plant3.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_4", name = "Wheat (stage 4)", texture = "farming_wheat_plant4.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_5", name = "Wheat (stage 5)", texture = "farming_wheat_plant5.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_6", name = "Wheat (stage 6)", texture = "farming_wheat_plant6.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_7", name = "Wheat (stage 7)", texture = "farming_wheat_plant7.png", texture_variation = 3, drop = wheat_drop},
+        {tname = "farming:wheat_1", name = S("Wheat (stage 1)"), texture = "farming_wheat_plant1.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_2", name = S("Wheat (stage 2)"), texture = "farming_wheat_plant2.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_3", name = S("Wheat (stage 3)"), texture = "farming_wheat_plant3.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_4", name = S("Wheat (stage 4)"), texture = "farming_wheat_plant4.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_5", name = S("Wheat (stage 5)"), texture = "farming_wheat_plant5.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_6", name = S("Wheat (stage 6)"), texture = "farming_wheat_plant6.png", texture_variation = 3, drop = "farming:wheat_seeds"},
+        {tname = "farming:wheat_7", name = S("Wheat (stage 7)"), texture = "farming_wheat_plant7.png", texture_variation = 3, drop = wheat_drop},
     }
 })

@@ -1,5 +1,5 @@
 local creative = core.settings:get_bool("creative_mode", false) or false
-
+local S = core.get_translator("mods:creative_inventory")
 local function compare_items(a,b)
     return a:get_name() < b:get_name()
 end
@@ -102,19 +102,19 @@ local function make_creative_tabs()
 
 
     sfinv.register_page("player:inventory_nodes", {
-        title = "Blöcke",
+        title = S("Blocks"),
         get = function(self, player, context)
             return sfinv.make_formspec(player, context, make_formspec("creative_nodes", nodes_size), true)
         end
     })
     sfinv.register_page("player:inventory_tools", {
-        title = "Werkzeuge",
+        title = S("Tools"),
         get = function(self, player, context)
             return sfinv.make_formspec(player, context, make_formspec("creative_tools", tools_size), true)
         end
     })
     sfinv.register_page("player:inventory_craftitems", {
-        title = "Gegenstände",
+        title = S("Items"),
         get = function(self, player, context)
             return sfinv.make_formspec(player, context, make_formspec("creative_craftitems", craftitems_size), true)
         end

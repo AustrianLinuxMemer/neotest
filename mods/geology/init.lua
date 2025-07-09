@@ -1,69 +1,70 @@
+local S = core.get_translator("mods:geology")
 local geology_def_table = {
     craftitems = {
         ["geology:iron_ingot"] = {
-            description = "Iron ingot",
+            description = S("Iron ingot"),
             inventory_image = "geology_iron_ingot.png",
             groups = {iron = 1}
         },
         ["geology:gold_ingot"] = {
-            description = "Gold ingot",
+            description = S("Gold ingot"),
             inventory_image = "geology_gold_ingot.png",
             groups = {gold = 1}
         },
         ["geology:coal"] = {
-            description = "Coal",
+            description = S("Coal"),
             inventory_image = "geology_coal.png",
             groups = {coal=1}
         },
         ["geology:diamond"] = {
-            description = "Diamond",
+            description = S("Diamond"),
             inventory_image = "geology_diamond.png",
             groups = {diamond = 1, gemstone = 1}
         },
         ["geology:clay_lump"] = {
-            description = "Clay lump",
+            description = S("Clay lump"),
             inventory_image = "geology_clay_lump.png",
             stack_max = 16
         }
     },
     nodes = {
         ["geology:cobble"] = {
-            description = "Cobblestone",
+            description = S("Cobblestone"),
             tiles = {"geology_cobble.png"},
             groups = {cracky=3, stone=1, pane_connect = 1}
         },
         ["geology:sandstone"] = {
-            description = "Sandstone",
+            description = S("Sandstone"),
             tiles = {"geology_sandstone_top.png", "geology_sandstone_bottom.png", "geology_sandstone.png"},
             groups = {cracky=3, stone=1, pane_connect = 1}
         },
         ["geology:stone"] = {
-            description = "Stone",
+            description = S("Stone"),
             tiles = {"geology_stone.png"},
             is_ground_content = true,
             groups = {cracky=3, stone=1, pane_connect = 1},
             drop = "geology:cobble"
         },
         ["geology:dirt"] = {
-            description = "Dirt",
+            description = S("Dirt"),
             tiles = {"geology_dirt.png"},
             is_ground_content = true,
             groups = {crumbly=3, soil=1, pane_connect = 1}
         },
         ["geology:sand"] = {
-            description = "Sand",
+            description = S("Sand"),
             tiles = {"geology_sand.png"},
             is_ground_content = true,
             groups = {crumbly=3, falling_node=1, sand=1, pane_connect = 1}
         },
         ["geology:gravel"] = {
-            description = "Gravel",
+            description = S("Gravel"),
             tiles = {"geology_gravel.png"},
             is_ground_content = true,
             groups = {crumbly=3, falling_node=1, gravel=1, pane_connect = 1}
         },
         ["geology:grass_block"] = {
-            description = "Grass block",
+            description = S("Grass block"),
             tiles = {
                 "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png"
             },
@@ -72,33 +73,33 @@ local geology_def_table = {
             drop = "geology:dirt"
         },
         ["geology:coal_ore"] = {
-            description = "Coal ore",
+            description = S("Coal ore"),
             tiles = {"geology_coal_ore.png"},
             is_ground_content = true,
             groups = {cracky=3, ore=1, pane_connect = 1},
             drop = "geology:coal"
         },
         ["geology:iron_ore"] = {
-            description = "Iron ore",
+            description = S("Iron ore"),
             tiles = {"geology_iron_ore.png"},
             is_ground_content = true,
             groups = {cracky=3, ore=1, pane_connect = 1}
         },
         ["geology:gold_ore"] = {
-            description = "Gold ore",
+            description = S("Gold ore"),
             tiles = {"geology_gold_ore.png"},
             is_ground_content = true,
             groups = {cracky=3, ore=1, pane_connect = 1}
         },
         ["geology:diamond_ore"] = {
-            description = "Diamond ore",
+            description = S("Diamond ore"),
             tiles = {"geology_diamond_ore.png"},
             is_ground_content = true,
             groups = {cracky=3, ore=1, pane_connect = 1},
             drop = "geology:diamond"
         },
         ["geology:clay"] = {
-            description = "Clay",
+            description = S("Clay"),
             tiles = {"geology_clay.png"},
             is_ground_content = true,
             groups = {crumbly=3, pane_connect = 1},

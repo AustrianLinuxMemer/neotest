@@ -11,6 +11,7 @@ core.register_node("doors:top_node", {
 	sunlight_propagates = true,
     groups={no_creative=1}
 })
+local S = core.get_translator("mods:doors")
 function door_after_place(pos, placer)
     local meta = core.get_meta(pos)
     local node = core.get_node(pos)
@@ -34,7 +35,8 @@ function door_on_destroy(pos)
 	core.set_node(above, {name="air"})
 end
 function door_on_rightclick(pos, node, player)
-    if base.is_protected(pos, player:get_player_name(), "tried to interact with a door") then
+    local msg = S("interact with a door")
+    if base.is_protected(pos, player:get_player_name(), msg) then
         return
     end
     local meta = core.get_meta(pos)

@@ -19,6 +19,7 @@ local transparent_drawtypes = {
     mesh = true,
     plantlike_rooted = true
 }
+local S = core.get_translator("mods:base")
 function base.is_transparent(pos)
     local node_name = core.get_node(pos).name
     local node_def = core.registered_nodes[node_name]
@@ -122,11 +123,13 @@ function base.register_node(name, def)
 end
 
 function base.log_protection_violation(pos, player_name, action)
-    core.log("action", "[Protection] "..player_name.." tried to "..action.." at "..vector.to_string(pos))
+    local string = S("@1 tried to @2 at @3", player_name, action, vector.to_string(pos))
+    core.log("action", "[Protection] "..string)
 end
 
 function base.communicate_protection_violation(pos, player_name, action)
-    core.chat_send_player(player_name, "You are not allowed to do "..action.." at "..vector.to_string(pos))
+    local string = S("You are not allowed to @1 at @2", action, vector.to_string(pos))
+    core.chat_send_player(player_name, string)
 end
 
 function base.is_protected(pos, player_name, action)

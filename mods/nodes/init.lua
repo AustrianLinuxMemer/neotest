@@ -1,21 +1,22 @@
+local S = core.get_translator("mods:nodes")
 local nodes = {
     ["nodes:bricks"] = {
-        description = "Brick",
+        description = S("Brick"),
         tiles = {"nodes_bricks.png"},
         groups = {cracky=3}
     },
     ["nodes:stone_bricks"] = {
-        description = "Stone Brick",
+        description = S("Stone Brick"),
         tiles = {"nodes_stone_bricks.png"},
         groups = {cracky=3}
     },
     ["nodes:smooth_sandstone"] = {
-        description = "Smooth Sandstone",
+        description = S("Smooth Sandstone"),
         tiles = {"nodes_smooth_sandstone_top.png", "nodes_smooth_sandstone_top.png", "nodes_smooth_sandstone.png"},
         groups = {cracky=3}
     },
     ["nodes:sandstone_bricks"] = {
-        description = "Sandstone Bricks",
+        description = S("Sandstone Bricks"),
         tiles = {"nodes_sandstone_bricks.png"},
          groups = {cracky=3}
     }
@@ -64,8 +65,10 @@ for k, v in pairs(nodes) do
 end
 for _, v in ipairs(stairs_slabs) do
     local definition = nodes[v]
-    stairs.register_stair(v.."_stairs", definition.description.." Stairs", definition, true)
-    stairs.register_slab(v.."_slab", definition.description.." Slab", definition, true)
+    local stair_name = S("@1 Stairs", definition.description)
+    local slab_name = S("@1 Slab", definition.description)
+    stairs.register_stair(v.."_stairs", stair_name, definition, true)
+    stairs.register_slab(v.."_slab", slab_name, definition, true)
 end
 for _, v in ipairs(recipes) do
     core.register_craft(v)

@@ -1,5 +1,6 @@
+local S = core.get_translator("mods:testing")
 local testing_definition = {
-    description = "testing",
+    description = S("testing"),
     paramtype2 = "facedir",
     tiles = {"test_top.png", "test_bottom.png", "test_plus_x.png", "test_minus_x.png", "test_plus_z.png", "test_minus_z.png"},
     groups = {oddly_breakable_by_hand = 1, pane_connect = 1, no_creative = 1},
@@ -7,8 +8,8 @@ local testing_definition = {
 }
 
 base.register_node("testing:testing", testing_definition)
-stairs.register_stair("testing:testing", "testing Stair", testing_definition, true)
-stairs.register_slab("testing:testing", "testing Slab", testing_definition, true)
+stairs.register_stair("testing:testing", S("@1 Stair", testing_definition.description), testing_definition, true)
+stairs.register_slab("testing:testing", S("@1 Slab", testing_definition.description), testing_definition, true)
 
 base.register_craftitem("testing:testing_fuel_byproduct", {
     description = "Testing Fuel Byproduct",

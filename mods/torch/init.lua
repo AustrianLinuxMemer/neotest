@@ -1,6 +1,5 @@
 
 local function place_torch(itemstack, placer, pointed_thing)
-    --base.chat_send_all_debug("triggereds")
     local freestanding = {
         [0] = true,
         [1] = true,

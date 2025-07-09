@@ -1,5 +1,6 @@
+local S = core.get_translator("mods:plants")
 local cactus_def = {
-    description = "Cactus",
+    description = S("Cactus"),
     tiles = {"plants_cactus_top.png", "plants_cactus_bottom.png", "plants_cactus_side.png"},
     groups = {choppy = 2, pane_connect = 1},
     on_punch = function(pos, node, puncher)
