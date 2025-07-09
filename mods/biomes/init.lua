@@ -5,10 +5,13 @@ core.register_alias("mapgen_lava_source", "liquids:lava_source")
 core.register_alias("mapgen_cobble", "geology:cobble")
 core.register_alias("mapgen_sand", "geology:sand")
 core.register_alias("mapgen_gravel", "geology:gravel")
-minetest.register_alias("mapgen_dirt_with_grass", "geology:grass_block")
+core.register_alias("mapgen_dirt", "geology:dirt")
+core.register_alias("mapgen_dirt_with_grass", "geology:grass_block")
 
-minetest.register_alias("mapgen_tree", "tree:oak_log")
-minetest.register_alias("mapgen_leaves", "tree:oak_leaves")
+core.register_alias("mapgen_tree", "tree:oak_log")
+core.register_alias("mapgen_leaves", "tree:oak_leaves")
+-- No apples in the game yet (like wtf Luanti why do i need apples for v6 mapgen, can't that be optional)
+core.register_alias("mapgen_apple", "air")
 
 biomes = {
     biome_def = {
