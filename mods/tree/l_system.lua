@@ -2,7 +2,7 @@
 	This is the Lua file defining standardized L-System tree templates to be used by the `tree` mod
 ]]
 
-trees = {
+local trees = {
 	["oak"] = {
 		indices = {
 			[1] = "large",
@@ -36,3 +36,10 @@ trees = {
 		}
 	},
 }
+function trees.place_ltree(center_pos, ltree, tree_type)
+	-- Dimension check comes later
+    core.set_node(center_pos, {name = "tree:"..tree_type.."_log"})
+	core.spawn_tree(center_pos, ltree)
+	
+end
+return trees
