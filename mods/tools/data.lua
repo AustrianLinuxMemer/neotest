@@ -56,7 +56,7 @@ local damage_groups = {
     shears = {fleshy = 1}
 }
 local tools = {
-    wood = {
+    planks = {
         pickaxe = {
             description = "Wooden pickaxe",
             inventory_image = "pickaxe_wood.png",

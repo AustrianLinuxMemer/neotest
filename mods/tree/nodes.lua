@@ -103,4 +103,15 @@ for t, wood_type in pairs(types) do
             {planks_name, "group:stick", planks_name},
         }
     })
+
+    core.register_craft({
+        type = "shapeless",
+        output = planks_name.." 4",
+        recipe = {log_name}
+    })
+    core.register_craft({
+        type = "shapeless",
+        output = sapling_name.." 4",
+        recipe = {leaves_name}
+    })
 end

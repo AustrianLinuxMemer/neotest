@@ -9,6 +9,8 @@ for mk, material in pairs(tools) do
         if crafting_prototypes:is_lr(tk) then
             local left = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick", "L")
             local right = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick", "R")
+            core.log("warning", dump2(left, "left recipe"))
+            core.log("warning", dump2(right, "right recipe"))
             core.register_craft({
                 type = "shaped",
                 output = toolname,
@@ -21,6 +23,7 @@ for mk, material in pairs(tools) do
             })
         else
             local recipe = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick")
+            core.log("warning", dump2(recipe, "recipe"))
             core.register_craft({
                 type = "shaped",
                 output = toolname,
@@ -29,3 +32,7 @@ for mk, material in pairs(tools) do
         end
     end
 end
+core.register_craft({
+    type = "toolrepair",
+    additional_wear = 0
+})

@@ -40,6 +40,33 @@ function trees.place_ltree(center_pos, ltree, tree_type)
 	-- Dimension check comes later
     core.set_node(center_pos, {name = "tree:"..tree_type.."_log"})
 	core.spawn_tree(center_pos, ltree)
-	
 end
+core.register_decoration({
+	deco_type = "lsystem",
+	fill_ratio = 0.0004,
+	biomes = {"biomes:temperate"},
+	place_on = {"geology:grass_block", "geology:dirt"},
+	treedef = trees.oak.large
+})
+core.register_decoration({
+	deco_type = "lsystem",
+	fill_ratio = 0.0004,
+	biomes = {"biomes:temperate"},
+	place_on = {"geology:grass_block", "geology:dirt"},
+	treedef = trees.oak.medium
+})
+core.register_decoration({
+	deco_type = "lsystem",
+	fill_ratio = 0.005,
+	biomes = {"biomes:temperate_forest"},
+	place_on = {"geology:grass_block", "geology:dirt"},
+	treedef = trees.oak.large
+})
+core.register_decoration({
+	deco_type = "lsystem",
+	fill_ratio = 0.005,
+	biomes = {"biomes:temperate_forest"},
+	place_on = {"geology:grass_block", "geology:dirt"},
+	treedef = trees.oak.medium
+})
 return trees
