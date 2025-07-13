@@ -62,6 +62,7 @@ for t, wood_type in pairs(types) do
     -- Leaves and Sapling
     local leaves_def = {
         description = S("@1 Leaves", wood_type.wood_name),
+        paramtype = "light",
         drawtype = "allfaces_optional",
         sunlight_propagates = true,
         tiles = {texture_prefix.."_leaves.png"},
@@ -79,6 +80,7 @@ for t, wood_type in pairs(types) do
     base.register_node(leaves_name, leaves_def)
     local sapling_def = {
         description = S("@1 Sapling", wood_type.wood_name),
+        paramtype = "light",
         drawtype = "plantlike",
         walkable = false,
         sunlight_propagates = true,

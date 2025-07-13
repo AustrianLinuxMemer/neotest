@@ -3,3 +3,4 @@ neotest_creative_singleplayer_autogrant_privs (grant all privileges in creative 
 neotest_debug (Enable Debug chat outputs) bool false
 neotest_default_prop (Default probability for loot) float 0.2 0 1
 neotest_default_max_w (Default value for maximum tool wear) int 65535 0 65535
+neotest_keep_inventory (Keep inventory when player dies) bool false

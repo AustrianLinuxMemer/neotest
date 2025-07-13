@@ -8,7 +8,7 @@ local function on_bucket_place(itemstack, placer, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(pointed_thing.under, direction)
     local liquid_name = bucket_index[itemstack:get_name()] or ""
-    local msg = S("placing a bucket of @", liquid_name)
+    local msg = S("placing a bucket of @1", liquid_name)
     if base.is_protected(pos, placer:get_player_name(), msg) then
         return itemstack
     end

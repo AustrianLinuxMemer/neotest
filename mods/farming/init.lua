@@ -109,6 +109,7 @@ function farming.register_plant(plant_def)
         local previous = plant_def.plants[i-1]
         base.register_node(previous.tname, {
             description = previous.name,
+            paramtype = "light",
             paramtype2 = "meshoptions",
             drawtype = "plantlike",
             walkable = false,
@@ -123,6 +124,7 @@ function farming.register_plant(plant_def)
     local last_plant = plant_def.plants[#plant_def.plants]
     core.register_node(last_plant.tname, {
         description = last_plant.name,
+        paramtype = "light",
         paramtype2 = "meshoptions",
         drawtype = "plantlike",
         walkable = false,
@@ -170,64 +172,13 @@ function farming.fertilize(itemstack, user, pointed_thing)
         return itemstack
     end
     local plant = core.get_node(pointed_thing.under)
-    if core.get_item_group(plant.name, "farming_plant") ~= 0 and math.random() >= 0.7 then
-        local plant_def = core.registered_nodes[plant.name]
-        local next_level = plant_def._next_level
-        core.set_node(pointed_thing.under, {name = next_level, param2 = plant_def.place_param2})
+    if core.get_item_group(plant.name, "farming_plant") ~= 0 then
+        if math.random() >= 0.7 then
+            local plant_def = core.registered_nodes[plant.name]
+            local next_level = plant_def._next_level
+            core.set_node(pointed_thing.under, {name = next_level, param2 = plant_def.place_param2})
+        end
         itemstack:take_item(1)
         return itemstack
     end
 end
-
-local wheat_drop = {
-    max_items = 5,
-    items = {
-        {
-            rarity = 5,
-            items = {"farming:wheat", "farming:wheat_seed 4"}
-        },
-        {
-            rarity = 5,
-            items = {"farming:wheat", "farming:wheat_seed 3"}
-        },
-        {
-            rarity = 5,
-            items = {"farming:wheat", "farming:wheat_seed 2"}
-        },
-        {
-            rarity = 5,
-            items = {"farming:wheat 2", "farming:wheat_seed"}
-        },
-        {
-            rarity = 5,
-            items = {"farming:wheat 3", "farming:wheat_seed"}
-        }
-    }
-}
-farming.register_plant({
-    seed = {
-        name = "farming:wheat_seed",
-        def = {
-            description = S("Wheat seeds"),
-            inventory_image = "farming_wheat_seed.png"
-        }
-    },
-    harvest = {
-        {
-            name = "farming:wheat",
-            def = {
-                description = S("Wheat"),
-                inventory_image = "farming_wheat.png"
-            }
-        }
-    },
-    plants = {
-        {tname = "farming:wheat_1", name = S("Wheat (stage 1)"), texture = "farming_wheat_plant1.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_2", name = S("Wheat (stage 2)"), texture = "farming_wheat_plant2.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_3", name = S("Wheat (stage 3)"), texture = "farming_wheat_plant3.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_4", name = S("Wheat (stage 4)"), texture = "farming_wheat_plant4.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_5", name = S("Wheat (stage 5)"), texture = "farming_wheat_plant5.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_6", name = S("Wheat (stage 6)"), texture = "farming_wheat_plant6.png", texture_variation = 3, drop = "farming:wheat_seeds"},
-        {tname = "farming:wheat_7", name = S("Wheat (stage 7)"), texture = "farming_wheat_plant7.png", texture_variation = 3, drop = wheat_drop},
-    }
-})

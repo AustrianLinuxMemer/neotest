@@ -119,6 +119,13 @@ end
 
 function base.register_node(name, def)
     def.stack_max = def.stack_max or 64
+    if def.groups == nil then
+        def.groups = {pane_connect=1, connect_fence = 1} 
+    elseif def.groups.pane_connect ~= 1 then 
+        def.groups.pane_connect = 1 
+    elseif def.groups.connect_fence ~= 1 then
+        def.groups.connect_fence = 1
+    end
     core.register_node(name, def)
 end
 

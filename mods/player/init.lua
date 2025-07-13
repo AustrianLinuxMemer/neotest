@@ -98,3 +98,22 @@ if creative then
 else
     core.register_tool(":", hand_survival)
 end
+
+local keep_inventory = core.settings:get_bool("neotest_keep_inventory", false)
+
+if not keep_inventory then
+    core.register_on_dieplayer(function(player, reason)
+        local inv = player:get_inventory()
+        local pos = player:get_pos()
+        local main = inv:get_list("main")
+        local craft = inv:get_list("craft")
+        for i, item in ipairs(main) do
+            core.add_item(pos, item)
+            inv:set_stack("main", i, ItemStack())
+        end
+        for i, item in ipairs(craft) do
+            core.add_item(pos, item)
+            inv:set_stack("craft", i, ItemStack())
+        end
+    end)
+end

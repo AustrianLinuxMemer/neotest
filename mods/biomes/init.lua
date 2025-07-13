@@ -103,13 +103,13 @@ chest.register_loot_chest("biomes:loot_temperate", {{
     deco_type = "simple",
     place_on = {"geology:cobble", "nodes:stone_bricks"},
     decoration = "biomes:loot_temperate",
-    fill_ratio = 0.01
+    fill_ratio = 0.1
 }}, "temperate")
 chest.register_loot_chest("biomes:loot_desert", {{
     deco_type = "simple",
     place_on = {"nodes:sandstone_bricks"},
     decoration = "biomes:loot_desert",
-    fill_ratio = 0.01
+    fill_ratio = 0.1
 }}, "desert")
 -- Sand
 core.register_ore({

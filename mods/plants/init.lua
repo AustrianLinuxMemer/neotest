@@ -1,4 +1,5 @@
 local S = core.get_translator("mods:plants")
+dofile(core.get_modpath("plants").."/farmable.lua")
 local cactus_def = {
     description = S("Cactus"),
     tiles = {"plants_cactus_top.png", "plants_cactus_bottom.png", "plants_cactus_side.png"},

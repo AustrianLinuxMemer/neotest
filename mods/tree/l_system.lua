@@ -46,27 +46,31 @@ core.register_decoration({
 	fill_ratio = 0.0004,
 	biomes = {"biomes:temperate"},
 	place_on = {"geology:grass_block", "geology:dirt"},
-	treedef = trees.oak.large
+	treedef = trees.oak.large,
+	y_min = 2
 })
 core.register_decoration({
 	deco_type = "lsystem",
 	fill_ratio = 0.0004,
 	biomes = {"biomes:temperate"},
 	place_on = {"geology:grass_block", "geology:dirt"},
-	treedef = trees.oak.medium
+	treedef = trees.oak.medium,
+	y_min = 2
 })
 core.register_decoration({
 	deco_type = "lsystem",
 	fill_ratio = 0.005,
 	biomes = {"biomes:temperate_forest"},
 	place_on = {"geology:grass_block", "geology:dirt"},
-	treedef = trees.oak.large
+	treedef = trees.oak.large,
+	y_min = 2
 })
 core.register_decoration({
 	deco_type = "lsystem",
 	fill_ratio = 0.005,
 	biomes = {"biomes:temperate_forest"},
 	place_on = {"geology:grass_block", "geology:dirt"},
-	treedef = trees.oak.medium
+	treedef = trees.oak.medium,
+	y_min = 2
 })
 return trees
