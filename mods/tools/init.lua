@@ -6,30 +6,7 @@ for mk, material in pairs(tools) do
     for tk, tool in pairs(material) do
         local toolname = "tools:"..mk.."_"..tk
         core.register_tool(toolname, tool)
-        if crafting_prototypes:is_lr(tk) then
-            local left = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick", "L")
-            local right = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick", "R")
-            core.log("warning", dump2(left, "left recipe"))
-            core.log("warning", dump2(right, "right recipe"))
-            core.register_craft({
-                type = "shaped",
-                output = toolname,
-                recipe = left
-            })
-            core.register_craft({
-                type = "shaped",
-                output = toolname,
-                recipe = right
-            })
-        else
-            local recipe = crafting_prototypes:get_recipe(tk, "group:"..mk, "group:stick")
-            core.log("warning", dump2(recipe, "recipe"))
-            core.register_craft({
-                type = "shaped",
-                output = toolname,
-                recipe = recipe
-            })
-        end
+        crafting_prototypes:register_recipe(tk, "group:"..mk, "group:stick", toolname)
     end
 end
 core.register_craft({

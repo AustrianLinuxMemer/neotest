@@ -1,8 +1,8 @@
 local crafting_prototypes = {
     shovel = {
-        {"I"},
-        {"S"},
-        {"S"}
+            {"I"},
+            {"S"},
+            {"S"}
     },
     hoe = {
         L = {
@@ -29,44 +29,58 @@ local crafting_prototypes = {
         }
     },
     pickaxe = {
-        {"I","I","I"},
-        {"","S",""},
-        {"","S",""},
+            {"I","I","I"},
+            {"","S",""},
+            {"","S",""}
     },
     shears = {
-        {"", "I"},
-        {"I", ""}
+            {"", "I"},
+            {"I", ""}
     },
     lr = {["axe"] = true, ["hoe"] = true}
 }
-function crafting_prototypes:get_recipe(t, item, stick, lr)
+local function replace(template, item, stick)
+    local recipe = {}
+    for row, _ in ipairs(template) do
+        recipe[row] = {}
+        for col, _ in ipairs(template[row]) do
+            local symbol = template[row][col]
+            if symbol == "I" then
+                recipe[row][col] = item
+            elseif symbol == "S" then
+                recipe[row][col] = stick
+            else
+                recipe[row][col] = ""
+            end
+        end
+    end
+    return recipe
+end
+function crafting_prototypes:register_recipe(t, item, stick, result)
     local template = self[t]
     if template == nil then 
         error("No template found")
     end
-    
-    if self.lr[t] then
-        if lr ~= "L" and lr ~= "R" then
-            error("for lr either L or R")
-        end
-        template = self[t][lr]
+    local is_lr = self.lr[t]
+    if is_lr then
+        local right_template = template["R"]
+        local left_template = template["L"]
+        core.register_craft({
+            type = "shaped",
+            output = result,
+            recipe = replace(right_template, item, stick)
+        })
+        core.register_craft({
+            type = "shaped",
+            output = result,
+            recipe = replace(left_template, item, stick)
+        })
+    else
+        core.register_craft({
+            type = "shaped",
+            output = result,
+            recipe = replace(template, item, stick)
+        })
     end
-    local result = {}
-    for ri, row in ipairs(template) do
-        result[ri] = {}
-        for ci, symbol in ipairs(row) do
-            if symbol == "I" then
-                result[ri][ci] = item
-            elseif symbol == "S" then 
-                result[ri][ci] = stick 
-            else
-                result[ri][ci] = ""
-            end
-        end
-    end
-    return result
-end
-function crafting_prototypes:is_lr(toolname)
-    return self.lr[toolname]
 end
 return crafting_prototypes
