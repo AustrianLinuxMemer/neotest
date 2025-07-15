@@ -2,7 +2,8 @@ local S = core.get_translator("mods:ice")
 ice = {
     melt_into = {},
     freeze_into = {},
-    snows = {}
+    snows = {},
+    ices = {},
 }
 
 
@@ -10,6 +11,7 @@ function ice.register_ice(ice_name, liquid_name, node_def)
     local ice_def = table.copy(node_def)
     ice.melt_into[ice_name] = liquid_name
     ice.freeze_into[liquid_name] = ice_name
+    ice.ices[ice_name] = true
     if ice_def.groups == nil then ice_def.groups = {} end
     ice_def.groups.melts = 1
     core.register_node(ice_name, ice_def)
@@ -21,9 +23,9 @@ function ice.freeze(pos)
         core.set_node(pos, {name = ice_name})
     end
 end
-function ice.melt(pos)
-    local ice_name = core.get_node(pos).name
-    local liquid_name = ice.melt_into[ice_name]
+function ice.melt_ice(pos)
+    local node_name = core.get_node(pos).name
+    local liquid_name = ice.melt_into[node_name]
     if liquid_name ~= nil then
         core.set_node(pos, {name = liquid_name})
     end
@@ -58,7 +60,7 @@ function ice.melt_snow(pos)
     local is_snow = ice.snows[node.name]
     if is_snow then
         if node.param2 <= 8 then
-            core.dig_node(pos)
+            core.set_node(pos, {name = "air"})
         else
             local new_param2 = node.param2 - 8
             core.swap_node(pos, {name = node.name, param2 = new_param2})
@@ -120,6 +122,7 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def)
     }
     if snow_def.groups == nil then snow_def.groups = {} end
     snow_def.groups.snow = 1
+    snow_def.groups.melts = 1
     snow_def.groups.falling_node = 1
     snow_def.groups.no_creative = 1
     snow_def.place_param2 = 8
@@ -145,3 +148,12 @@ ice.register_snow("ice:snow", {
     inventory_image = "ice_snowball.png"
 })
 
+
+function ice.melt(pos)
+    local node_name = core.get_node(pos).name
+    if ice.ices[node_name] then
+        ice.melt_ice(pos)
+    elseif ice.snows[node_name] then
+        ice.melt_snow(pos)
+    end
+end

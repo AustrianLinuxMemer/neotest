@@ -148,6 +148,7 @@ function base.is_protected(pos, player_name, action)
         return false
     end
 end
+
 local neotest_debug = core.settings:get_bool("neotest_debug", false)
 
 function base.chat_send_all_debug(msg)
