@@ -181,3 +181,8 @@ function base.utf_8_iter(s)
         return char
     end
 end
+
+function base.pick(...)
+    local options = {...}
+    return options[math.random(1, #options)]
+end

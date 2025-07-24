@@ -32,16 +32,12 @@ function ice.melt_ice(pos)
 end
 ice.register_ice("ice:water_ice", "liquids:water_source", {
     description = S("Ice"),
-    drawtype = "glasslike",
     tiles = {"ice_ice.png"},
-    use_texture_alpha = "blend",
     groups = {cracky = 3, water_ice = 1}
 })
 ice.register_ice("ice:river_water_ice", "liquids:river_water_source", {
     description = S("River Ice"),
-    drawtype = "glasslike",
     tiles = {"ice_river_ice.png"},
-    use_texture_alpha = "blend",
     groups = {cracky = 3, water_ice = 1}
 })
 
@@ -76,20 +72,16 @@ function ice.place_snow(itemstack, placer, pointed_thing, snow_name)
     end
     local above = core.get_node(pointed_thing.above)
     local under = core.get_node(pointed_thing.under)
-    base.chat_send_all_debug(above.name)
-    base.chat_send_all_debug(under.name)
+    local successful = false
     if ice.snows[under.name] and under.param2 < 64 then
-        if ice.pile_snow(pointed_thing.under) then
-            itemstack:take_item(1)
-            return itemstack
-        end
+        successful = ice.pile_snow(pointed_thing.under)
     elseif ice.snows[above.name] and above.param2 < 64 then
-        if ice.pile_snow(pointed_thing.above) then
-            itemstack:take_item(1)
-            return itemstack
-        end
+        successful = ice.pile_snow(pointed_thing.above)
     else
         core.place_node(pointed_thing.above, {name = snow_name, param2 = 8})
+        successful = true
+    end
+    if successful then
         itemstack:take_item(1)
         return itemstack
     end
@@ -129,10 +121,10 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def)
     snow_def.leveled_max = 64
     snow_def.drop = ""
     function snow_def.on_dig(pos, node, digger)
-        ice.dig_snow(pos, node, digger, snowball_name)
+        return ice.dig_snow(pos, node, digger, snowball_name)
     end
     function snowball_def.on_place(itemstack, placer, pointed_thing)
-        ice.place_snow(itemstack, placer, pointed_thing, snow_name)
+        return ice.place_snow(itemstack, placer, pointed_thing, snow_name)
     end
     snowball_def.stack_max = snowball_def.stack_max or 16
     base.register_node(snow_name, snow_def)
@@ -157,3 +149,29 @@ function ice.melt(pos)
         ice.melt_snow(pos)
     end
 end
+
+-- Melting
+core.register_abm({
+    nodenames = {"group:melts"},
+    chance = 25,
+    interval = 10,
+    action = function(pos)
+        local biome_data = core.get_biome_data(pos)
+        if biome_data.heat >= 25 then
+            ice.melt(pos)
+        end
+    end
+})
+-- Freeze
+core.register_abm({
+    nodenames = {"group:water"},
+    chance = 25,
+    interval = 10,
+    action = function(pos)
+        local node_above = core.get_node(vector.new(pos.x, pos.y + 1, pos.z))
+        local biome_data = core.get_biome_data(pos)
+        if biome_data.heat < 25 and node_above.name == "air" then
+            ice.freeze(pos)
+        end
+    end
+})
