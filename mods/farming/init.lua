@@ -1,12 +1,12 @@
 farming = {}
 local S = core.get_translator("mods:farming")
-core.register_node("farming:dry_farmland", {
+base.register_node("farming:dry_farmland", {
     description = "Dry Farmland",
     tiles = {"farming_dry_farmland_top.png", "farming_dry_farmland_bottom.png"},
     drop = "geology:dirt",
     groups = {crumbly=3, farmland=1}
 })
-core.register_node("farming:wet_farmland", {
+base.register_node("farming:wet_farmland", {
     description = "Wet Farmland",
     tiles = {"farming_wet_farmland_top.png", "farming_wet_farmland_bottom.png"},
     drop = "geology:dirt",

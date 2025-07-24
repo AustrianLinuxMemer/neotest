@@ -1,4 +1,5 @@
 local creative = core.settings:get_bool("creative_mode", false) or false
+local debug_mode = core.settings:get_bool("neotest_debug", false) or false
 local S = core.get_translator("mods:creative_inventory")
 local function compare_items(a,b)
     return a:get_name() < b:get_name()
@@ -46,7 +47,13 @@ function items.get_all_craftitems()
     table.sort(list, compare_items)
     return list
 end
-
+function items.get_all_debug_tools()
+    local list = {}
+    for k, v in pairs(core.registered_tools) do
+        if v.groups["test_tool"] then table.insert(list, ItemStack({name = k, count = v.stack_max})) end
+    end
+    return list
+end
 
 local function create_inventories()
     local all_nodes = items.get_all_nodes()
@@ -75,6 +82,15 @@ local function create_inventories()
     inv_tools:set_list("items", all_tools)
     inv_craftitems:set_size("items", #all_craftitems)
     inv_craftitems:set_list("items", all_craftitems)
+    if debug_mode then
+        local all_debug_tools = items.get_all_debug_tools()
+        local inv_debug_tools = core.get_inventory({type = "detached", name = "creative_debug_tools"})
+        if not inv_debug_tools then
+            inv_debug_tools = core.create_detached_inventory("creative_debug_tools", functions_table)
+        end
+        inv_debug_tools:set_size("items", #all_debug_tools)
+        inv_debug_tools:set_list("items", all_debug_tools)
+    end
 end
 
 local function make_formspec(invname, item_count)
@@ -97,10 +113,6 @@ local function make_creative_tabs()
     local nodes_size = inv_nodes:get_size("items")
     local tools_size = inv_tools:get_size("items")
     local craftitems_size = inv_craftitems:get_size("items")
-
-
-
-
     sfinv.register_page("player:inventory_nodes", {
         title = S("Blocks"),
         get = function(self, player, context)
@@ -119,6 +131,16 @@ local function make_creative_tabs()
             return sfinv.make_formspec(player, context, make_formspec("creative_craftitems", craftitems_size), true)
         end
     })
+    if debug_mode then
+        local inv_debug_tools = core.get_inventory({type = "detached", name = "creative_debug_tools"})
+        local debug_tools_size = inv_debug_tools:get_size("items")
+        sfinv.register_page("player:inventory_debug_tools", {
+            title = S("Debug tools"),
+            get = function(self, player, context)
+                return sfinv.make_formspec(player, context, make_formspec("creative_debug_tools", debug_tools_size), true)
+            end
+        })
+    end
 end
 
 if creative then

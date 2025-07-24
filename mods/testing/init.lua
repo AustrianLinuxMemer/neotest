@@ -25,13 +25,32 @@ base.register_craftitem("testing:testing_fuel", {
     groups = {no_creative = 1},
 })
 
-core.register_tool("testing:orientation", {
+core.register_tool("testing:orientation_tester", {
     description = "Orientation tester",
+    inventory_image = "testing_orientation_tester.png",
     on_use = function(_, _, pointed_thing)
         local dir = vector.subtract(pointed_thing.above, pointed_thing.under)
         core.chat_send_all(core.serialize(dir))
     end,
-    groups = {no_creative = 1}
+    groups = {no_creative = 1, test_tool = 1}
+})
+
+core.register_tool("testing:biome_data_tester", {
+    description = "Biome tester",
+    inventory_image = "testing_biome_tester.png",
+    pointabilities = {
+        nodes = {
+            ["group:liquid"] = true
+        }
+    },
+    on_use = function(_, user, pointed_thing)
+        if pointed_thing.type == "node" then
+            local data = core.get_biome_data(pointed_thing.under)
+            local player_name = user:get_player_name()
+            core.chat_send_player(player_name, dump2(data, "biome_data"))
+        end
+    end,
+    groups = {no_creative = 1, test_tool = 1}
 })
 
 core.register_craft({

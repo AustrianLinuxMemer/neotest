@@ -66,7 +66,7 @@ local geology_def_table = {
         ["geology:grass_block"] = {
             description = S("Grass block"),
             tiles = {
-                "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png", "geology_dirt_grass.png"
+                "geology_grass.png", "geology_dirt.png", "geology_dirt_grass.png"
             },
             is_ground_content = true,
             groups = {crumbly=3, soil=1, pane_connect = 1},
@@ -177,10 +177,10 @@ core.register_abm({
     interval = 5,
     chance = 50,
     action = function(pos, node)
-        local pos_neighbor = {x = pos.x, y = pos.y + 1, z = pos.z}
-        local is_transparent = base.is_transparent(pos_neighbor)
+        local upper = {x = pos.x, y = pos.y + 1, z = pos.z}
+        local light = core.get_node_light(upper) 
         
-        if not is_transparent then
+        if type(light) == "number" and light <= 2 then
             core.set_node(pos, {name = "geology:dirt"})
         end
     end
@@ -188,15 +188,29 @@ core.register_abm({
 -- Turning free dirt blocks into grass blocks
 core.register_abm({
     nodenames = {"geology:dirt"},
+    neighbors = {"geology:dirt", "geology:grass_block"},
     interval = 5,
     chance = 50,
     action = function(pos, node)
-        local pos_neighbor = {x = pos.x, y = pos.y + 1, z = pos.z}
-        local is_transparent = base.is_transparent(pos_neighbor)
-        local node_light = core.get_node_light(pos_neighbor)
-        local natural_light = core.get_natural_light(pos_neighbor, 0.5)
-        if is_transparent and (node_light ~= 0 or natural_light ~= 0)then
-            core.set_node(pos, {name = "geology:grass_block"})        
+        local upper = vector.new(pos.x, pos.y + 1, pos.z)
+        local neighbors = {
+            vector.new(pos.x - 1, pos.y, pos.z - 1),
+            vector.new(pos.x - 1, pos.y, pos.z),
+            vector.new(pos.x - 1, pos.y, pos.z + 1),
+            vector.new(pos.x + 1, pos.y, pos.z - 1),
+            vector.new(pos.x + 1, pos.y, pos.z),
+            vector.new(pos.x + 1, pos.y, pos.z + 1),
+            vector.new(pos.x, pos.y, pos.z - 1),
+            vector.new(pos.x, pos.y, pos.z + 1),
+        }
+        local grow_grass = false
+        for _, pos in ipairs(neighbors) do
+            local node = core.get_node(pos)
+            if node.name == "geology:grass_block" then grow_grass = true end
+        end
+        local light = core.get_node_light(upper)
+        if type(light) == "number" and light > 2 then
+            core.set_node(pos, {name = "geology:grass_block"})
         end
     end
 })

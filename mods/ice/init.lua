@@ -14,7 +14,7 @@ function ice.register_ice(ice_name, liquid_name, node_def)
     ice.ices[ice_name] = true
     if ice_def.groups == nil then ice_def.groups = {} end
     ice_def.groups.melts = 1
-    core.register_node(ice_name, ice_def)
+    base.register_node(ice_name, ice_def)
 end
 function ice.freeze(pos)
     local liquid_name = core.get_node(pos).name
@@ -101,7 +101,7 @@ function ice.dig_snow(pos, node, digger, snowball)
     end
     return true
 end
-function ice.register_snow(snow_name, node_def, snowball_name, item_def)
+function ice.register_snow(snow_name, node_def, snowball_name, item_def, covered_node, cover_over)
     local snow_def = table.copy(node_def)
     local snowball_def = table.copy(item_def)
     ice.snows[snow_name] = true
@@ -120,8 +120,14 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def)
     snow_def.place_param2 = 8
     snow_def.leveled_max = 64
     snow_def.drop = ""
+    snow_def.floodable = true
     function snow_def.on_dig(pos, node, digger)
         return ice.dig_snow(pos, node, digger, snowball_name)
+    end
+    function snow_def.on_flood(pos, oldnode, newnode)
+        local how_many_snowballs = math.floor(oldnode.param2 / 8)
+        core.add_item(pos, ItemStack({name = snowball_name, count = how_many_snowballs}))
+        core.remove_node(pos)
     end
     function snowball_def.on_place(itemstack, placer, pointed_thing)
         return ice.place_snow(itemstack, placer, pointed_thing, snow_name)
@@ -129,7 +135,34 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def)
     snowball_def.stack_max = snowball_def.stack_max or 16
     base.register_node(snow_name, snow_def)
     base.register_craftitem(snowball_name, snowball_def)
+    core.register_abm({
+        label = "Snow covering",
+        nodenames = {snow_name},
+        neighbors = cover_over,
+        interval = 1,
+        chance = 100,
+        action = function(pos)
+            local under = vector.new(pos.x, pos.y - 1, pos.z)
+            local node_under = core.get_node(under)
+            for _, cover_name in ipairs(cover_over) do
+                if node_under.name == cover_name then
+                    core.set_node(under, {name = covered_node})
+                    break
+                end
+            end
+        end
+    })
 end
+
+base.register_node("ice:snowy_grass_block", {
+    description = S("Snowy Grass Block"),
+    tiles = {
+        "ice_snow.png", "ice_dirt.png", "ice_dirt_snow.png"
+    },
+    is_ground_content = true,
+    groups = {crumbly=3, soil=1, pane_connect = 1},
+    drop = "geology:dirt"
+})
 
 ice.register_snow("ice:snow", {
     description = S("Snow layer"),
@@ -138,7 +171,7 @@ ice.register_snow("ice:snow", {
 }, "ice:snowball", {
     description = S("Snow ball"),
     inventory_image = "ice_snowball.png"
-})
+}, "ice:snowy_grass_block", {"geology:grass_block", "geology:dirt"})
 
 
 function ice.melt(pos)
@@ -157,7 +190,7 @@ core.register_abm({
     interval = 10,
     action = function(pos)
         local biome_data = core.get_biome_data(pos)
-        if biome_data.heat >= 25 then
+        if biome_data.heat >= 30 then
             ice.melt(pos)
         end
     end
@@ -170,8 +203,10 @@ core.register_abm({
     action = function(pos)
         local node_above = core.get_node(vector.new(pos.x, pos.y + 1, pos.z))
         local biome_data = core.get_biome_data(pos)
-        if biome_data.heat < 25 and node_above.name == "air" then
+        if biome_data.heat < 30 and node_above.name == "air" then
             ice.freeze(pos)
         end
     end
 })
+
+core.register_mapgen_script(core.get_modpath("ice").."/fix_snow.lua")

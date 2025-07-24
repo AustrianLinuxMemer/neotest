@@ -92,9 +92,26 @@ biomes = {
             y_max = -4,
             heat_point = 50,
             humidity_point = 50,
+        },
+        ["biomes:tundra"] = {
+            node_dust = "ice:snow",
+            node_top = "ice:snowy_grass_block",
+            depth_top = 1,
+            node_filler = "geology:dirt",
+            depth_filler = 3,
+            node_riverbed = "geology:gravel",
+            depth_riverbed = 2,
+            node_dungeon = "nodes:stone_bricks",
+            node_dungeon_stair = "nodes:stone_bricks_stairs",
+            vertical_blend = 4,
+            node_water_top = "ice:water_ice",
+            depth_water_top = 5,
+            heat_point = 0,
+            humidity_point = 50
         }
     }
 }
+
 for _, biome in pairs(biomes.biome_def) do
     core.register_biome(biome)
 end
