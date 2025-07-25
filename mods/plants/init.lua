@@ -24,7 +24,7 @@ core.register_decoration({
     sidelen = 16,
     fill_ratio = 0.005,
     y_min = 1,
-    biomes = {"desert", "desert_beach"},
+    biomes = {"biomes:desert"},
     decoration = "plants:cactus",
     height = 1,
     height_max = 3

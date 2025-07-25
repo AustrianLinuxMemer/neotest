@@ -4,9 +4,14 @@ ice = {
     freeze_into = {},
     snows = {},
     ices = {},
+    biome_temps = {}
 }
-
-
+function ice.register_biome_temperature_humidity(id, biome_heat, biome_humidity)
+    ice.biome_temps[id] = {heat = biome_heat, humidity = biome_humidity}
+end
+function ice.get_biome_temperature_humidity(id)
+    return ice.biome_temps[id] or {heat = 0, humidity = 0}
+end
 function ice.register_ice(ice_name, liquid_name, node_def)
     local ice_def = table.copy(node_def)
     ice.melt_into[ice_name] = liquid_name
@@ -190,7 +195,8 @@ core.register_abm({
     interval = 10,
     action = function(pos)
         local biome_data = core.get_biome_data(pos)
-        if biome_data.heat >= 30 then
+        local heat_humidity = ice.get_biome_temperature_humidity(biome_data.biome)
+        if heat_humidity.heat >= 25 then
             ice.melt(pos)
         end
     end
@@ -203,7 +209,8 @@ core.register_abm({
     action = function(pos)
         local node_above = core.get_node(vector.new(pos.x, pos.y + 1, pos.z))
         local biome_data = core.get_biome_data(pos)
-        if biome_data.heat < 30 and node_above.name == "air" then
+        local heat_humidity = ice.get_biome_temperature_humidity(biome_data.biome)
+        if heat_humidity.heat < 25 and node_above.name == "air" then
             ice.freeze(pos)
         end
     end

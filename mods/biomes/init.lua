@@ -15,7 +15,8 @@ core.register_alias("mapgen_apple", "air")
 
 biomes = {
     biome_def = {
-        ["biomes:temperate"] = {
+        [1] = {
+            name = "biomes:temperate",
             node_top = "geology:grass_block",
             depth_top = 1,
             node_filler = "geology:dirt",
@@ -28,7 +29,8 @@ biomes = {
             heat_point = 50,
             humidity_point = 50
         },
-        ["biomes:temperate_forest"] = {
+        [2] = {
+            name = "biomes:temperate_forest",
             node_top = "geology:grass_block",
             depth_top = 1,
             node_filler = "geology:dirt",
@@ -41,7 +43,8 @@ biomes = {
             heat_point = 50,
             humidity_point = 50
         },
-        ["biomes:desert"] = {
+        [3] = {
+            name = "biomes:desert",
             node_top = "geology:sand",
             depth_top = 3,
             node_riverbed = "geology:sand",
@@ -53,7 +56,8 @@ biomes = {
             heat_point = 75,
             humidity_point = 25
         },
-        ["biomes:temperate_beach"] = {
+        [4] = {
+            name = "biomes:temperate_beach",
             node_top = "geology:sand",
             depth_top = 3,
             node_filler = "geology:sandstone",
@@ -67,7 +71,8 @@ biomes = {
             heat_point = 50,
             humidity_point = 50
         },
-        ["biomes:temperate_gravel_ocean"] = {
+        [5] = {
+            name = "biomes:temperate_gravel_ocean",
             node_top = "geology:gravel",
             depth_top = 3,
             node_riverbed = "geology:gravel",
@@ -79,7 +84,8 @@ biomes = {
             heat_point = 50,
             humidity_point = 50,
         },
-        ["biome:temperate_sand_ocean"] = {
+        [6] = {
+            name = "biome:temperate_sand_ocean",
             node_top = "geology:sand",
             depth_top = 3,
             node_filler = "geology:sandstone",
@@ -93,7 +99,8 @@ biomes = {
             heat_point = 50,
             humidity_point = 50,
         },
-        ["biomes:tundra"] = {
+        [7] = {
+            name = "biomes:tundra",
             node_dust = "ice:snow",
             node_top = "ice:snowy_grass_block",
             depth_top = 1,
@@ -111,9 +118,10 @@ biomes = {
         }
     }
 }
-
-for _, biome in pairs(biomes.biome_def) do
-    core.register_biome(biome)
+for i, biome in ipairs(biomes.biome_def) do
+    local id = core.register_biome(biome)
+    core.log("error", biome.name.." ["..tostring(i).."] got "..tostring(id))
+    ice.register_biome_temperature_humidity(i, biome.heat_point, biome.humidity_point)
 end
 
 chest.register_loot_chest("biomes:loot_temperate", {{
