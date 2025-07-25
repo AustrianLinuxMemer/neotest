@@ -34,14 +34,8 @@ local materials = {
         {
             type = "shapeless",
             output = "materials:pulp",
-            recipe = {"materials:sawdust", "bucket:water_bucket"},
-            replacements = {{"bucket:water_bucket", "bucket:empty_bucket"}}
-        },
-        {
-            type = "shapeless",
-            output = "materials:pulp",
-            recipe = {"materials:sawdust", "bucket:river_water_bucket"},
-            replacements = {{"bucket:river_water_bucket", "bucket:empty_bucket"}}
+            recipe = {"materials:sawdust", "group:water_bucket"},
+            replacements = {{"group:water_bucket", "bucket:empty_bucket"}}
         },
         {
             type = "cooking",

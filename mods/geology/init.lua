@@ -178,7 +178,7 @@ core.register_abm({
     chance = 50,
     action = function(pos, node)
         local upper = {x = pos.x, y = pos.y + 1, z = pos.z}
-        local light = core.get_node_light(upper) 
+        local light = core.get_node_light(upper, 0.5) 
         
         if type(light) == "number" and light <= 2 then
             core.set_node(pos, {name = "geology:dirt"})
@@ -208,7 +208,7 @@ core.register_abm({
             local node = core.get_node(pos)
             if node.name == "geology:grass_block" then grow_grass = true end
         end
-        local light = core.get_node_light(upper)
+        local light = core.get_node_light(upper, 0.5)
         if type(light) == "number" and light > 2 then
             core.set_node(pos, {name = "geology:grass_block"})
         end

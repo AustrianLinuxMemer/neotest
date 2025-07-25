@@ -63,7 +63,7 @@ local function on_bucket_use(itemstack, user, pointed_thing)
         return itemstack
     end
 end
-function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name, fuel, btime)
+function register_bucket(bucket_name, bucket_description, bucket_image, liquid_name, crafting_groups, fuel, btime)
     bucket_index["bucket:"..bucket_name] = liquid_name
     liquid_index[liquid_name] = "bucket:"..bucket_name
     base.register_craftitem("bucket:"..bucket_name, {
@@ -73,6 +73,7 @@ function register_bucket(bucket_name, bucket_description, bucket_image, liquid_n
         --on_use = on_bucket_use,
         liquids_pointable = true,
         stack_max = 1,
+        groups = crafting_groups
     })
     if fuel and btime ~= 0 then
         core.register_craft({
@@ -100,9 +101,9 @@ core.register_craft({
     }
 })
 
-register_bucket("water_bucket", S("Water Bucket"), "bucket_bucket_water.png", "liquids:water_source")
-register_bucket("river_water_bucket", S("River Water Bucket"), "bucket_bucket_river_water.png", "liquids:river_water_source")
-register_bucket("lava_bucket", S("Lava Bucket"), "bucket_bucket_lava.png", "liquids:lava_source", true, 2000)
+register_bucket("water_bucket", S("Water Bucket"), "bucket_bucket_water.png", "liquids:water_source", {water_bucket=1})
+register_bucket("river_water_bucket", S("River Water Bucket"), "bucket_bucket_river_water.png", "liquids:river_water_source", {water_bucket=1})
+register_bucket("lava_bucket", S("Lava Bucket"), "bucket_bucket_lava.png", "liquids:lava_source", {lava_bucket=1}, true, 2000)
 
 loot.add_to_loot_pool({item = "bucket:empty_bucket", max_q = 4, prob = 0.2})
 loot.add_to_loot_pool({item = "bucket:water_bucket", max_q = 1, prob = 0.2})
