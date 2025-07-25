@@ -36,6 +36,7 @@ base.register_craftitem("torch:torch", {
 base.register_node("torch:torch_attached", {
     drawtype = "mesh",
     paramtype = "light",
+    floodable = true,
     sunlight_propagates = true,
     walkable = false,
     light_source = core.LIGHT_MAX,
@@ -47,12 +48,15 @@ base.register_node("torch:torch_attached", {
     selection_box = {
 		type = "wallmounted",
 		wall_side = {-8/16, 4/16, -2/16, -2/16, -6/16, 2/16},
-	}
-    
+	},
+    on_flood = function(pos)
+        core.add_item(pos, {name = "torch:torch"})
+    end
 })
 base.register_node("torch:torch_freestanding", {
     drawtype = "mesh",
     paramtype = "light",
+    floodable = true,
     sunlight_propagates = true,
     walkable = false,
     light_source = core.LIGHT_MAX,
@@ -65,7 +69,10 @@ base.register_node("torch:torch_freestanding", {
 		type = "wallmounted",
 		wall_bottom = {-2/16, 2/16, -2/16, 2/16, -8/16, 2/16},
         wall_top = {-2/16, 8/16, -2/16, 2/16, -2/16, 2/16}
-	}
+	},
+    on_flood = function(pos)
+        core.add_item(pos, {name = "torch:torch"})
+    end
 })
 core.register_craft({
 	type = "shaped",
