@@ -30,7 +30,8 @@ for t, wood_type in pairs(types) do
         tiles = {texture_prefix.."_planks.png"},
         groups = {choppy=3, planks=1, pane_connect=1}
     }
-    core.register_node(planks_name, table.copy(planks_def))
+    
+    base.register_node(planks_name, table.copy(planks_def))
     stairs.register_stair(planks_name, S("@1 Stairs", wood_type.wood_name), table.copy(planks_def), true)
     stairs.register_slab(planks_name, S("@1 Slabs", wood_type.wood_name), table.copy(planks_def), true)
 
@@ -117,3 +118,14 @@ for t, wood_type in pairs(types) do
         recipe = {leaves_name}
     })
 end
+
+core.register_craft({
+    type = "fuel",
+    recipe = "group:planks",
+    burntime = 20
+})
+core.register_craft({
+    type = "fuel",
+    recipe = "group:log",
+    burntime = 20
+})

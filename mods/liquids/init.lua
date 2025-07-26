@@ -1,4 +1,4 @@
--- Courtesy of of Minetest Game (Line 2204-2483 in nodes.lua)
+-- Courtesy of Minetest Game (Line 2204-2483 in nodes.lua)
 local S = core.get_translator("mods:liquids")
 base.register_node("liquids:water_source", {
 	description = S("Water Source"),

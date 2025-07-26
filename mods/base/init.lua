@@ -186,3 +186,24 @@ function base.pick(...)
     local options = {...}
     return options[math.random(1, #options)]
 end
+
+core.register_chatcommand("setnode", {
+    params = "<x> <y> <z> <block_name> [<param> [<param2>]]",
+    description = "Sets a node using core.set_node()",
+    privs = {server=true},
+    func = function(name, param)
+        args = string.split(param, " ")
+        if #args < 4 then
+            return S("Too few arguments")
+        end
+        local x = tonumber(args[1])
+        local y = tonumber(args[2])
+        local z = tonumber(args[3])
+        if x == nil or y == nil or z == nil then
+            return S("Invalid cordinates")
+        end
+        local pos = vector.new(x,y,z)
+        local node = {name = args[4], param = tonumber(args[5]) or nil, param2 = tonumber(args[6]) or nil}
+        core.set_node(pos, node)
+    end
+})

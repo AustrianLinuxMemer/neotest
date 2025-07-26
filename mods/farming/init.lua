@@ -117,6 +117,7 @@ function farming.register_plant(plant_def)
             place_param2 = previous.texture_variation,
             tiles = {previous.texture},
             drop = previous.drop,
+            selection_box = previous.selection_box,
             groups={farming_plant=1, oddly_breakable_by_hand=1, no_creative=1},
             _next_level = current.tname
         })
@@ -132,8 +133,8 @@ function farming.register_plant(plant_def)
         place_param2 = last_plant.texture_variation,
         tiles = {last_plant.texture},
         groups={last_farming_plant=1, oddly_breakable_by_hand=1, no_creative=1},
-        drop = last_plant.drop
-        
+        drop = last_plant.drop,
+        selection_box = last_plant.selection_box
     })
     for _, v in ipairs(plant_def.harvest) do
         base.register_craftitem(v.name, v.def)
