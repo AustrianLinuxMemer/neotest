@@ -1,5 +1,6 @@
 farming = {}
 local S = core.get_translator("mods:farming")
+local creative = core.settings:get_bool("creative_mode", false) or false
 base.register_node("farming:dry_farmland", {
     description = "Dry Farmland",
     tiles = {"farming_dry_farmland_top.png", "farming_dry_farmland_bottom.png"},
@@ -80,7 +81,7 @@ core.register_abm({
         }
     }
 ]]
-local creative = core.settings:get_bool("creative_mode", false) or false
+
 
 
 local function place_seed(itemstack, placer, pointed_thing, node)
@@ -161,9 +162,11 @@ function farming.tilt_land(itemstack, user, pointed_thing)
         return itemstack
     end
     if core.get_item_group(under.name, "soil") ~= 0 and core.get_item_group(under.name, "farmland") == 0 then
-        local tool = itemstack:get_tool_capabilities()
-        local use = math.floor(0xFFFF / tool.groupcaps.crumbly.uses)
-        itemstack:add_wear(use)
+        if not creative then
+            local tool = itemstack:get_tool_capabilities()
+            local use = math.floor(0xFFFF / tool.groupcaps.crumbly.uses)
+            itemstack:add_wear(use)
+        end
         core.set_node(pointed_thing.under, {name = "farming:dry_farmland"})
         return itemstack
     end
@@ -183,7 +186,9 @@ function farming.fertilize(itemstack, user, pointed_thing)
             local next_level = plant_def._next_level
             core.set_node(pointed_thing.under, {name = next_level, param2 = plant_def.place_param2})
         end
-        itemstack:take_item(1)
+        if not creative then
+            itemstack:take_item(1)
+        end
         return itemstack
     end
 end

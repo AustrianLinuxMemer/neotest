@@ -95,6 +95,7 @@ if creative then
             core.set_player_privs(name, grant)
         end)
     end
+    -- Replacing the placement logic
     local old_item_place_node = core.item_place_node
     local old_item_place = core.item_place
     function core.item_place_node(itemstack, placer, pointed_thing, param2, prevent_after_place)
