@@ -95,6 +95,16 @@ if creative then
             core.set_player_privs(name, grant)
         end)
     end
+    local old_item_place_node = core.item_place_node
+    local old_item_place = core.item_place
+    function core.item_place_node(itemstack, placer, pointed_thing, param2, prevent_after_place)
+        local itemstack, position = old_item_place_node(itemstack, placer, pointed_thing, param2, prevent_after_place)
+        return nil, position
+    end
+    function core.item_place(itemstack, placer, pointed_thing, param2)
+        local itemstack, position = old_item_place(itemstack, placer, pointed_thing, param2, prevent_after_place)
+        return nil, position
+    end
 else
     core.register_tool(":", hand_survival)
 end

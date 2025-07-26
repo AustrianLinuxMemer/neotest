@@ -80,24 +80,28 @@ core.register_abm({
         }
     }
 ]]
+local creative = core.settings:get_bool("creative_mode", false) or false
+
 
 local function place_seed(itemstack, placer, pointed_thing, node)
-    
     if pointed_thing.type ~= "node" then
         base.chat_send_all_debug("wrong pointed_thing")
-        return itemstack
+        return nil
     end
     local msg = S("plant a seed")
     if base.is_protected(pointed_thing.above, placer:get_player_name(), msg) then
         base.chat_send_all_debug("protected")
-        return itemstack
+        return nil
     end
     local soil = core.get_node(pointed_thing.under)
     local above = core.get_node(pointed_thing.above)
     if core.get_item_group(soil.name, "farmland") ~= 0 then
         base.chat_send_all_debug("placement logic")
         core.set_node(pointed_thing.above, node)
-        itemstack:take_item(1)
+        
+        if not creative then
+            itemstack:take_item(1)
+        end
         return itemstack
     end
 end
@@ -140,7 +144,7 @@ function farming.register_plant(plant_def)
         base.register_craftitem(v.name, v.def)
     end
     plant_def.seed.def.on_place = function(itemstack, placer, pointed_thing)
-        place_seed(itemstack, placer, pointed_thing, {name = plant_def["plants"][1]["tname"], param2 = plant_def["plants"][1]["texture_variation"]})
+        return place_seed(itemstack, placer, pointed_thing, {name = plant_def["plants"][1]["tname"], param2 = plant_def["plants"][1]["texture_variation"]})
     end
     base.register_craftitem(plant_def.seed.name, plant_def.seed.def)
     
