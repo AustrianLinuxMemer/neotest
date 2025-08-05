@@ -40,7 +40,7 @@ end
 
 function base.dir_to_facedir_stair(pitch, yaw)
     local upright = pitch > 0
-    local facedir = minetest.dir_to_facedir({x = math.cos(yaw+math.pi/2), y = 0, z = math.sin(yaw+math.pi/2)})
+    local facedir = core.dir_to_facedir({x = math.cos(yaw+math.pi/2), y = 0, z = math.sin(yaw+math.pi/2)})
     core.chat_send_all(facedir)
     local param2_map = {
         [true] = {0, 1, 2, 3},
@@ -147,6 +147,7 @@ function base.is_protected(pos, player_name, action)
     else
         return false
     end
+    
 end
 
 local neotest_debug = core.settings:get_bool("neotest_debug", false)
@@ -192,7 +193,7 @@ core.register_chatcommand("setnode", {
     description = "Sets a node using core.set_node()",
     privs = {server=true},
     func = function(name, param)
-        args = string.split(param, " ")
+        local args = string.split(param, " ")
         if #args < 4 then
             return S("Too few arguments")
         end
@@ -205,5 +206,7 @@ core.register_chatcommand("setnode", {
         local pos = vector.new(x,y,z)
         local node = {name = args[4], param = tonumber(args[5]) or nil, param2 = tonumber(args[6]) or nil}
         core.set_node(pos, node)
+        local meta = core.get_meta(pos)
+        meta:get_inventory()
     end
 })

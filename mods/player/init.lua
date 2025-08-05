@@ -103,7 +103,7 @@ if creative then
         return nil, position
     end
     function core.item_place(itemstack, placer, pointed_thing, param2)
-        local itemstack, position = old_item_place(itemstack, placer, pointed_thing, param2, prevent_after_place)
+        local itemstack, position = old_item_place(itemstack, placer, pointed_thing, param2)
         return nil, position
     end
 else

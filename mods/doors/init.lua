@@ -101,7 +101,7 @@ core.register_chatcommand("fixdoorair", {
             if instances["doors:top_node"] ~= nil then
                 for k,v in ipairs(instances["doors:top_node"]) do
                     local below = vector.new(v.x, v.y-1, v.z)
-                    if core.get_node_group(core.get_node(below).name, "door") <= 0 then
+                    if core.get_item_group(core.get_node(below).name, "door") <= 0 then
                         core.set_node(v, {name = "air"})
                     end
                 end

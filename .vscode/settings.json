@@ -1,0 +1,9 @@
+{
+    "Lua.workspace.library": [
+        "luanti_stubs/core/core.lua",
+        "luanti_stubs/inventory/invref.lua",
+        "luanti_stubs/inventory/itemstack.lua",
+        "luanti_stubs/classes/settings.lua"
+        
+    ]
+}

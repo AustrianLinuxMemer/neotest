@@ -72,7 +72,10 @@ function ice.place_snow(itemstack, placer, pointed_thing, snow_name)
     if pointed_thing.type ~= "node" then
         return
     end
-    if base.is_protected(pos, placer:get_player_name(), S("place a layer of @1", snow_name)) then
+    if base.is_protected(pointed_thing.above, placer:get_player_name(), S("place a layer of @1", snow_name)) then
+        return
+    end
+    if base.is_protected(pointed_thing.under, placer:get_player_name(), S("place a layer of @1", snow_name)) then
         return
     end
     local above = core.get_node(pointed_thing.above)

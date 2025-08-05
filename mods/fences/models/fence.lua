@@ -2,7 +2,7 @@
 -- Node Box Editor, version 0.9.0
 -- Namespace: test
 
-minetest.register_node("test:node_1", {
+core.register_node("test:node_1", {
 	tiles = {
 		"default_wood.png",
 		"default_wood.png",
