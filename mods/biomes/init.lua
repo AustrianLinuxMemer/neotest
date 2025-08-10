@@ -116,10 +116,12 @@ biomes = {
             heat_point = 0,
             humidity_point = 50
         }
-    }
+    },
+    biome_map = {}
 }
 for i, biome in ipairs(biomes.biome_def) do
     local id = core.register_biome(biome)
+    biome_map[id] = i
     core.log("error", biome.name.." ["..tostring(i).."] got "..tostring(id))
     ice.register_biome_temperature_humidity(i, biome.heat_point, biome.humidity_point)
 end

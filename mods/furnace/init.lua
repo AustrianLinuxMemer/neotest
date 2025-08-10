@@ -230,11 +230,13 @@ local function furnace_loop(pos, elapsed)
         total.input = recipes.input.time
     end
 
-    -- If the fuel ran out, power off the furnace and destory the intermediary, otherwise keep the furnace on
+    -- If the fuel ran out, power off the furnace and destory the intermediary only if there is no more fuel, otherwise keep the furnace on
     if remaining.fuel <= 0 then
         remaining.input = 0
         total.input = 0
-        intermediary:clear()
+        if stacks.fuel:is_empty() then
+            intermediary:clear()
+        end
         local this_node = core.get_node(pos)
         this_node.name = "furnace:furnace"
         core.swap_node(pos, this_node)
