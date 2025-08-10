@@ -1,5 +1,5 @@
 local S = core.get_translator("mods:cauldron")
-
+local MAX_LEVEL = 3
 
 local function cauldron_nodebox(water_level)
     if type(water_level) ~= "number" then water_level = 0 end
@@ -9,7 +9,7 @@ local function cauldron_nodebox(water_level)
         max_y = 0/16
     elseif water_level == 2 then
         max_y = 3/16
-    elseif water_level == 3 then
+    elseif water_level == MAX_LEVEL then
         max_y = 7/16
     end
     local nodebox = {
@@ -41,6 +41,38 @@ end
 cauldron = {
     interactions = {}
 }
+function cauldron.drain(pos)
+    local node = core.get_node(pos)
+    local is_cauldron = core.get_item_group(node.name, "cauldron") ~= 0
+    core.set_node(pos, {name = "cauldron:empty_cauldron"})
+end
+function cauldron.fill(pos, liquid_name)
+    core.set_node(pos, {name = "cauldron:"..liquid_name.."_cauldron_3"})
+end
+function cauldron.add(pos)
+    local node = core.get_node(pos)
+    local is_cauldron = core.get_item_group(node.name, "cauldron") ~= 0
+    if is_cauldron then
+        local cauldron_info = core.registered_nodes[node.name]._cauldron_info
+        if cauldron_info.level < 3 then
+            local new_cauldron = "cauldron:"..cauldron_info.liquid.."_cauldron_"..tostring(cauldron_info.level + 1)
+            core.set_node(pos, {name = new_cauldron})
+        end
+    end
+end
+function cauldron.remove(pos)
+    local node = core.get_node(pos)
+    local is_cauldron = core.get_item_group(node.name, "cauldron") ~= 0
+    if is_cauldron then
+        local cauldron_info = core.registered_nodes[node.name]._cauldron_info
+        if cauldron_info.level == 1 then
+            cauldron.drain(pos)
+        elseif cauldron_info.level > 1 then
+            local new_cauldron = "cauldron:"..cauldron_info.liquid.."_cauldron_"..tostring(cauldron_info.level - 1)
+            core.set_node(pos, {name = new_cauldron})
+        end
+    end
+end
 -- Function must implement this contract:
 -- function(pos, node, clicker, itemstack, pointed_thing, cauldron_info)
 -- for regular cauldrons and
@@ -152,7 +184,7 @@ cauldron.register_cauldron("water", S("Water Cauldron"), "cauldron_water_top.png
 cauldron.register_cauldron("lava", S("Lava Cauldron"), "cauldron_lava_top.png", {light_source = core.LIGHT_MAX})
 
 cauldron.register_callback("cauldron:empty_cauldron", "bucket:water_bucket", function(pos, node, clicker, itemstack, pointed_thing)
-    core.set_node(pos, {name = "cauldron:water_cauldron_3"})
+    cauldron.fill(pos, "water")
     if creative then
         if empty_bucket then
             return ItemStack("bucket:empty_bucket")
@@ -164,7 +196,7 @@ cauldron.register_callback("cauldron:empty_cauldron", "bucket:water_bucket", fun
     end
 end, true)
 cauldron.register_callback("cauldron:empty_cauldron", "bucket:lava_bucket", function(pos, node, clicker, itemstack, pointed_thing)
-    core.set_node(pos, {name = "cauldron:lava_cauldron_3"})
+    cauldron.fill(pos, "lava")
     if creative then
         if empty_bucket then
             return ItemStack("bucket:empty_bucket")
@@ -177,8 +209,8 @@ cauldron.register_callback("cauldron:empty_cauldron", "bucket:lava_bucket", func
 end, true)
 
 cauldron.register_callback("cauldron:lava_cauldron", "bucket:empty_bucket", function(pos, node, clicker, itemstack, pointed_thing, cauldron_info)
-    if cauldron_info.level == 3 then
-        core.set_node(pos, {name = "cauldron:empty_cauldron"})
+    if cauldron_info.level == MAX_LEVEL then
+        cauldron.drain(pos)
         if itemstack:get_count() == 1 then
             return ItemStack("bucket:lava_bucket")
         else
@@ -196,8 +228,8 @@ cauldron.register_callback("cauldron:lava_cauldron", "bucket:empty_bucket", func
 end, true)
 
 cauldron.register_callback("cauldron:water_cauldron", "bucket:empty_bucket", function(pos, node, clicker, itemstack, pointed_thing, cauldron_info)
-    if cauldron_info.level == 3 then
-        core.set_node(pos, {name = "cauldron:empty_cauldron"})
+    if cauldron_info.level == MAX_LEVEL then
+        cauldron.drain(pos)
         if itemstack:get_count() == 1 then
             return ItemStack("bucket:water_bucket")
         else
