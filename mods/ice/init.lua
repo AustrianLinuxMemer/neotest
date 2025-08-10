@@ -133,8 +133,11 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def, covered
         return ice.dig_snow(pos, node, digger, snowball_name)
     end
     function snow_def.on_flood(pos, oldnode, newnode)
-        local how_many_snowballs = math.floor(oldnode.param2 / 8)
-        core.add_item(pos, ItemStack({name = snowball_name, count = how_many_snowballs}))
+        local is_igniter = core.get_item_group(newnode.name, "igniter") ~= 0
+        if not is_igniter then
+            local how_many_snowballs = math.floor(oldnode.param2 / 8)
+            core.add_item(pos, ItemStack({name = snowball_name, count = how_many_snowballs}))
+        end
         core.remove_node(pos)
     end
     function snowball_def.on_place(itemstack, placer, pointed_thing)
