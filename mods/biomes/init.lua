@@ -120,10 +120,23 @@ biomes = {
     biome_map = {}
 }
 for i, biome in ipairs(biomes.biome_def) do
-    local id = core.register_biome(biome)
-    biome_map[id] = i
-    core.log("error", biome.name.." ["..tostring(i).."] got "..tostring(id))
-    ice.register_biome_temperature_humidity(i, biome.heat_point, biome.humidity_point)
+    core.register_biome(biome)
+end
+
+core.log("error", dump2(biomes.biome_map, "biome_map"))
+
+function biomes.biome_query(biome_id, fields)
+    if type(fields) == "table" then
+        local result = {}
+        for _, field in ipairs(fields) do
+            result[field] = biomes.biome_def[biome_id][field]
+        end
+        return result
+    elseif type(fields) == "string" then
+        return biomes.biome_def[biome_id][fields]
+    else
+        return biomes.biome_def[biome_id]
+    end
 end
 
 chest.register_loot_chest("biomes:loot_temperate", {{
@@ -258,3 +271,5 @@ core.register_ore({
 	y_max          = -256,
 	y_min          = -31000,
 })
+
+dofile(core.get_modpath("biomes").."/env_abms.lua")

@@ -47,7 +47,9 @@ core.register_tool("testing:biome_data_tester", {
         if pointed_thing.type == "node" then
             local data = core.get_biome_data(pointed_thing.under)
             local player_name = user:get_player_name()
+            local biome_def = biomes.biome_query(data.biome, {"heat_point", "humidity_point"})
             core.chat_send_player(player_name, dump2(data, "biome_data"))
+            core.chat_send_player(player_name, dump2(biome_def, "biome_def"))
         end
     end,
     groups = {no_creative = 1, test_tool = 1}
