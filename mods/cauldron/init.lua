@@ -91,13 +91,28 @@ function cauldron.register_callback(cauldron_name, item_name, func, rewire_item)
         if registration then
             local old_on_place = registration.on_place
             local function new_on_place(itemstack, placer, pointed_thing)
+                local is_player = placer ~= nil and placer:is_valid() and placer:is_player()
+                local sneak_pressed
+                if is_player then
+                    sneak_pressed = placer:get_player_control().sneak
+                else
+                    sneak_pressed = false
+                end
                 local pos = pointed_thing.under
                 local node = core.get_node(pos)
-                local is_cauldron = core.get_item_group(node.name, "cauldron")~= 0
+                local is_cauldron = core.get_item_group(node.name, "cauldron") ~= 0
                 if is_cauldron then
+                    if sneak_pressed then
+                        return old_on_place(itemstack, placer, pointed_thing)
+                    end
                     local node_registration = core.registered_nodes[node.name]
                     local cauldron_info = node_registration._cauldron_info
-                    return cauldron.interactions[cauldron_info.name][itemstack:get_name()](pos, node, placer, itemstack, pointed_thing, cauldron_info)
+                    local cauldron_func = cauldron.interactions[cauldron_info.name][itemstack:get_name()]
+                    if type(cauldron_func) == "function" then
+                        return cauldron_func(pos, node, placer, itemstack, pointed_thing, cauldron_info)
+                    else
+                        return old_on_place(itemstack, placer, pointed_thing)
+                    end
                 else
                     return old_on_place(itemstack, placer, pointed_thing)
                 end
@@ -173,6 +188,7 @@ function cauldron.register_cauldron(liquid_type, cauldron_name, cauldron_top_tex
             liquid = liquid_type,
             level = i
         }
+        def.drop = "cauldron:empty_cauldron"
         def.groups = {cracky = 1, no_creative = 1, cauldron = 1, cauldron_level = i}
         cauldron.register_cauldron_base(cauldron_base_name.."_"..tostring(i), def)
     end

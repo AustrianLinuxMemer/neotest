@@ -10,6 +10,7 @@ function ice.register_ice(ice_name, liquid_name, node_def)
     ice.melt_into[ice_name] = liquid_name
     ice.freeze_into[liquid_name] = ice_name
     ice.ices[ice_name] = true
+    ice_def.paramtype = "light"
     if ice_def.groups == nil then ice_def.groups = {} end
     ice_def.groups.melts = 1
     base.register_node(ice_name, ice_def)
