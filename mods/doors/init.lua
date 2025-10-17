@@ -69,15 +69,15 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
             local function new_state()
                 if l_door then
                     if state == closed then
-                        return state + 1
-                    else
                         return state - 1
+                    else
+                        return state + 1
                     end
                 elseif r_door then
                     if state == closed then
-                        return state - 1
-                    else
                         return state + 1
+                    else
+                        return state - 1
                     end
                 else
                     core.chat_send_all("No change")
