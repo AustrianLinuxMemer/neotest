@@ -12,67 +12,96 @@ core.register_node("doors:top_node", {
     groups={no_creative=1}
 })
 local S = core.get_translator("mods:doors")
-function door_after_place(pos, placer)
-    local meta = core.get_meta(pos)
-    local node = core.get_node(pos)
-    local player_control = placer:get_player_control()
-    if player_control.aux1 ~= nil then
-        if player_control.aux1 then
-            meta:set_int("lr", 1)
-        else
-            meta:set_int("lr", 0)
-        end
+function doors.register_door(door_tname, door_name, door_item_texture, door_uv, groups)
+    local flipped_door_uv
+    if type(door_uv) == "string" then
+        flipped_door_uv = door_uv.."^[transformFX"
+    elseif type(door_uv) == "table" and type(door_uv.name) == "string" then
+        flipped_door_uv = table.copy(door_uv)
+        flipped_door_uv.name = flipped_door_uv.name.."^[transformFX"
     else
-        meta:set_int("lr", 1)
+        error("door_uv was of invalid type and/or format: "..type(door_uv))
     end
-    meta:set_int("closed", node.param2)
-    local above = vector.add(pos, vector.new(0,1,0))
-    core.set_node(above, {name="doors:top_node"})
-    return core.settings:get_bool("creative_mode", false)
-end
-function door_on_destroy(pos)
-	local above = vector.add(pos, vector.new(0,1,0))
-	core.set_node(above, {name="air"})
-end
-function door_on_rightclick(pos, node, player)
-    local msg = S("interact with a door")
-    if base.is_protected(pos, player:get_player_name(), msg) then
-        return
-    end
-    local meta = core.get_meta(pos)
-    local closed = meta:get_int("closed")
-    local lr = meta:get_int("lr")
-    local state = node.param2
-    if closed == state then
-        if lr == 1 then
-            state = state + 1
-        else
-            state = state - 1
+    local door_item_def = {
+        description = door_name,
+        inventory_image = door_item_texture,
+        groups = {},
+        on_place = function(itemstack, placer, pointed_thing)
+            if pointed_thing.type == "node" then
+                local left = true
+                if placer:is_player() and placer:get_player_control().aux1 then
+                    left = false
+                end
+                if left then
+                    core.place_node(pointed_thing.above, {name = door_tname.."_left"}, placer)
+                else
+                    core.place_node(pointed_thing.above, {name = door_tname.."_right"}, placer)
+                end
+            end
         end
-    else
-        if lr == 1 then
-            state = state - 1
-        else
-            state = state + 1
-        end
+    }
+    for k, v in pairs(groups.item) do
+        door_item_def.groups[k] = v
     end
-    core.swap_node(pos, {name = node.name, param2 = state})
+    local door_node_def = {
+        drawtype = "mesh",
+        paramtype2 = "4dir",
+        use_texture_alpha = "blend",
+        mesh = "door.obj",
+        selection_box = door_nodebox,
+        collision_box = door_nodebox,
+        groups = {door = 1, no_creative = 1},
+        drop = door_tname,
+        after_place_node = function(pos)
+            local node = core.get_node(pos)
+            local meta = core.get_meta(pos)
+            local above = vector.add(pos, vector.new(0,1,0))
+            meta:set_int("closed", node.param2)
+            core.set_node(above, {name = "doors:top_node"})
+        end,
+        on_rightclick = function(pos, node)
+            core.chat_send_all("triggered")
+            local l_door = core.get_item_group(node.name, "l_door") ~= 0
+            local r_door = core.get_item_group(node.name, "r_door") ~= 0
+            local meta = core.get_meta(pos)
+            local closed = meta:get_int("closed")
+            local state = node.param2
+            local function new_state()
+                if l_door then
+                    if state == closed then
+                        return state + 1
+                    else
+                        return state - 1
+                    end
+                elseif r_door then
+                    if state == closed then
+                        return state - 1
+                    else
+                        return state + 1
+                    end
+                else
+                    core.chat_send_all("No change")
+                    return 0
+                end
+            end
+            core.chat_send_all(state)
+            core.chat_send_all(new_state())
+            core.swap_node(pos, {name = node.name, param2 = new_state()})
+        end
+    }
+    for k, v in pairs(groups.node) do
+        door_node_def.groups[k] = v
+    end
+    local l_door_node_def = table.copy(door_node_def)
+    l_door_node_def.groups["l_door"] = 1
+    l_door_node_def.tiles = {door_uv}
+    local r_door_node_def = table.copy(door_node_def)
+    r_door_node_def.groups["r_door"] = 1
+    r_door_node_def.tiles = {flipped_door_uv}
 
-end
-function doors.register_door(door_name, def)
-    door_def = table.copy(def)
-    door_def.drawtype = "mesh"
-    door_def.mesh = "door.obj"
-    door_def.paramtype = "light"
-    door_def.paramtype2 = "4dir"
-    door_def.backface_culling = false
-    door_def.selection_box = {type = "fixed", fixed = {8/16, -8/16, -6/16, -8/16, 24/16, -8/16}}
-    door_def.collision_box = {type = "fixed", fixed = {8/16, -8/16, -6/16, -8/16, 24/16, -8/16}}
-    door_def.on_rightclick = door_on_rightclick
-    door_def.after_place_node = door_after_place
-    door_def.on_destruct = door_on_destroy
-    door_def.groups["door"] = 1
-    base.register_node(door_name, door_def)
+    base.register_node(door_tname.."_left", l_door_node_def)
+    base.register_node(door_tname.."_right", r_door_node_def)
+    base.register_craftitem(door_tname, door_item_def)
 end
 
 core.register_chatcommand("fixdoorair", {

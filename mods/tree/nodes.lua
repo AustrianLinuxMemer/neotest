@@ -37,12 +37,7 @@ for t, wood_type in pairs(types) do
 
 
     -- Door
-    local door_def = table.copy(planks_def)
-    door_def.inventory_image = texture_prefix.."_door_item.png"
-    door_def.description = S("@1 Door", wood_type.wood_name)
-    door_def.use_texture_alpha = "blend"
-    door_def.tiles = {{name = texture_prefix.."_door.png", backface_culling=true}}
-    doors.register_door(door_name, door_def)
+    doors.register_door(door_name, S("@1 Door", wood_type.wood_name), texture_prefix.."_door_item.png", {name = texture_prefix.."_door.png", backface_culling=true}, {node = table.copy(planks_def.groups), item = table.copy(planks_def.groups)})
     core.register_craft({
         type = "shaped",
         output = door_name,
