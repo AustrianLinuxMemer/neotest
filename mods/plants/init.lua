@@ -5,31 +5,58 @@ end
 dofile(core.get_modpath("plants").."/cactus.lua")
 dofile(core.get_modpath("plants").."/plants_api.lua")
 
-plants.register_fungus("plants:brown_fungus", S("Brown Fungus"), "plants_brown_fungus", {brown_fungus = 1}, true)
-plants.register_fungus("plants:red_fungus", S("Red Fungus"), "plants_red_fungus", {red_fungus = 1}, true)
+plants.register_plantlike_plant("plants:brown_fungus", S("Brown Fungus"), "plants_brown_fungus.png")
+plants.register_plantlike_plant("plants:red_fungus", S("Red Fungus"), "plants_red_fungus.png")
 
-plants.register_plant("plants:grass", S("Grass"), "plants_grass.png", 
+plants.register_plantlike_plant("plants:grass", S("Grass"), "plants_grass.png", 
 {
     {
         rarity = 3, 
         items = {"plants:wheat_seed"}
     }
 })
-plants.register_plant("plants:snowy_grass", S("Snowy Grass"), "plants_snowy_grass.png", 
+plants.register_plantlike_plant("plants:snowy_grass", S("Snowy Grass"), "plants_snowy_grass.png", 
 {
     {
         rarity = 3, 
         items = {"plants:wheat_seed"}
     }
 })
-plants.register_plant("plants:desert_shrub", S("Desert Shrub"), "plants_desert_shrub.png", 
+plants.register_plantlike_plant("plants:desert_shrub", S("Desert Shrub"), "plants_desert_shrub.png", 
 {
     {
         items = {"tree:stick"}
     }
 })
 
-
+core.register_abm({
+    nodenames = {"plants:grass"},
+    chance = 25,
+    interval = 1,
+    action = function(pos)
+        local biome_info = core.get_biome_data(pos)
+        local biome_heat = biomes.biome_query(biome_info.biome, "heat_point")
+        local weather = weather.current_weather
+        -- If temperature point is below 25 (meaning arctic) and weather is not clear, make snowy grass
+        if biome_heat < 25 and weather > 0 then
+            core.set_node(pos, {name = "plants:snowy_grass"})
+        end
+    end
+})
+core.register_abm({
+    nodenames = {"plants:snowy_grass"},
+    chance = 25,
+    interval = 1,
+    action = function(pos)
+        local biome_info = core.get_biome_data(pos)
+        local biome_heat = biomes.biome_query(biome_info.biome, "heat_point")
+        local weather = weather.current_weather
+        -- If temperature point is above 25 (meaning arctic), make grass
+        if biome_heat > 25 then
+            core.set_node(pos, {name = "plants:grass"})
+        end
+    end
+})
 
 core.register_decoration({
     deco_type = "simple",

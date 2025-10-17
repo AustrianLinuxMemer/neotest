@@ -114,6 +114,7 @@ function ice.register_snow(snow_name, node_def, snowball_name, item_def, covered
         type = "leveled",
         fixed = {-8/16, -8/16, -8/16, 8/16, -7/16, 8/16}
     }
+    snow_def.buildable_to = true
     if snow_def.groups == nil then snow_def.groups = {} end
     snow_def.groups.snow = 1
     snow_def.groups.melts = 1
