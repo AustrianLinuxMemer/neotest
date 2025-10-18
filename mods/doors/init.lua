@@ -60,7 +60,6 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
             core.set_node(above, {name = "doors:top_node"})
         end,
         on_rightclick = function(pos, node)
-            core.chat_send_all("triggered")
             local l_door = core.get_item_group(node.name, "l_door") ~= 0
             local r_door = core.get_item_group(node.name, "r_door") ~= 0
             local meta = core.get_meta(pos)
@@ -80,12 +79,9 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
                         return state - 1
                     end
                 else
-                    core.chat_send_all("No change")
                     return 0
                 end
             end
-            core.chat_send_all(state)
-            core.chat_send_all(new_state())
             core.swap_node(pos, {name = node.name, param2 = new_state()})
         end
     }
