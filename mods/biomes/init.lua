@@ -151,7 +151,6 @@ for i, biome in ipairs(biomes.biome_def) do
     core.register_biome(biome)
 end
 
-core.log("error", dump2(biomes.biome_map, "biome_map"))
 
 function biomes.biome_query(biome_id, fields)
     if type(fields) == "table" then

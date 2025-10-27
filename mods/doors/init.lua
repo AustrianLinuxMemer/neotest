@@ -3,15 +3,17 @@ door_nodebox = {
     type = "fixed",
     fixed = {8/16, -8/16, -6/16, -8/16, 24/16, -8/16}
 }
+local debug_mode = core.settings:get_bool("neotest_debug", false) or false
 core.register_node("doors:top_node", {
 	drawtype = "airlike",
-	pointable = false,
+	pointable = debug_mode,
 	walkable = false,
 	paramtype = "light",
 	sunlight_propagates = true,
     groups={no_creative=1}
 })
 local S = core.get_translator("mods:doors")
+
 function doors.register_door(door_tname, door_name, door_item_texture, door_uv, groups)
     local flipped_door_uv
     if type(door_uv) == "string" then
@@ -59,6 +61,10 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
             meta:set_int("closed", node.param2)
             core.set_node(above, {name = "doors:top_node"})
         end,
+        after_destruct = function(pos)
+            local above = vector.add(pos, vector.new(0,1,0))
+            core.set_node(above, {name = "air"})
+        end,
         on_rightclick = function(pos, node)
             local l_door = core.get_item_group(node.name, "l_door") ~= 0
             local r_door = core.get_item_group(node.name, "r_door") ~= 0
@@ -99,6 +105,22 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
     base.register_node(door_tname.."_right", r_door_node_def)
     base.register_craftitem(door_tname, door_item_def)
 end
+
+core.register_lbm({
+    label = "Fix door top nodes",
+    name = "doors:fix_door_top_node",
+    run_at_every_load = true,
+    nodenames = {"doors:top_node"},
+    bulk_action = function(pos_list)
+        for i, pos in ipairs(pos_list) do
+            local below_node = core.get_node(vector.add(pos, vector.new(0,-1,0)))
+            local is_not_door = core.get_item_group(below_node.name, "door") == 0
+            if is_not_door then
+                core.set_node(pos, {name = "air"})
+            end
+        end
+    end
+})
 
 core.register_chatcommand("fixdoorair", {
     params = "pos1 pos2 [pos1 pos2]...",

@@ -210,3 +210,36 @@ core.register_chatcommand("setnode", {
         meta:get_inventory()
     end
 })
+
+core.register_chatcommand("fill", {
+    params = "<x1> <y1> <z1> <x2> <y2> <z2> <block_name> [<param> [<param2>]]",
+    description = "Fills an area of nodes with core.set_node()",
+    privs = {server=true},
+    func = function(name, param)
+        local args = string.split(param, " ")
+        if #args < 7 then
+            return S("Too few arguments")
+        end
+        local x1 = tonumber(args[1])
+        local y1 = tonumber(args[2])
+        local z1 = tonumber(args[3])
+        local x2 = tonumber(args[4])
+        local y2 = tonumber(args[5])
+        local z2 = tonumber(args[6])
+        if x1 == nil or y1 == nil or z1 == nil or x2 == nil or y2 == nil or z2 == nil then
+            return S("Invalid cordinates")
+        end
+        local posA, posB = vector.sort(vector.new(x1, y1, z1), vector.new(x2, y2, z2))
+        for x = posA.x, posB.x do
+            for y = posA.y, posB.y do
+                for z = posA.z, posB.z do
+                    local pos = vector.new(x,y,z)
+                    local node = {name = args[7], param = tonumber(args[8]) or nil, param2 = tonumber(args[9]) or nil}
+                    core.set_node(pos, node)
+                    local meta = core.get_meta(pos)
+                    meta:get_inventory()
+                end
+            end
+        end
+    end
+})

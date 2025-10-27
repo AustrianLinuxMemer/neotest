@@ -35,6 +35,16 @@ core.register_tool("testing:orientation_tester", {
     groups = {no_creative = 1, test_tool = 1}
 })
 
+core.register_tool("testing:block_tester", {
+    description = "Block tester",
+    inventory_image = "testing_block_tester.png",
+    groups = {no_creative = 1, test_tool = 1},
+    on_use = function(_, user, pointed_thing)
+        local air_def = core.registered_nodes["air"]
+        core.chat_send_all(dump2(air_def, "air_def"))
+    end
+})
+
 core.register_tool("testing:biome_data_tester", {
     description = "Biome tester",
     inventory_image = "testing_biome_tester.png",
