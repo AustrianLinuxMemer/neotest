@@ -52,7 +52,7 @@ function doors.register_door(door_tname, door_name, door_item_texture, door_uv, 
         mesh = "door.obj",
         selection_box = door_nodebox,
         collision_box = door_nodebox,
-        groups = {door = 1, no_creative = 1},
+        groups = {door = 1, no_creative = 1, attached_node = 3},
         drop = door_tname,
         after_place_node = function(pos)
             local node = core.get_node(pos)
