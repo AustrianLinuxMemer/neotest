@@ -5,28 +5,46 @@ end
 dofile(core.get_modpath("plants").."/cactus.lua")
 dofile(core.get_modpath("plants").."/plants_api.lua")
 
-plants.register_plantlike_plant("plants:brown_fungus", S("Brown Fungus"), "plants_brown_fungus.png")
-plants.register_plantlike_plant("plants:red_fungus", S("Red Fungus"), "plants_red_fungus.png")
+plants.register_plantlike_plant_legacy("plants:brown_fungus", S("Brown Fungus"), "plants_brown_fungus.png")
+plants.register_plantlike_plant_legacy("plants:red_fungus", S("Red Fungus"), "plants_red_fungus.png")
 
-plants.register_plantlike_plant("plants:grass", S("Grass"), "plants_grass.png", 
+plants.register_plantlike_plant_legacy("plants:grass", S("Grass"), "plants_grass.png", 
 {
     {
         rarity = 3, 
         items = {"plants:wheat_seed"}
     }
 })
-plants.register_plantlike_plant("plants:snowy_grass", S("Snowy Grass"), "plants_snowy_grass.png", 
+plants.register_plantlike_plant_legacy("plants:snowy_grass", S("Snowy Grass"), "plants_snowy_grass.png", 
 {
     {
         rarity = 3, 
         items = {"plants:wheat_seed"}
     }
 })
-plants.register_plantlike_plant("plants:desert_shrub", S("Desert Shrub"), "plants_desert_shrub.png", 
+plants.register_plantlike_plant_legacy("plants:desert_shrub", S("Desert Shrub"), "plants_desert_shrub.png", 
 {
     {
         items = {"tree:stick"}
     }
+})
+
+plants.register_lilypad_like("plants:lilypad", {
+    description = "Lilypad",
+    inventory_image = "plants_lilypad.png",
+    texture = "plants_lilypad.png",
+    place_on = {
+        group_names = {"water"}
+    },
+    groups = {oddly_breakable_by_hand = 1}
+})
+
+plants.register_vine_like("plants:vines", {
+    description = "Vines",
+    inventory_image = "plants_vines.png",
+    texture = "plants_vines.png",
+    groups = {oddly_breakable_by_hand = 1},
+    climbable = true
 })
 
 core.register_abm({

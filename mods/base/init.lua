@@ -195,13 +195,13 @@ core.register_chatcommand("setnode", {
     func = function(name, param)
         local args = string.split(param, " ")
         if #args < 4 then
-            return S("Too few arguments")
+            return false, S("Too few arguments")
         end
         local x = tonumber(args[1])
         local y = tonumber(args[2])
         local z = tonumber(args[3])
         if x == nil or y == nil or z == nil then
-            return S("Invalid cordinates")
+            return false, S("Invalid cordinates")
         end
         local pos = vector.new(x,y,z)
         local node = {name = args[4], param = tonumber(args[5]) or nil, param2 = tonumber(args[6]) or nil}
