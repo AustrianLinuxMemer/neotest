@@ -54,7 +54,7 @@ biomes = {
             node_stone = "geology:sandstone",
             y_min = 1,
             heat_point = 75,
-            humidity_point = 25
+            humidity_point = 0
         },
         [4] = {
             name = "biomes:temperate_beach",

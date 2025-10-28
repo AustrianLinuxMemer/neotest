@@ -1,3 +1,5 @@
+local CLOUD_HEIGHT = 120
+
 weather = {
     precipitation_radius = {
         [1] = 80,
@@ -36,15 +38,21 @@ weather = {
         },
     },
     clouds = {
-        [0] = nil,
+        [0] = {
+            density = 0.4,
+            color = "#fff0f0e5",
+            height = CLOUD_HEIGHT
+        },
         [1] = {
             density = 0.5,
             color = "#666666e5",
+            height = CLOUD_HEIGHT
 
         },
         [2] = {
             density = 0.6,
             color = "#444444e5",
+            height = CLOUD_HEIGHT
         },
     },
     lighting = {
@@ -56,7 +64,8 @@ weather = {
             saturation = 0.8
         }
     },
-    weatherboxes = {}
+    weatherboxes = {},
+    ranges = {}
 }
 
 local function hash_pos_2d(pos_2d)
@@ -65,8 +74,7 @@ local function hash_pos_2d(pos_2d)
     return pos_2d.x..":"..pos_2d.z
 end
 
-local function configure_spawner(minpos, maxpos, texture, velocity, player_name)
-    if weather.current_weather == 0 then return end
+local function configure_spawner(minpos, maxpos, texture, velocity, player_name, intensity)
     local offset = vector.new(0.5, 0.5, 0.5)
     local minpos = minpos:subtract(offset)
     local maxpos = maxpos:add(offset)
@@ -77,7 +85,7 @@ local function configure_spawner(minpos, maxpos, texture, velocity, player_name)
     }
     spawner.texture = texture
     spawner.time = 0
-    spawner.amount = 8
+    spawner.amount = 10 * intensity
     spawner.vertical = true
     spawner.collisiondetection = true
     spawner.collision_removal = true
@@ -91,53 +99,54 @@ local function configure_spawner(minpos, maxpos, texture, velocity, player_name)
     return spawner
 end
 
-local function calc_box_height(pos_2d, min_y, max_y)
-    lower = vector.new(pos_2d.x, min_y, pos_2d.z)
-    upper = vector.new(pos_2d.x, max_y + 4, pos_2d.z)
-    raycast = Raycast(upper, lower, false, true)
-    block_found = false
-    for pointed_thing in raycast do
-        if pointed_thing.type == "node" then
-            block_found = true
-            pos = pointed_thing.above
-            if pos.y >= max_y then
-                return 0
-            else
-                return max_y - pos.y
-            end
-        end
-    end
-    if not block_found then
-        return max_y - min_y
-    end
-end
-local function snow_or_rain(pos)
+local function get_weather_state(pos)
     biome_data = core.get_biome_data(pos)
     rain_vel = vector.new(0, -9.81, 0)
     snow_vel = vector.new(0, -5, 0)
     if biome_data then
         biome_id = biome_data.biome
-        heat_point = biomes.biome_query(biome_id, "heat_point")
-        if heat_point > 25 then return "weather_raindrop.png", rain_vel else return "weather_snowflake.png", snow_vel end
+        tbl = biomes.biome_query(biome_id, {"heat_point", "humidity_point"})
+        intensity = tbl.humidity_point / 100
+        snow = tbl.heat_point < 25
+        if snow then
+            return "weather_snowflake.png", snow_vel, intensity
+        else
+            return "weather_raindrop.png", rain_vel, intensity
+        end
     end
-    return "weather_raindrop.png", rain_vel
+    return "weather_raindrop.png", rain_vel, 0.5
 end
-local function configure_box(pos_2d, radius)
-    box_height = calc_box_height(pos_2d, pos.y, pos.y + radius)
-    max_y = pos.y + radius
-    min_y = 0 -- == 0 case
-    if box_height < radius then
-        min_y = max_y - box_height -- < radius case
-    else
-        min_y = pos.y -- == radius case
+
+function weather.get_height_for_box(pos_2d, base, radius)
+    local max = vector.new(pos_2d.x, CLOUD_HEIGHT, pos_2d.z)
+    local from = vector.new(pos_2d.x, base + 1, pos_2d.z)
+    local min = vector.new(pos_2d.x, base - radius, pos_2d.z)
+    first_up = nil
+    first_down = nil
+
+    for pointed_thing in Raycast(from, min, false, true) do
+        if pointed_thing.type == "node" then
+            local pos = pointed_thing.above
+            first_down = math.max(pos.y, base - radius)
+            break
+        end
     end
-    if min_y ~= 0 then
-        min = vector.new(pos_2d.x, min_y, pos_2d.z)
-        max = vector.new(pos_2d.x, max_y, pos_2d.z)
-        return min, max
-    else
-        return nil, nil
+    for pointed_thing in Raycast(from, max, false, true) do
+        if pointed_thing.type == "node" then
+            local pos = pointed_thing.under
+            first_up = math.min(pos.y, base + radius)
+            break
+        end
     end
+    sky_obstructed = first_up ~= nil or base >= 120
+    if first_up == nil then
+        first_up = base + radius
+    end
+    if first_down == nil then
+        first_down = base - radius
+    end
+    
+    return sky_obstructed, first_up, first_down
 end
 
 Weatherbox = {}
@@ -166,23 +175,26 @@ function Weatherbox:update()
         self.active_spawners = {}
         return
     end
-    old_spawners = self.active_spawners
-    min_x = math.floor(self.pos.x - self.radius)
-    max_x = math.floor(self.pos.x + self.radius)
-    min_z = math.floor(self.pos.z - self.radius)
-    max_z = math.floor(self.pos.z + self.radius)
-    new_spawners = {}
+    local old_spawners = self.active_spawners
+    local min_x = math.floor(self.pos.x - self.radius)
+    local max_x = math.floor(self.pos.x + self.radius)
+    local min_z = math.floor(self.pos.z - self.radius)
+    local max_z = math.floor(self.pos.z + self.radius)
+    local base_y = math.floor(self.pos.y)
+    local new_spawners = {}
     for dx = min_x, max_x do
         for dz = min_z, max_z do
             pos_2d = {x=dx, z=dz}
             pos_2d_hash = hash_pos_2d(pos_2d)
             if not old_spawners[pos_2d_hash] then
-                min, max = configure_box(pos_2d, self.radius)
-                if min ~= nil and max ~= nil then
-                    particle_texture, vel = snow_or_rain(min)
-                    spawner = configure_spawner(min, max, particle_texture, vel, self.playername)
+                sky_obstructed, max, min = weather.get_height_for_box(pos_2d, base_y, self.radius)
+                if not sky_obstructed then
+                    minpos = vector.new(pos_2d.x, min, pos_2d.z)
+                    maxpos = vector.new(pos_2d.x, max, pos_2d.z)
+                    texture, velocity, intensity = get_weather_state(self.pos)
+                    spawner = configure_spawner(minpos, maxpos, texture, velocity, self.playername, intensity)
                     new_spawners[pos_2d_hash] = core.add_particlespawner(spawner)
-                end 
+                end
             end
         end
     end
@@ -234,6 +246,9 @@ core.register_on_joinplayer(function(player)
     if not weather.weatherboxes[player_name] then
         weather.weatherboxes[player_name] = Weatherbox:new(player_name, pos, 18)
     end
+    weatherbox = weather.weatherboxes[player_name]
+    weatherbox:set_active(weather.current_weather ~= 0)
+    weatherbox:update()
 end)
 
 function weather.set_weather(weathercode)
