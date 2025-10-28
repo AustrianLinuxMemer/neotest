@@ -85,7 +85,7 @@ base.register_node("liquids:water_flowing", {
 	liquid_alternative_source = "liquids:water_source",
 	liquid_viscosity = 1,
 	post_effect_color = {a = 103, r = 30, g = 60, b = 90},
-	groups = {water = 3, liquid = 3, cools_lava = 1, no_creative = 1}
+	groups = {water = 3, liquid = 3, flowing_liquid = 1, cools_lava = 1, no_creative = 1}
 })
 
 
@@ -180,7 +180,7 @@ core.register_node("liquids:river_water_flowing", {
 	liquid_renewable = false,
 	liquid_range = 2,
 	post_effect_color = {a = 103, r = 30, g = 76, b = 90},
-	groups = {water = 3, liquid = 3, no_creative = 1, cools_lava = 1}
+	groups = {water = 3, liquid = 3, flowing_liquid = 1, no_creative = 1, cools_lava = 1}
 })
 
 
@@ -271,5 +271,5 @@ core.register_node("liquids:lava_flowing", {
 	light_source = core.LIGHT_MAX,
 	damage_per_second = 4 * 2,
 	post_effect_color = {a = 191, r = 255, g = 64, b = 0},
-	groups = {lava = 3, liquid = 2, igniter = 1, no_creative = 1},
+	groups = {lava = 3, liquid = 2, flowing_liquid = 1, igniter = 1, no_creative = 1},
 })

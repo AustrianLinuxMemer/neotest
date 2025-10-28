@@ -3,30 +3,53 @@ local liquid_index = {}
 
 
 local S = core.get_translator("mods:bucket")
-
+local function place_liquid(pointed_thing, liquid_name, protection_check)
+    local node_under = core.get_node(pointed_thing.under)
+    local node_above = core.get_node(pointed_thing.above)
+    -- If the pointed_thing.under is a liquid, place at pointed_thing.under
+    -- If the pointed_thing.under is not a liquid and pointed_thing.above is air, place at pointed_thing.above
+    local under_is_liquid = core.get_item_group(node_under.name, "liquid") ~= 0
+    if under_is_liquid then
+        if protection_check(pointed_thing.under) then return false end
+        core.chat_send_all("under triggered")
+        core.set_node(pointed_thing.under, {name = liquid_name})
+        return true
+    end
+    if node_above.name == "air" then
+        if protection_check(pointed_thing.above) then return false end
+        core.chat_send_all("above triggered")
+        core.set_node(pointed_thing.above, {name = liquid_name})
+        return true
+    end
+    return false
+end
 local function on_bucket_place(itemstack, placer, pointed_thing)
     local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
     local pos = vector.add(pointed_thing.under, direction)
     local liquid_name = bucket_index[itemstack:get_name()] or ""
     local msg = S("placing a bucket of @1", liquid_name)
-    if base.is_protected(pos, placer:get_player_name(), msg) then
+    if liquid_name == nil or liquid_name == "" then
         return itemstack
     end
-    if core.get_node(pos).name == "air" then
+    place_result = place_liquid(pointed_thing, liquid_name, function(pos)
+        return base.is_protected(pos, placer:get_player_name(), msg)
+    end)
+    
+    -- If creative_mode and neotest_creative_empty_bucket then return empty bucket
+    -- If creative_mode return full bucket
+    -- Otherwise empty bucket
+
+    if place_result then
         local creative = core.settings:get_bool("creative_mode", false)
         local empty_bucket = core.settings:get_bool("neotest_creative_empty_bucket", false)
-        if liquid_name == nil or liquid_name == "" then
-            return itemstack
-        end
-        core.set_node(pos, {name = liquid_name})
-        if empty_bucket then
-            return ItemStack("bucket:empty_bucket")
-        else
-            if creative then
-                return itemstack
-            else
+        if creative  then
+            if empty_bucket then
                 return ItemStack("bucket:empty_bucket")
+            else
+                return itemstack
             end
+        else
+            return ItemStack("bucket:empty_bucket")
         end
     else
         return itemstack
