@@ -164,26 +164,61 @@ function plants.register_lilypad_like(technical_name, definition)
 end
 
 function plants.register_vine_like(technical_name, definition)
-    -- Facing: 2 = north, 3 = east, 4 = south, 5 = west (example)
-    local function yaw_to_facedir(yaw)
-        yaw = yaw % (2 * math.pi)  -- normalize 0..2π
+    local function break_chain_reaction(pos, node, digger)
+        local function add(itemstack, force_drop)
+            if digger ~= nil and digger:is_valid() and digger:is_player() then
+                if not force_drop then
+                    local inventory = digger:get_inventory()
+                    local leftover = digger:add_item("main", itemstack)
+                    core.add_item(pos, leftover)
+                    return
+                end
+            end
+            core.add_item(pos, itemstack)
+        end
+        local function tool()
+            if digger ~= nil and digger:is_valid() and digger:is_player() then
+                return digger:get_wielded_item()
+            else
+                return ItemStack()
+            end
+        end
+        local drops = {}
+        local tool = tool()
+        local tool_name = tool:get_name()
 
-        if yaw < math.pi/8 or yaw >= 15*math.pi/8 then
-            return 4  -- z+ north
-        elseif yaw < 3*math.pi/8 then
-            return 2  -- x+ east
-        elseif yaw < 5*math.pi/8 then
-            return 5  -- z- south
-        elseif yaw < 7*math.pi/8 then
-            return 3  -- x- west
-        elseif yaw < 9*math.pi/8 then
-            return 4
-        elseif yaw < 11*math.pi/8 then
-            return 2
-        elseif yaw < 13*math.pi/8 then
-            return 5
-        else
-            return 3
+        local here_drops = core.get_node_drops(node.name, tool_name)
+        core.set_node(pos, {name = "air"})
+        for _, drop in ipairs(here_drops) do
+            add(drop)
+        end
+
+        for i = pos.y-1, -31000, -1 do
+            local current_pos = vector.new(pos.x, i, pos.z)
+            local current_node = core.get_node(current_pos)
+            local current_name = current_node.name
+            local current_param2 = current_node.param2
+            if current_name == technical_name then
+                local direction = core.wallmounted_to_dir(current_param2)
+                local behind_pos = vector.add(current_pos, direction)
+                local behind_node = core.get_node(behind_pos)
+                local behind_name = behind_node.name
+                local behind_def = core.registered_nodes[behind_name] or {walkable = false}
+                if not behind_def.walkable then
+                    local current_drops = core.get_node_drops(current_name, tool_name)
+                    for _, drop in ipairs(current_drops) do
+                        table.insert(drops, drop)
+                    end
+                    core.set_node(current_pos, {name = "air"})
+                else
+                    break
+                end
+            else
+                break
+            end
+        end
+        for _, item in ipairs(drops) do
+            add(item, true)
         end
     end
     local function check_place(pointed_thing, player_name, msg, player_yaw)
@@ -209,7 +244,8 @@ function plants.register_vine_like(technical_name, definition)
                 local valid_neighbors = {}
                 for facedir, neighbor in pairs(neighbors) do
                     name = core.get_node(neighbor).name
-                    if name ~= "air" and name ~= "ignore" then
+                    definition = core.registered_nodes[name] or {walkable = false}
+                    if definition.walkable then
                         valid_neighbors[facedir] = neighbor
                     end                    
                 end
@@ -234,7 +270,8 @@ function plants.register_vine_like(technical_name, definition)
                 local valid_neighbors = {}
                 for facedir, neighbor in pairs(neighbors) do
                     name = core.get_node(neighbor).name
-                    if name ~= "air" and name ~= "ignore" then
+                    definition = core.registered_nodes[name] or {walkable = false}
+                    if definition.walkable then
                         valid_neighbors[facedir] = neighbor
                     end                    
                 end
@@ -268,6 +305,7 @@ function plants.register_vine_like(technical_name, definition)
         collision_box = box,
         walkable = definition.walkable or false,
         climbable = definition.climbable or false,
+        floodable = definition.floodable or true,
         liquids_pointable = definition.liquids_pointable or true,
         node_placement_prediction = "",
         tiles = {definition.texture},
@@ -286,6 +324,15 @@ function plants.register_vine_like(technical_name, definition)
                     return itemstack
                 end
             end
+
+        end,
+        on_dig = break_chain_reaction,
+        on_flood = function(pos, oldnode)
+            break_chain_reaction(pos, oldnode, nil)
+        end,
+        on_blast = function(pos)
+            node = core.get_node()
+            break_chain_reaction(pos, node, nil)
         end,
         groups = {plant = 1, flammable = 1}
     }
