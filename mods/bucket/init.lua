@@ -11,13 +11,11 @@ local function place_liquid(pointed_thing, liquid_name, protection_check)
     local under_is_liquid = core.get_item_group(node_under.name, "liquid") ~= 0
     if under_is_liquid then
         if protection_check(pointed_thing.under) then return false end
-        core.chat_send_all("under triggered")
         core.set_node(pointed_thing.under, {name = liquid_name})
         return true
     end
     if node_above.name == "air" then
         if protection_check(pointed_thing.above) then return false end
-        core.chat_send_all("above triggered")
         core.set_node(pointed_thing.above, {name = liquid_name})
         return true
     end
