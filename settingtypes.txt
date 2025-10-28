@@ -5,4 +5,5 @@ neotest_default_prop (Default probability for loot) float 0.2 0 1
 neotest_default_max_w (Default value for maximum tool wear) int 65535 0 65535
 neotest_keep_inventory (Keep inventory when player dies) bool false
 neotest_use_mesh_mushrooms (Activate Mesh mushrooms) bool 
-neotest_weather_radius (How far out weather gets rendered) int 2 5 30
+neotest_weather_enabled (Enable Weather Mod) bool true
+neotest_weather_radius (Radius of the Weatherbox) int 18 10 30
