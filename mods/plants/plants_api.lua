@@ -221,7 +221,7 @@ function plants.register_vine_like(technical_name, definition)
             add(item, true)
         end
     end
-    local function check_place(pointed_thing, player_name, msg, player_yaw)
+    local function check_place(pointed_thing, player_name, msg)
         -- Protection check
         if base.is_protected(pointed_thing.above, player_name, msg) then
             return false, nil
