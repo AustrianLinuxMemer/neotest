@@ -36,14 +36,14 @@ plants.register_lilypad_like("plants:lilypad", {
     place_on = {
         group_names = {"water"}
     },
-    groups = {oddly_breakable_by_hand = 1}
+    groups = {oddly_breakable_by_hand = 1, flammable = 2}
 })
 
 plants.register_vine_like("plants:vines", {
     description = "Vines",
     inventory_image = "plants_vines.png",
     texture = "plants_vines.png",
-    groups = {oddly_breakable_by_hand = 1},
+    groups = {oddly_breakable_by_hand = 1, flammable = 4},
     climbable = true
 })
 

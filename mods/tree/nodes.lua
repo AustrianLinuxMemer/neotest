@@ -28,7 +28,7 @@ for t, wood_type in pairs(types) do
     local planks_def = {
         description = S("@1 Planks", wood_type.wood_name),
         tiles = {texture_prefix.."_planks.png"},
-        groups = {choppy=3, planks=1, pane_connect=1, flammable=3, flammability = 74}
+        groups = {choppy=3, planks=1, pane_connect=1, flammable=3}
     }
     
     base.register_node(planks_name, table.copy(planks_def))
@@ -64,7 +64,7 @@ for t, wood_type in pairs(types) do
         sunlight_propagates = true,
         tiles = {texture_prefix.."_leaves.png"},
         is_ground_content = false,
-        groups = {snappy=1, leaf=1, flammable = 2, flammability = 85},
+        groups = {snappy=1, leaf=1, flammable = 2},
         drop = {
             max_items = 1,
             items = {
@@ -83,7 +83,7 @@ for t, wood_type in pairs(types) do
         sunlight_propagates = true,
         inventory_image = texture_prefix.."_sapling.png",
         tiles = {texture_prefix.."_sapling.png"},
-        groups = {oddly_breakable_by_hand=1, sapling=1, flammable=1, flammability = 75},
+        groups = {oddly_breakable_by_hand=1, sapling=1, flammable=1},
         on_timer = function(pos) sapling_grows(pos, t) end,
         on_construct = function(pos)
             local timer = core.get_node_timer(pos)

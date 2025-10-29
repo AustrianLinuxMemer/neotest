@@ -7,3 +7,4 @@ neotest_keep_inventory (Keep inventory when player dies) bool false
 neotest_use_mesh_mushrooms (Activate Mesh mushrooms) bool 
 neotest_weather_enabled (Enable Weather Mod) bool true
 neotest_weather_radius (Radius of the Weatherbox) int 18 10 30
+neotest_spread_fire (Allow fire to spread) bool false
