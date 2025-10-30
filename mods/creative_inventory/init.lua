@@ -11,7 +11,7 @@ local function is_allowed(k, v)
         unknown = true,
         [""] = true
     }
-    return not v.groups["no_creative"] and not v.groups["not_in_creative_inventory"] and not forbidden[k]
+    return not v.groups["no_creative"] and not v.groups["not_in_creative_inventory"] and not forbidden[k] and not v.groups["virtual"]
 end
 local items = {}
 function items.get_all_nodes()

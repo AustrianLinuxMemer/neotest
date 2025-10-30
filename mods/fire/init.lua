@@ -100,7 +100,13 @@ end
 
 function fire.ignite(pointed_thing)
     local info = fire.get_flammable_info(pointed_thing.under)
-    fire.spawn(pointed_thing.above, info)
+    local node = core.get_node(pointed_thing.under)
+    local _ignite = core.registered_nodes[node.name]._ignite
+    if type(_ignite) == "function" then
+        _ignite(pointed_thing.under)
+    else
+        fire.spawn(pointed_thing.above, info)
+    end
 end
 
 core.register_tool("fire:flint_and_steel", {

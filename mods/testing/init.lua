@@ -71,3 +71,15 @@ core.register_craft({
     burntime = 1,
     replacements = {{"testing:testing_fuel", "testing:testing_fuel_byproduct"}}
 })
+
+local debug = core.settings:get_bool("neotest_debug", false)
+if debug then
+    core.register_globalstep(function(dtime)
+        for _, player in ipairs(core.get_connected_players()) do
+            if player:get_player_control().aux1 then
+                local hp = player:get_hp()
+                player:set_hp(math.min(hp + 6, 20))
+            end
+        end
+    end)
+end
