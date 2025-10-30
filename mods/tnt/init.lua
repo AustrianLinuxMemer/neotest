@@ -65,7 +65,7 @@ function tnt.boom(pos, explosion_radius)
         local after_destruct = def.after_destruct
         if on_destruct ~= nil then
             on_destruct(current_pos)
-            --core.set_node(current_pos, {name = "air"})
+            core.set_node(current_pos, {name = "air"})
         elseif after_destruct ~= nil then
             table.insert(deferred_callbacks, {callback = after_destruct, pos = current_pos, oldnode = node})
             table.insert(final_candidates, current_pos)

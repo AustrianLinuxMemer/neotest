@@ -47,6 +47,8 @@ local function on_chest_blast(pos, intensity)
     for _, v in ipairs(inv:get_list("chest")) do
         core.add_item(pos, v)
     end
+    core.add_item(pos, {name = "chest:chest"})
+    core.set_node(pos, {name = "air"})
 end
 base.register_node("chest:chest", {
     description = S("Chest"),
