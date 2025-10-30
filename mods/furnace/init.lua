@@ -274,15 +274,43 @@ local function furnace_loop(pos, elapsed)
     formspec_helper.multicast(list, furnace_id, generate_formspec(pos, calc_arrow_fire(remaining.input, total.input), calc_arrow_fire(remaining.fuel, total.fuel)))
     return true
 end
+
+local function furnace_on_destruct(pos)
+    local meta = core.get_meta(pos)
+    local furnace_id = meta:get_string("furnace_id")
+    local list = furnace_subscriptions[furnace_id] or {}
+    for _, subscriber in ipairs(list) do
+        core.close_formspec(subscriber, furnace_id)
+    end
+    furnace_subscriptions[furnace_id] = {}
+
+    local inventory = meta:get_inventory()
+    local input_list = inventory:get_list("input")
+    local fuel_list = inventory:get_list("fuel")
+    local output_list = inventory:get_list("output")
+    for _, stack in ipairs(input_list) do
+        core.add_item(pos, stack)
+    end
+    for _, stack in ipairs(fuel_list) do
+        core.add_item(pos, stack)
+    end
+    for _, stack in ipairs(output_list) do
+        core.add_item(pos, stack)
+    end
+    core.add_item(pos, "furnace:furnace")
+end
+
 base.register_node("furnace:furnace", {
     description = S("Furnace"),
     paramtype2 = "facedir",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
     groups = {cracky = 3},
     on_construct = init_furnace,
+    on_destruct = furnace_on_destruct,
     on_rightclick = open_furnace,
     on_timer = furnace_loop,
     on_dig = destroy_furnace,
+    drop = "",
     after_place_node = base.mod_fourdir_node
 })
 
@@ -293,10 +321,11 @@ base.register_node("furnace:active_furnace", {
     groups = {cracky = 3, no_creative = 1},
     light_source = core.LIGHT_MAX,
     on_construct = init_furnace,
+    on_destruct = furnace_on_destruct,
     on_rightclick = open_furnace,
     on_timer = furnace_loop,
     on_dig = destroy_furnace,
-    drop = "furnace:furnace",
+    drop = "",
     after_place_node = base.mod_fourdir_node
 })
 

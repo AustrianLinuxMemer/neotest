@@ -113,7 +113,7 @@ base.register_node("tnt:lit_tnt", {
     diggable = false,
     on_construct = function(pos)
         local timer = core.get_node_timer(pos)
-        timer:start(10)
+        timer:start(3)
     end,
     on_timer = function(pos)
         core.set_node(pos, {name = "air"})
