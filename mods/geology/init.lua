@@ -24,7 +24,13 @@ local geology_def_table = {
         ["geology:clay_lump"] = {
             description = S("Clay lump"),
             inventory_image = "geology_clay_lump.png",
+            groups = {clay = 1},
             stack_max = 16
+        },
+        ["geology:flintstone"] = {
+            description = S("Flintstone"),
+            inventory_image = "geology_flintstone.png",
+            groups = {flintstone = 1}
         }
     },
     nodes = {
@@ -61,7 +67,15 @@ local geology_def_table = {
             description = S("Gravel"),
             tiles = {"geology_gravel.png"},
             is_ground_content = true,
-            groups = {crumbly=3, falling_node=1, gravel=1, pane_connect = 1}
+            groups = {crumbly=3, falling_node=1, gravel=1, pane_connect = 1},
+            drop = {
+                max_items = 3,
+                items = {
+                    {rarity = 1, items = {"geology:gravel"}},
+                    {rarity = 2, items = {"geology:flintstone"}},
+                    {rarity = 3, items = {"geology:flintstone 2"}}
+                }
+            }
         },
         ["geology:grass_block"] = {
             description = S("Grass block"),

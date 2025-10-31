@@ -128,6 +128,12 @@ core.register_tool("fire:flint_and_steel", {
     end
 })
 
+core.register_craft({
+    type = "shapeless",
+    recipe = {"group:iron", "group:flintstone"},
+    output = "fire:flint_and_steel"
+})
+
 
 
 local function find_air_around(pos)
