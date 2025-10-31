@@ -116,27 +116,21 @@ local function correct_inputs(stacks)
     return results.fuel.time ~= 0, results.input.time ~= 0, results.fuel, results.input
 end
 
-
 local function active_furnace_loop(pos, elapsed)
     local meta = core.get_meta(pos)
     local inventory = meta:get_inventory()
     local remaining_burntime = meta:get_float("remaining_burntime")
     local remaining_cooktime = meta:get_float("remaining_cooktime")
-    
     local stacks = {
         fuel = inventory:get_stack("fuel", 1),
         input = inventory:get_stack("input", 1),
     }
     local is_fuel, is_input, fuel_info, input_info = correct_inputs(stacks)
 
-    if stacks.input:is_empty() or stacks.fuel:is_empty() then
-        remaining_burntime = 0
-        remaining_cooktime = 0
-    end
-
     -- If the fuel ran out, refuel
     if remaining_burntime <= 0 and is_fuel and is_input then
         remaining_burntime = fuel_info.time
+        meta:set_float("total_burntime", fuel_info.time)
         inventory:set_stack("fuel", 1, fuel_info.remaining)
         for _, item in ipairs(fuel_info.byproducts) do
             local leftover = inventory:add_item("output", item)
@@ -145,47 +139,70 @@ local function active_furnace_loop(pos, elapsed)
             end
         end
     end
-    -- If the item is done, reload
-    if remaining_cooktime <= 0 and remaining_burntime > 0 and is_input then
-        remaining_cooktime = input_info.time
-        inventory:set_stack("input", 1, input_info.remaining)
-        local leftover = inventory:add_item("output", input_info.output)
-        if not leftover:is_empty() then
-            core.add_item(pos, leftover)
-        end
-        for _, item in ipairs(input_info.byproducts) do
+
+    -- Dump intermediaries when cooktime is over
+    if remaining_cooktime <= 0 then
+        local item = ItemStack(meta:get_string("intermediary"))
+        if not item:is_empty() then
             local leftover = inventory:add_item("output", item)
             if not leftover:is_empty() then
                 core.add_item(pos, leftover)
             end
         end
+        local replacements = core.deserialize(meta:get_string("intermediary_byproducts"), true)
+        if type(replacements) == "table" then
+            for _, item in ipairs(replacements) do
+                local leftover = inventory:add_item("output", item)
+                if not leftover:is_empty() then
+                    core.add_item(pos, leftover)
+                end
+            end
+        end
+        meta:set_string("intermediary", "")
+        meta:set_string("intermediary_byproducts", "")
     end
 
-    meta:set_float("total_burntime", fuel_info.time)
-    meta:set_float("total_cooktime", input_info.time)
+    -- If the item is done, the fire is still ithere and input is there too, reload
+    if remaining_cooktime <= 0 and remaining_burntime > 0 and is_input then
+        remaining_cooktime = input_info.time
+        meta:set_float("total_cooktime", input_info.time)
+        inventory:set_stack("input", 1, input_info.remaining)
+        meta:set_string("intermediary", input_info.output:to_string())
+        meta:set_string("intermediary_byproducts", core.serialize(input_info.byproducts))
+    end
 
-    -- Flame gauge: shows how much fuel is left
+    
     local flame_frame = 0
-    if meta:get_float("total_burntime") > 0 then
-        flame_frame = math.floor((remaining_burntime / meta:get_float("total_burntime")) * 12 + 0.5)
+    if remaining_burntime > 0 then
+        local total_burntime = meta:get_float("total_burntime")
+        local frac = remaining_burntime / total_burntime
+        flame_frame = math.floor(frac * 12)
     end
 
-    -- Progress arrow: shows cooking progress
     local arrow_frame = 0
-    if meta:get_float("total_cooktime") > 0 then
-        arrow_frame = math.floor((remaining_cooktime / meta:get_float("total_cooktime")) * 12 + 0.5)
+
+    if remaining_cooktime > 0 then
+        local total_cooktime = meta:get_float("total_cooktime")
+        local frac = remaining_cooktime / total_cooktime
+        arrow_frame = math.floor(frac * 12)
     end
-
-
 
     local furnace_id = meta:get_string("furnace_id")
     local formspec = generate_formspec(pos, arrow_frame, flame_frame, nil)
     furnace.multicast(furnace_id, formspec)
 
     meta:set_float("remaining_burntime", remaining_burntime - elapsed)
+    meta:set_float("remaining_cooktime", remaining_cooktime - elapsed)
+
+    local current_node = core.get_node(pos)
     if remaining_burntime > 0 then
-        meta:set_float("remaining_cooktime", remaining_cooktime - elapsed)
+        current_node.name = "furnace:active_furnace"
+        core.swap_node(pos, current_node)
+    else
+        current_node.name = "furnace:furnace"
+        core.swap_node(pos, current_node)
     end
+
     return true
 end
 
@@ -200,12 +217,14 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
-container.register_container("newfurnace:furnace", {
+container.register_container("furnace:furnace", {
     description = "New Furnace",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
+    paramtype2 = "4dir",
     on_construct = init_furnace,
     on_destruct = deinit_furnace,
     on_timer = active_furnace_loop,
+    after_place_node = base.mod_fourdir_node,
     on_rightclick = function(pos, _, clicker)
         
         local meta = core.get_meta(pos)
@@ -222,4 +241,31 @@ container.register_container("newfurnace:furnace", {
         {name = "output", size = 4},
     },
     groups = {oddly_breakable_by_hand = 1}
+}, base.register_node)
+
+container.register_container("furnace:active_furnace", {
+    description = "New Furnace",
+    tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front_lit.png"},
+    paramtype2 = "4dir",
+    light_source = core.LIGHT_MAX,
+    on_construct = init_furnace,
+    on_destruct = deinit_furnace,
+    on_timer = active_furnace_loop,
+    after_place_node = base.mod_fourdir_node,
+    on_rightclick = function(pos, _, clicker)
+        
+        local meta = core.get_meta(pos)
+        local furnace_id = meta:get_string("furnace_id")
+        if clicker:is_player() then
+            
+            local name = clicker:get_player_name()
+            furnace.subscribe(furnace_id, name)
+        end
+    end,
+    _inventory_lists = {
+        {name = "fuel", size = 1},
+        {name = "input", size = 1},
+        {name = "output", size = 4},
+    },
+    groups = {oddly_breakable_by_hand = 1, virtual = 1}
 }, base.register_node)

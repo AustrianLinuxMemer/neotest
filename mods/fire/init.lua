@@ -67,7 +67,7 @@ core.register_node("fire:fire", {
     drawtype = "firelike",
     floodable = true,
     tiles = {"fire_fire.png"},
-    groups = {dig_immediate = 3, fire=1},
+    groups = {dig_immediate = 3, fire=1, virtual = 1},
     paramtype2 = "none",
     paramtype = "light",
     walkable = false,
