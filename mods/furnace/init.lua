@@ -217,6 +217,12 @@ core.register_on_player_receive_fields(function(player, formname, fields)
     end
 end)
 
+core.register_on_leaveplayer(function(player)
+    for furnace_id, list in pairs(furnace.subscribers) do
+        furnace.unsubscribe(furnace_id, player:get_player_name())
+    end
+end)
+
 container.register_container("furnace:furnace", {
     description = "New Furnace",
     tiles = {"furnace_up_down.png", "furnace_up_down.png", "furnace_side.png", "furnace_side.png", "furnace_side.png", "furnace_front.png"},
