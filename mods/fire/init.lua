@@ -93,9 +93,13 @@ core.register_node("fire:fire", {
 function fire.spawn(pos, info)
     local param2 = fire.encode_param2(pos)
     core.set_node(pos, {name = "fire:fire", param2 = param2})
+    local burntime = info.burntime
+    if burntime <= 0 then
+        burntime = 3
+    end
     if not info.flammable_forever then
         local timer = core.get_node_timer(pos)
-        timer:start(info.burntime)
+        timer:start(burntime)
     end
 end
 
