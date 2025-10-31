@@ -275,3 +275,13 @@ container.register_container("furnace:active_furnace", {
     },
     groups = {oddly_breakable_by_hand = 1, virtual = 1}
 }, base.register_node)
+
+core.register_craft({
+    type = "shaped",
+    output = "furnace:furnace",
+    recipe = {
+        {"group:stone", "group:stone", "group:stone"},
+        {"group:stone", "", "group:stone"},
+        {"group:stone", "group:stone", "group:stone"},
+    }
+})

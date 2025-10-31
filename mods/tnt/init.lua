@@ -120,6 +120,32 @@ base.register_node("tnt:lit_tnt", {
         tnt.boom(pos, 5)
     end
 })
+base.register_node("tnt:gunpowder", {
+    description = "Gunpowder",
+    paramtype = "light",
+    drawtype = "raillike",
+    walkable = false,
+    inventory_image = "tnt_gunpowder_item.png",
+    wield_image = "tnt_gunpowder_item.png",
+    tiles = {"tnt_gunpowder_straight.png", "tnt_gunpowder_curve.png", "tnt_gunpowder_t_junction.png", "tnt_gunpowder_cross.png"},
+    groups = {oddly_breakable_by_hand = 1}
+})
+
+core.register_craft({
+    type = "shapeless",
+    output = "tnt:gunpowder",
+    recipe = {"group:gravel", "group:coal"}
+})
+
+core.register_craft({
+    type = "shaped",
+    output = "tnt:tnt",
+    recipe = {
+        {"tnt:gunpowder", "group:sand", "tnt:gunpowder"},
+        {"group:sand", "tnt:gunpowder", "group:sand"},
+        {"tnt:gunpowder", "group:sand", "tnt:gunpowder"}
+    }
+})
 
 -- Hypothetical tool to be used to get node drops
 core.register_tool("tnt:tnt_digger", {
