@@ -165,7 +165,7 @@ function biomes.biome_query(biome_id, fields)
         return biomes.biome_def[biome_id]
     end
 end
-
+--[[
 chest.register_loot_chest("biomes:loot_temperate", {{
     deco_type = "simple",
     place_on = {"geology:cobble", "nodes:stone_bricks"},
@@ -178,6 +178,7 @@ chest.register_loot_chest("biomes:loot_desert", {{
     decoration = "biomes:loot_desert",
     fill_ratio = 0.03
 }}, "desert")
+]]
 -- Sand
 core.register_ore({
     ore_type = "blob",

@@ -1,31 +1,5 @@
 chest = {}
 local S = core.get_translator("mods:chest")
-local function on_chest_construct(pos)
-    local meta = core.get_meta(pos)
-    local inv = meta:get_inventory()
-    inv:set_size("chest", 24)
-end
-local function dig_chest(pos, node, digger)
-    local meta = core.get_meta(pos)
-    local inv = meta:get_inventory()
-    local item_list = inv:get_list("chest")
-    if digger:is_player() then
-        local msg = S("dig a chest at")
-        if base.is_protected(pos, digger:get_player_name(), msg) then
-            return false
-        end
-        local player_inv = digger:get_inventory()
-        for _, v in ipairs(item_list) do
-            core.add_item(pos, player_inv:add_item("main", v))
-        end
-    else
-        for _, v in ipairs(item_list) do
-            core.add_item(pos, v)
-        end
-    end
-    core.node_dig(pos, node, digger)
-    return true
-end
 local function on_chest_open(pos, node, clicker)
     if clicker:is_player() then
         local name = clicker:get_player_name()
@@ -41,59 +15,18 @@ local function on_chest_open(pos, node, clicker)
         end
     end
 end
-local function on_chest_blast(pos, intensity)
-    local meta = core.get_meta(pos)
-    local inv = meta:get_inventory()
-    for _, v in ipairs(inv:get_list("chest")) do
-        core.add_item(pos, v)
-    end
-    core.add_item(pos, {name = "chest:chest"})
-    core.set_node(pos, {name = "air"})
-end
-base.register_node("chest:chest", {
+
+container.register_container("chest:chest", {
     description = S("Chest"),
     tiles = {"chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png", "chest_front.png"},
+    _inventory_lists = {
+        {name = "chest", size = 24}
+    },
     paramtype2 = "4dir",
-    groups = {choppy=3, pane_connect = 1},
+    groups = {choppy = 3},
     after_place_node = base.mod_fourdir_node,
-    on_construct = on_chest_construct,
-    on_dig = dig_chest,
-    on_rightclick = on_chest_open,
-    on_blast = on_chest_blast
-})
-
-local function init_loot_chest(pos, key)
-    local oldnode = core.get_node(pos)
-    core.set_node(pos, {name = "chest:chest", param2 = oldnode.param2})
-    local meta = core.get_meta(pos)
-    local inv = meta:get_inventory()
-    local list_with_loot = loot.get_loot(inv:get_list("chest"), key)
-    inv:set_list("chest", list_with_loot)
-end
-function chest.register_loot_chest(name, decorations, key)
-    base.register_node(name, {
-        description = S("Generated Chest (@1)", key),
-        tiles = {"chest_top.png", "chest_top.png", "chest_side.png", "chest_side.png", "chest_side.png", "chest_front.png"},
-        paramtype2 = "4dir",
-        groups = {choppy=3, pane_connect = 1},
-        after_place_node = base.mod_fourdir_node,
-        on_dig = function(pos, node, digger)
-            init_loot_chest(pos, key)
-            dig_chest(pos, node, digger)
-        end,
-        on_rightclick = function(pos, node, clicker)
-            init_loot_chest(pos, key)
-            on_chest_open(pos, node, clicker)
-        end,
-        on_blast = function(pos, intensity)
-            init_loot_chest(pos, key)
-            on_chest_blast(pos, intensity)
-        end
-    })
-    for _, decoration in ipairs(decorations) do
-        core.register_decoration(decoration)
-    end
-end
+    on_rightclick = on_chest_open
+}, base.register_node)
 
 
 core.register_craft({
