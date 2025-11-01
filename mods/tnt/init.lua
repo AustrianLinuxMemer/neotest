@@ -81,10 +81,14 @@ function tnt.boom(pos, explosion_radius)
     end
     lvm:set_data(data)
     lvm:write_to_map()
+    
     for _, cbk_info in ipairs(deferred_callbacks) do
         cbk_info.callback(cbk_info.pos, cbk_info.oldnode)
     end
     for _, drop in ipairs(drops) do core.add_item(pos, drop) end
+    for _, current_pos in ipairs(final_candidates) do 
+        core.check_for_falling(current_pos) 
+    end
 end
 
 function tnt.spawn_tnt(pos)
@@ -121,6 +125,7 @@ base.register_node("tnt:lit_tnt", {
     on_construct = function(pos)
         local timer = core.get_node_timer(pos)
         timer:start(3)
+        core.check_for_falling(pos)
     end,
     on_timer = explode,
     on_blast = function(pos)
