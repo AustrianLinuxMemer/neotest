@@ -1,31 +1,74 @@
 local S = core.get_translator("mods:plants")
+dofile(core.get_modpath("plants").."/plants_api.lua")
 if core.get_modpath("farming") ~= nil then
     dofile(core.get_modpath("plants").."/farmable.lua")
 end
 dofile(core.get_modpath("plants").."/cactus.lua")
-dofile(core.get_modpath("plants").."/plants_api.lua")
 
-plants.register_plantlike_plant_legacy("plants:brown_fungus", S("Brown Fungus"), "plants_brown_fungus.png")
-plants.register_plantlike_plant_legacy("plants:red_fungus", S("Red Fungus"), "plants_red_fungus.png")
 
-plants.register_plantlike_plant_legacy("plants:grass", S("Grass"), "plants_grass.png", 
-{
-    {
-        rarity = 3, 
-        items = {"plants:wheat_seed"}
+
+plants.register_plant_like("plants:brown_fungus", {
+    description = S("Brown Fungus"),
+    texture = "plants_brown_fungus.png",
+    groups = {oddly_breakable_by_hand = 1}
+})
+
+plants.register_plant_like("plants:red_fungus", {
+    description = S("Red Fungus"),
+    texture = "plants_red_fungus.png",
+    groups = {oddly_breakable_by_hand = 1}
+})
+
+plants.register_plant_like("plants:grass", {
+    description = S("Grass"),
+    texture = "plants_grass.png",
+    groups = {oddly_breakable_by_hand = 1, flammable = 1},
+    drop = {
+        drop_self_shears = true,
+        drop_otherwise = {
+            max_items = 5,
+            items = {
+                {
+                    rarity = 3, 
+                    items = {"plants:wheat_seed"}
+                }
+            }
+        }
     }
 })
-plants.register_plantlike_plant_legacy("plants:snowy_grass", S("Snowy Grass"), "plants_snowy_grass.png", 
-{
-    {
-        rarity = 3, 
-        items = {"plants:wheat_seed"}
+
+plants.register_plant_like("plants:snowy_grass", {
+    description = S("Snowy Grass"),
+    texture = "plants_snowy_grass.png",
+    groups = {oddly_breakable_by_hand = 1, flammable = 1},
+    drop = {
+        drop_self_shears = true,
+        drop_otherwise = {
+            max_items = 5,
+            items = {
+                {
+                    rarity = 3, 
+                    items = {"plants:wheat_seed"}
+                }
+            }
+        }
     }
 })
-plants.register_plantlike_plant_legacy("plants:desert_shrub", S("Desert Shrub"), "plants_desert_shrub.png", 
-{
-    {
-        items = {"tree:stick"}
+
+plants.register_plant_like("plants:desert_shrub", {
+    description = S("Desert Shrub"),
+    texture = "plants_desert_shrub.png",
+    groups = {oddly_breakable_by_hand = 1, flammable = 1},
+    drop = {
+        drop_self_shears = true,
+        drop_otherwise = {
+            max_items = 5,
+            items = {
+                {
+                    items = {"tree:stick"}
+                }
+            }
+        }
     }
 })
 

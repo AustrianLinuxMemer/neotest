@@ -24,30 +24,51 @@ local wheat_drop = {
         }
     }
 }
-farming.register_plant({
-    seed = {
-        name = "plants:wheat_seed",
-        def = {
-            description = S("Wheat seeds"),
-            inventory_image = "plants_wheat_seed.png"
-        }
-    },
-    harvest = {
-        {
-            name = "plants:wheat",
-            def = {
-                description = S("Wheat"),
-                inventory_image = "plants_wheat.png"
+
+base.register_craftitem("plants:wheat_seed", {
+    description = S("Wheat seeds"),
+    inventory_image = "plants_wheat_seed.png"
+})
+
+base.register_craftitem("plants:wheat", {
+    description = S("Wheat"),
+    inventory_image = "plants_wheat.png"
+})
+
+local plant_list = {}
+for i = 1, 7 do
+    local name = "Wheat (stage"..i..")"
+    local texture_name = "plants_wheat_plant"..i..".png"
+    local technical_name = "plants:wheat_"..i
+    local drop = {
+        max_items = 1,
+        items = {
+            {
+                items = {"plants:wheat_seed"}
             }
         }
-    },
-    plants = {
-        {tname = "plants:wheat_1", name = S("Wheat (stage 1)"), texture = "plants_wheat_plant1.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, -6/16, 6/16}}},
-        {tname = "plants:wheat_2", name = S("Wheat (stage 2)"), texture = "plants_wheat_plant2.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, -4/16, 6/16}}},
-        {tname = "plants:wheat_3", name = S("Wheat (stage 3)"), texture = "plants_wheat_plant3.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, -2/16, 6/16}}},
-        {tname = "plants:wheat_4", name = S("Wheat (stage 4)"), texture = "plants_wheat_plant4.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, 2/16, 6/16}}},
-        {tname = "plants:wheat_5", name = S("Wheat (stage 5)"), texture = "plants_wheat_plant5.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, 2/16, 6/16}}},
-        {tname = "plants:wheat_6", name = S("Wheat (stage 6)"), texture = "plants_wheat_plant6.png", texture_variation = 3, drop = "plants:wheat_seed", selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, 5/16, 6/16}}},
-        {tname = "plants:wheat_7", name = S("Wheat (stage 7)"), texture = "plants_wheat_plant7.png", texture_variation = 3, drop = wheat_drop, selection_box = {type = "fixed", fixed = {-6/16, -8/16, -6/16, 6/16, 7/16, 6/16}}},
     }
+    if i == 7 then
+        drop = wheat_drop
+    end
+    plants.register_plant_like(technical_name, {
+        description = S(name),
+        texture = texture_name,
+        place_param2 = 3,
+        selection_box = {
+            type = "fixed", 
+            fixed = {-6/16, -8/16, -6/16, 6/16, -6/16, 6/16}
+        },
+        drop = {
+            drop_self_shears = false,
+            drop_otherwise = drop
+        },
+        groups = {oddly_breakable_by_hand = 1}
+    })
+    table.insert(plant_list, technical_name)
+end
+
+farming.register_crop({
+    seed = "plants:wheat_seed",
+    plants = plant_list
 })

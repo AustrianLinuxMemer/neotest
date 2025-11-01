@@ -1,4 +1,7 @@
-farming = {}
+farming = {
+    plant_registry = {},
+    seed_registry = {}
+}
 local S = core.get_translator("mods:farming")
 local creative = core.settings:get_bool("creative_mode", false) or false
 base.register_node("farming:dry_farmland", {
@@ -53,102 +56,64 @@ core.register_abm({
         end
     end
 })
-core.register_abm({
-    label = "Plant growth",
-    nodenames = {"group:farming_plant"},
-    interval = 1,
-    chance = 100,
-    action = function(pos)
-        local plant = core.get_node(pos)
-        local below = core.get_node(vector.new(pos.x, pos.y-1, pos.z))
-        
-        local is_farmland = core.get_item_group(below.name, "farmland") ~= 0
-        local is_wet = core.get_item_group(below.name, "wet") ~= 0
-        if is_farmland and is_wet then
-            local plant_def = core.registered_nodes[plant.name]
-            local next_level = plant_def._next_level
-            base.chat_send_all_debug(next_level)
-            core.set_node(pos, {name = next_level, param2 = plant_def.place_param2})
-        end
-    end
-})
 
---[[
-    plant_def = {
-        seed = {} (item definition of the seed)
-        plants = {
-            {tname = "", name = "", texture = "", texture_variation = 0, harvest = {}}
-        }
-    }
-]]
-
-
-
-local function place_seed(itemstack, placer, pointed_thing, node)
-    if pointed_thing.type ~= "node" then
-        base.chat_send_all_debug("wrong pointed_thing")
-        return nil
-    end
-    local msg = S("plant a seed")
-    if base.is_protected(pointed_thing.above, placer:get_player_name(), msg) then
-        base.chat_send_all_debug("protected")
-        return nil
-    end
-    local soil = core.get_node(pointed_thing.under)
-    local above = core.get_node(pointed_thing.above)
-    if core.get_item_group(soil.name, "farmland") ~= 0 then
-        base.chat_send_all_debug("placement logic")
-        core.set_node(pointed_thing.above, node)
-        
-        if not creative then
-            itemstack:take_item(1)
-        end
-        return itemstack
+local function get_pos_below(pointed_thing)
+    local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
+    if direction.y > 0 then
+        return vector.add(pointed_thing.above, vector.new(0, -1, 0))
+    elseif direction.y < 0 then
+        return pointed_thing.under
+    else
+        return vector.add(pointed_thing.above, vector.new(0, -1, 0))
     end
 end
+function farming.register_crop(plant_def)
+    farming.seed_registry[plant_def.seed] = plant_def.plants[1]
 
-
-function farming.register_plant(plant_def)
-    for i = 2, #plant_def.plants do
-        local current = plant_def.plants[i]
-        local previous = plant_def.plants[i-1]
-        base.register_node(previous.tname, {
-            description = previous.name,
-            paramtype = "light",
-            paramtype2 = "meshoptions",
-            drawtype = "plantlike",
-            walkable = false,
-            sunlight_propagates = true,
-            place_param2 = previous.texture_variation,
-            tiles = {previous.texture},
-            drop = previous.drop,
-            selection_box = previous.selection_box,
-            groups={farming_plant=1, oddly_breakable_by_hand=1, no_creative=1},
-            _next_level = current.tname
-        })
-    end
-    local last_plant = plant_def.plants[#plant_def.plants]
-    core.register_node(last_plant.tname, {
-        description = last_plant.name,
-        paramtype = "light",
-        paramtype2 = "meshoptions",
-        drawtype = "plantlike",
-        walkable = false,
-        sunlight_propagates = true,
-        place_param2 = last_plant.texture_variation,
-        tiles = {last_plant.texture},
-        groups={last_farming_plant=1, oddly_breakable_by_hand=1, no_creative=1},
-        drop = last_plant.drop,
-        selection_box = last_plant.selection_box
+    core.override_item(plant_def.seed, {
+        on_place = function(itemstack, placer, pointed_thing)
+            if pointed_thing.type ~= "node" then return end
+            local direction = vector.subtract(pointed_thing.above, pointed_thing.under)
+            local pos_below = get_pos_below(pointed_thing)
+            local node_below = core.get_node(pos_below)
+            local is_farmland = core.get_item_group(node_below.name, "farmland") ~= 0
+            if base.is_protected(pointed_thing.above, placer:get_player_name(), S("placed seed of "..plant_def.seed)) then
+                return itemstack
+            end
+            if is_farmland then
+                core.place_node(pointed_thing.above, {name = farming.seed_registry[plant_def.seed]})
+                if not creative then
+                    itemstack:take_item(1)
+                    return itemstack                
+                end
+            end
+        end
     })
-    for _, v in ipairs(plant_def.harvest) do
-        base.register_craftitem(v.name, v.def)
+
+    for i = 1, #plant_def.plants do
+        local last = plant_def.plants[i]
+        local current = plant_def.plants[i+1]
+        farming.plant_registry[last] = current
     end
-    plant_def.seed.def.on_place = function(itemstack, placer, pointed_thing)
-        return place_seed(itemstack, placer, pointed_thing, {name = plant_def["plants"][1]["tname"], param2 = plant_def["plants"][1]["texture_variation"]})
+    local function grow(pos)
+        local node = core.get_node(pos)
+        local node_below = core.get_node(vector.add(pos, vector.new(0, -1, 0)))
+        local next_plant = farming.plant_registry[node.name]
+
+        local is_farmland = core.get_item_group(node_below.name, "farmland") ~= 0
+        local is_wet = core.get_item_group(node_below.name, "wet") ~= 0
+
+        if next_plant ~= nil and is_farmland and is_wet then
+            local new_node = {name = next_plant, param2 = node.param2}
+            core.swap_node(pos, new_node)
+        end
     end
-    base.register_craftitem(plant_def.seed.name, plant_def.seed.def)
-    
+    core.register_abm({
+        nodenames = table.copy(plant_def.plants),
+        interval = 1,
+        chance = 100,
+        action = grow
+    })
 end
 
 function farming.tilt_land(itemstack, user, pointed_thing)
@@ -180,11 +145,12 @@ function farming.fertilize(itemstack, user, pointed_thing)
         return itemstack
     end
     local plant = core.get_node(pointed_thing.under)
-    if core.get_item_group(plant.name, "farming_plant") ~= 0 then
+    if farming.plant_registry[plant.name] ~= nil then
         if math.random() >= 0.7 then
-            local plant_def = core.registered_nodes[plant.name]
-            local next_level = plant_def._next_level
-            core.set_node(pointed_thing.under, {name = next_level, param2 = plant_def.place_param2})
+            local next_level = farming.plant_registry[plant.name]
+            if next_level ~= nil then
+                core.set_node(pointed_thing.under, {name = next_level, param2 = plant.param2})
+            end
         end
         if not creative then
             itemstack:take_item(1)

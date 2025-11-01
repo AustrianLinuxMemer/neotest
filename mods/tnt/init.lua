@@ -34,6 +34,7 @@ function tnt.boom(pos, explosion_radius)
             end
         end
     end
+
     -- Filtering blocks that have an on_blast callback
     local filtered = {}
     for _, current_pos in ipairs(removal_list) do

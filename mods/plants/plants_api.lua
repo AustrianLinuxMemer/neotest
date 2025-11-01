@@ -47,13 +47,13 @@ local function get_drops(plant_drop_def, technical_name)
     if type(plant_drop_def) == "string" then return plant_drop_def end
     if type(plant_drop_def) == "table" then 
         shears_case = plant_drop_def.drop_self_shears
-        additional_case = type(plant_drop_def.drop_otherwise) == "table"
+        additional_case_table = type(plant_drop_def.drop_otherwise) == "table"
         items = {}
         max_items = 1
         if shears_case then
             table.insert(items, {tool_groups = {"shears"}, rarity = 1, items = {technical_name}})
         end
-        if additional_case then
+        if additional_case_table then
             max_items = plant_drop_def.drop_otherwise.max_items
             for _, item in ipairs(plant_drop_def.drop_otherwise.items) do
                 table.insert(items, item)
@@ -150,7 +150,7 @@ function plants.register_lilypad_like(technical_name, definition)
                 end
             end
         end,
-        groups = {plant = 1, flammable = 1}
+        groups = {plant = 1, flammable = 1, attached_node = 3}
     }
     if definition.groups then
         for group, rating in pairs(definition.groups) do
@@ -348,6 +348,29 @@ function plants.register_vine_like(technical_name, definition)
 end
 
 function plants.register_plant_like(technical_name, definition)
+    local drop = get_drops(definition.drop, technical_name)
+    local groups = {plant = 1, attached_node = 3}
+    for group, rating in pairs(definition.groups or {}) do
+        groups[group] = rating
+    end
+    local def = {
+        description = definition.description,
+        paramtype = "light",
+        drawtype = "plantlike",
+        paramtype2 = "meshoptions",
+        place_param2 = definition.place_param2 or 8,
+        inventory_image = definition.texture,
+        wield_image = definition.texture,
+        tiles = {definition.texture},
+        groups = groups,
+        floodable = true,
+        buildable_to = true,
+        walkable = false,
+        drop = drop,
+        on_flood = plants.plant_flood,
+        selection_box = definition.selection_box
+    }
+    base.register_node(technical_name, def)
 end
 
 function plants.get_base_definition(name, texture_name)
