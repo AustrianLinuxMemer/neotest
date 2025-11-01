@@ -1,13 +1,5 @@
 tnt = {}
-top_anim = {
-    name = "tnt_top_ignited_animated.png",
-    animation = {
-        type = "vertical_frames",
-        aspect_w = 16,
-        aspect_h = 16,
-        length = 4
-    }
-}
+
 function tnt.boom(pos, explosion_radius)
     for object in core.objects_inside_radius(pos, explosion_radius) do
         local object_pos = object:get_pos()
@@ -104,22 +96,98 @@ base.register_node("tnt:tnt", {
     groups = {flammable = 1, ignitable = 1, oddly_breakable_by_hand = 1},
     _ignite = tnt.spawn_tnt,
     _burn = tnt.spawn_tnt,
+    on_blast = tnt.spawn_tnt
     
 })
+
+local tnt_top_anim = {
+    name = "tnt_top_ignited_animated.png",
+    animation = {
+        type = "vertical_frames",
+        aspect_w = 16,
+        aspect_h = 16,
+        length = 4
+    }
+}
+local function explode(pos)
+    core.set_node(pos, {name = "air"})
+    tnt.boom(pos, 5)
+end
 base.register_node("tnt:lit_tnt", {
     description = "Lit TNT",
-    tiles = {top_anim, "tnt_bottom.png", "tnt_side.png"},
+    tiles = {tnt_top_anim, "tnt_bottom.png", "tnt_side.png"},
     groups = {falling_node = 1, virtual = 1},
     diggable = false,
     on_construct = function(pos)
         local timer = core.get_node_timer(pos)
         timer:start(3)
     end,
-    on_timer = function(pos)
-        core.set_node(pos, {name = "air"})
-        tnt.boom(pos, 5)
-    end
+    on_timer = explode,
+    on_blast = function(pos)
+        core.get_node_timer(pos):stop()
+        explode(pos)
+    end,
+    _burn = function() end
 })
+local function light_gunpowder(pos)
+    core.set_node(pos, {name = "tnt:lit_gunpowder"})
+    core.get_node_timer(pos):start(3)
+end
+local function gunpowder_burn(pos)
+    for x = pos.x - 1, pos.x + 1 do
+        for y = pos.y - 1, pos.y + 1 do
+            for z = pos.z - 1, pos.z + 1 do
+                local current_pos = vector.new(x,y,z)
+                local node = core.get_node(current_pos)
+                local _ignite = core.registered_nodes[node.name]._ignite
+                if type(_ignite) == "function" then
+                    _ignite(current_pos)
+                end
+            end
+        end
+    end
+    core.set_node(pos, {name = "air"})
+end
+
+local gunpowder = {
+    tiles_animated = {
+        straight = "tnt_gunpowder_straight_animated.png",
+        curve = "tnt_gunpowder_curve_animated.png",
+        t_junction = "tnt_gunpowder_t_junction_animated.png",
+        cross = "tnt_gunpowder_cross_animated.png"
+    },
+    tiles = {
+        straight = "tnt_gunpowder_straight.png",
+        curve = "tnt_gunpowder_curve.png",
+        t_junction = "tnt_gunpowder_t_junction.png",
+        cross = "tnt_gunpowder_cross.png"
+    },
+    animation = {
+        type = "vertical_frames",
+        aspect_w = 16,
+        aspect_h = 16,
+        length = 2
+    }
+}
+
+function gunpowder.get_tiles(animated)
+    function get_tile(name)
+        if animated then
+            return {
+                name = gunpowder.tiles_animated[name],
+                animation = gunpowder.animation
+            }
+        else
+            return gunpowder.tiles[name]
+        end
+    end
+    return {
+        get_tile("straight"),
+        get_tile("curve"),
+        get_tile("t_junction"),
+        get_tile("cross")
+    }
+end
 base.register_node("tnt:gunpowder", {
     description = "Gunpowder",
     paramtype = "light",
@@ -127,8 +195,24 @@ base.register_node("tnt:gunpowder", {
     walkable = false,
     inventory_image = "tnt_gunpowder_item.png",
     wield_image = "tnt_gunpowder_item.png",
-    tiles = {"tnt_gunpowder_straight.png", "tnt_gunpowder_curve.png", "tnt_gunpowder_t_junction.png", "tnt_gunpowder_cross.png"},
-    groups = {oddly_breakable_by_hand = 1}
+    tiles = gunpowder.get_tiles(false),
+    buildable_to = true,
+    groups = {oddly_breakable_by_hand = 1, flammable = 1},
+    _ignite = light_gunpowder,
+    _burn = light_gunpowder
+})
+
+
+core.register_node("tnt:lit_gunpowder", {
+    description = "Lit gunpoweder",
+    paramtype = "light",
+    drawtype = "raillike",
+    walkable = false,
+    drop = "tnt:gunpowder",
+    tiles = gunpowder.get_tiles(true),
+    buildable_to = true,
+    groups = {oddly_breakable_by_hand = 1, virtual = 1},
+    on_timer = gunpowder_burn
 })
 
 core.register_craft({

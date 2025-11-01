@@ -83,8 +83,9 @@ core.register_node("fire:fire", {
             local _burn = core.registered_nodes[neighbor_node.name]._burn
             if type(_burn) == "function" then
                 _burn(neighbor)
+            else
+                core.set_node(neighbor, {name = "air"})
             end
-            core.set_node(neighbor, {name = "air"})
         end
         core.set_node(pos, {name = "air"})
     end
@@ -169,7 +170,6 @@ core.register_abm({
         local pos2 = pos:apply(function(n) return n+1 end)
         local flammable_nodes = core.find_nodes_in_area(pos1, pos2, {"group:flammable"}, true)
         for category, pos_list in pairs(flammable_nodes) do
-            
             for _, node_pos in ipairs(pos_list) do
                 if math.random() < 0.15 then
                     local fire_info = fire.get_flammable_info(node_pos)

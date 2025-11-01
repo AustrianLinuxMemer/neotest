@@ -1,3 +1,39 @@
+Resource License:
+=================
+
+§1: Definition of "Resource"
+----------------------------
+
+  A "Resource" is defined as a file or piece of content that is clearly not source code,
+  This includes, but is not limited to:
+
+  - textures
+  - 3D models
+  - sounds
+  - text files
+  - game-displayed strings
+  - i18n and l10n files
+
+§2: Restrictions on the use of resources
+----------------------------------------
+  Resources of this game are allowed to be redistributed as part of:
+  
+  1. The final playable version of my game "Neotest"
+  2. Or for the development of complete forks of the "Neotest" project
+
+  Any other redistribution of resources of this game are strictly prohibited.
+
+§3: Copyright
+-------------
+
+Copyright (C) 2025: Leo Füreder, Oberhartstraße 37, 4600 Wels, Austria
+
+
+Code License:
+==============
+
+
+
                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 2.1, February 1999
 

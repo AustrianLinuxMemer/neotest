@@ -246,7 +246,7 @@ container.register_container("furnace:furnace", {
         {name = "input", size = 1},
         {name = "output", size = 4},
     },
-    groups = {oddly_breakable_by_hand = 1}
+    groups = {cracky = 3}
 }, base.register_node)
 
 container.register_container("furnace:active_furnace", {
@@ -273,7 +273,7 @@ container.register_container("furnace:active_furnace", {
         {name = "input", size = 1},
         {name = "output", size = 4},
     },
-    groups = {oddly_breakable_by_hand = 1, virtual = 1}
+    groups = {cracky = 3, virtual = 1}
 }, base.register_node)
 
 core.register_craft({
